@@ -780,7 +780,6 @@ def strategyPath(jsonResponse):
     swapSkill_flag = False
     if skill.lower() == "swap" and skillStatus == 1:
         swapSkill_flag = True
-        swapSkill_flag = False
     else:
         for idNode in almostFullListAgents:
             agentNode = nodesDict[idNode]
