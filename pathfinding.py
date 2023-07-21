@@ -782,7 +782,11 @@ def strategyPath(jsonResponse):
         swapSkill_flag = True
     else:
         for idNode in almostFullListAgents:
-            agentNode = nodesDict[idNode]
+            # FIXME IMPORTANT: Third Fix of the error cause if a constructor operator put a block in a pit and any agent node goes to it
+            try: 
+                agentNode = nodesDict[idNode]
+            except KeyError:
+                continue
             agentNode.listConnections = list()
         deleteConnectionsAgentsNodes(nodesDict, almostFullListAgents)
     
