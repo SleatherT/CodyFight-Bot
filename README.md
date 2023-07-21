@@ -2,7 +2,7 @@
 Client and Bot for the videogame Codyfight, improvements to make the code more readable, maintainable, etc, are welcome
 
 # Files and Classes
-api_request.py contain the function used to make requests to the api, used in the CodyClient.py fyle
+api_request.py contain the function used to make requests to the api, used in the CodyClient.py file
 
 The CodyClient.py the Client Class, this class allows you to send and receive the responses from the server
 in a dictionary format, his functions are get_status(), create_room(), cast_skill(), move_player() and surrender(), names are self-explanatory 
