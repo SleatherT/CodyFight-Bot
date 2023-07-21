@@ -16,7 +16,7 @@ From all the files and functions you only need to import the Client Class from C
 Client class only needs your ckey and strategyPath and createMap accepts the response from the server as argument, strategyPath returns a goal node with his information of how to reach to him and createMap a map representation (read the code to know what each character means)
 
 # Operators Supported
-For now only operators with swap skill are supported, that doesnt means that you can use other operator with the code, what it means is that the strategyPath() wont take into account the skill of the operator and it wont use it to reach a goal
+For now only operators with swap skill are supported, that doesnt means that you can't use other operator, what it means is that the strategyPath() wont take into account the skill of the operator and it wont use it to reach a goal
 
 # Example
 The bot.py file has an example of how you should use the main functions
