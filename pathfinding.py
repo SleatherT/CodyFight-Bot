@@ -896,6 +896,7 @@ def strategyPath(jsonResponse):
     while noDanger_flag:
         infinityDectector.CountIter(x)
         nextToDead_flag = False
+        nodeIsGoal_flag = False
         if swapSkill_flag is True and isRipperTime_flag is True:
             # Execution of the dijkstra algorithm
             nodeGoal = dijkstra(nodesDict, idUser, listIdsGoals)
@@ -913,9 +914,9 @@ def strategyPath(jsonResponse):
                     idAdyacentNodeRipper = connection.getToNode()
                     if idNextNode == idAdyacentNodeRipper:
                         for id in idGoal:
-                            if idNextNode == idGoal:
-                                break
-                        if idNextNode in listIdsGoals:
+                            if idNextNode == id:
+                                nodeIsGoal_flag = True
+                        if idNextNode in listIdsGoals and nodeIsGoal_flag is False:
                             listIdsGoals.remove(idNextNode)
                         nextToDead_flag = True
         elif isRipperTime_flag is True:
@@ -925,7 +926,7 @@ def strategyPath(jsonResponse):
                 adyacentNode = nodesDict[idAdyacentNode]
                 adyacentNode.listConnections = list()
             
-        if nextToDead_flag:
+        if nextToDead_flag and nodeIsGoal_flag is False:
             adyacentNode = nodesDict[idNextNode]
             adyacentNode.listConnections = list()
         else:
@@ -949,6 +950,8 @@ def strategyPath(jsonResponse):
                 infinityDectector.CountIter(x)
                 nodeGoal = dijkstra(nodesDict, idUser, listIdsGoals)
                 pathConnections = nodeGoal.pathConnections
+                if pathConnections is None:
+                    break
                 checking_firstFlag = False
                 checking_secondFlag = False
                 firstConnection = pathConnections[0]
