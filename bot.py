@@ -11,7 +11,7 @@ def loopGames(player):
     continuePlaying_flag = True
     while continuePlaying_flag:
         idStatus = player.getIdStatus()
-        playerTurn_flag = player.getIsPlayerTurn
+        playerTurn_flag = player.getIsPlayerTurn()
         if idStatus == 1 and playerTurn_flag:
             jsonResponse = player.getJsonResponse()
             goalNode = strategyPath(jsonResponse)
@@ -25,11 +25,9 @@ def loopGames(player):
             skillConfirmation = connection.getSkillUsedConfirmation()
             if skillConfirmation is True:
                 sJsonResponse = player.cast_skill(x_coord, y_coord)
-            elif skillConfirmation is True:
-                sJsonResponse = player.cast_skill(x_coord, y_coord)
             else:
                 player.move_player(x_coord, y_coord)
-        elif idStatus == 1:
+        elif idStatus == 1 and playerTurn_flag is False:
             print("waiting for oponent")
             time.sleep(5)
         elif idStatus == 2:
