@@ -885,7 +885,9 @@ def strategyPath(jsonResponse):
     # 3rd  Ripper Code : Ripper is instakill so getting close is not good, normaly with other operators the solution cloud be just deleting the connectionsList of the adyacent
     # nodes of the Ripper but with swap its possible to bypassing him, but even with the swap skill there is the possibility of falling in one of his adyacent nodes by example
     # if he is in a corner, the solution, we check only the first connection of the pathConnections in the nodeGoal if the connection points to a adyacent Ripper Node we delete 
-    # the connectionsList of that node and recalculate a new path, i call it "One step to death" strategy, its not too efective since the amount of turns of him are 3, i think,
+    # the connectionsList of that node and remove it from the listIdsGoals and recalculate a new path, because if its considered a goal node node dijkstra is going to return 
+    # that node even tought we deleted his connections, ending in infinity loop, unless the returned goal node is the exit node,
+    # in that case we break the loop, i call it "One step to death" strategy, its not too efective since the amount of turns of him are 3, i think,
     # but deleting the connections of too many nodes can cause to not be able of create a decent path to the goal
 
     # Looping the verification to make sure the first connection of the new path doesnt points to other Ripper node
@@ -910,6 +912,11 @@ def strategyPath(jsonResponse):
                 for connection in ripperPossibleMoves:
                     idAdyacentNodeRipper = connection.getToNode()
                     if idNextNode == idAdyacentNodeRipper:
+                        for id in idGoal:
+                            if idNextNode == idGoal:
+                                break
+                        if idNextNode in listIdsGoals:
+                            listIdsGoals.remove(idNextNode)
                         nextToDead_flag = True
         elif isRipperTime_flag is True:
             ripperPossibleMoves = ripperNode.possibleMoves
