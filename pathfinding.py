@@ -1,6 +1,11 @@
 import copy
 import random
 
+# Before this object created nodes and connections only in cells that weren't walls, pits or mines, since if any agent went there, the match would end, but now with the
+# possibility of a contructor operator beign able to put a block in pits, agents that go there are invisible and causing massive bugs in the code that use the map
+# of nodes and info of agents, so now this code considers every cell as a node (if its a wall by example is added but its not going to have any connection), errors 
+# should not appear more but there must be some conditionals that must be rewrited in the strategyPath() function, you can deleted everyting from there since its 
+# not updated and create your own strategy
 class Graph():
     def __init__(self, jsonResponse):
         playersPosition = jsonResponse["players"]
@@ -49,10 +54,7 @@ class Graph():
         for cell in cellList:
             type = cell["type"]
             name = cell["id"]
-            # IMPORTANT: Adding the valid cell to the nodesDict, this doesnt mean is going to have connections so there is the possibility of having node objects without a list,
-            # This is one of the last modifications of the function so its not debuged
-            if type == 0 or type == 2 or type == 4 or type == 5 or type == 6 or type == 7 or type == 8 or type == 9 or type == 10 or type == 11 or type == 13 or type == 15:
-                self.nodesDict[name] = list()
+            self.nodesDict[name] = list()
                 
         # IMPORTANT: This loop creates a dict with "nodes" and his connections from the map, (This doesnt create Nodes objects, dont be confused, since creating the Node 
         # objects require that all connections are registered this code each itireration adds a key, that is the id of the Node, and the value, that is a list 
@@ -64,11 +66,8 @@ class Graph():
             line = positionCell["y"]
             column = positionCell["x"]
             name = cell["id"]
-            # NOTE: If the operator can destroy obstacles this code makes useless his ability since it doesnt takes it as node (a path), this for now i will
-            # leave like this since i am using other operator and i dont want to work on it either for now, if someone its going to use a operator that destroy walls 
-            # modify this code to check if after destroying the wall there is not another wall, so it can be considered a node (path), good luck btw that looks kinda hard
             if type == 1 or type == 3 or type == 12 or type == 14 or type == 17:
-                continue
+                pass
             elif type == 0 or type == 2 or type == 4 or type == 5 or type == 6 or type == 7 or type == 8 or type == 9 or type == 10 or type == 11 or type == 13 or type == 15:
                 pass
             else:
@@ -305,30 +304,6 @@ class Graph():
             if type == 0 or type == 2 or type == 4 or type == 5 or type == 6 or type == 7 or type == 8 or type == 9 or type == 10 or type == 11 or type == 13 or type == 15: 
                 connection = Connection(1, self.idUser, idCell, self.userCell["position"], cell["position"])
                 user_node.append(connection)
-        
-        # FIXME IMPORTANT: I didnt know a contructor could put blocks in death pits, if any agent is in that block when trying to access to his node 
-        # will raise a index error, this is A HUGE problem, i will fix it with try except blocks because i have not better ideas
-        for id in self.fullListAgents:
-            try:
-                self.nodesDict[id]
-            except KeyError:
-                if id == self.idUser:
-                    self.idUser = None
-                if id == self.idEnemy:
-                    self.idEnemy = None
-                if id == self.idRyo:
-                    self.idRyo = None
-                if id == self.idKix:
-                    self.idKix = None
-                if id == self.idLlama:
-                    self.idLlama = None
-                if id == self.idRipper:
-                    self.idRipper = None
-                if id == self.idBuzz:
-                    self.idBuzz = None
-                if id in self.idListAgents:
-                    self.idListAgents.remove(id)
-                del self.fullDictAgents[id]
     
     # Save information of the opponent, player and agents
     def saveIds(self, playersPosition, agentsPosition):
@@ -561,8 +536,6 @@ def getMap(nodesDict, mapList, graphObject):
                 
                 confirmation_flag = False
         if confirmation_flag:
-            mapStr = f"{mapStr} "
-            
             confirmation = Count%lengColumn
             if confirmation == 0:
                 mapStr = f"{mapStr}\n"
@@ -614,10 +587,17 @@ def compareIds(numVerification, fullDictAgents, nodesDict):
             elif type == 200:
                 character = "E"
     
+    
     if character is None:
         node = nodesDict[numVerification]
         nodeType = node.getType()
-        if nodeType == 2:
+        if nodeType == 0:
+            character = "+"
+        elif nodeType == 1 or nodeType == 3 or nodeType == 12 or nodeType == 14 or nodeType == 17:
+            character = " "
+        elif nodeType == 4 or nodeType == 5 or nodeType == 6:
+            character = "°"
+        elif nodeType == 2:
             character = "#"
         elif nodeType == 7:
             character = "^"
@@ -636,7 +616,7 @@ def compareIds(numVerification, fullDictAgents, nodesDict):
         elif nodeType == 15:
             character = "'"
         else:
-            character = "+"
+            character = "?"
         
     
     return character
@@ -782,11 +762,7 @@ def strategyPath(jsonResponse):
         swapSkill_flag = True
     else:
         for idNode in almostFullListAgents:
-            # FIXME IMPORTANT: Third Fix of the error cause if a constructor operator put a block in a pit and any agent node goes to it
-            try: 
-                agentNode = nodesDict[idNode]
-            except KeyError:
-                continue
+            agentNode = nodesDict[idNode]
             agentNode.listConnections = list()
         deleteConnectionsAgentsNodes(nodesDict, almostFullListAgents)
     
@@ -867,11 +843,7 @@ def strategyPath(jsonResponse):
             agentColumn = mapList[x_NodeToConnect]
             agentCell = agentColumn[y_NodeToConnect]
             idAgentCell = agentCell["id"]
-            # FIXME IMPORTANT: Second Fix of the error cause if a constructor operator put a block in a pit and any agent node goes to it
-            try:
-                agent_node = nodesDict[idAgentCell]
-            except KeyError:
-                continue
+            agent_node = nodesDict[idAgentCell]
             agentConnectionsList = agent_node.listConnections
             # This is just in case the listConnections is empty (the target node has no possible moves), i dont see scenaries where that could happen but hey, it doesnt hurt 
             if len(agentConnectionsList) == 0 or agentConnectionsList is None:
