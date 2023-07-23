@@ -12,8 +12,6 @@ class FlowError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
-
-fhandler = open("History", "a")
 fhandler2 = open("HistoryError.txt", "w")
 
 def make_request(url, method_api, data_to_encode):
@@ -34,7 +32,6 @@ def make_request(url, method_api, data_to_encode):
     decoded = response_data.decode("utf-8")
 
     json_loaded = json.loads(decoded)
-    json_dumped = json.dump(json_loaded, fhandler, indent=4)
     json_dumped = json.dump(json_loaded, fhandler2, indent=4)
     
     return json_loaded
