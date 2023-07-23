@@ -19,7 +19,7 @@ class Client():
         return info
     
     # Creation of room defaults to 0 if not passed
-    def create_room(self, mode=0):
+    def create_room(self, mode=0, opponent_name=None):
         self.get_status()
         if self.status != 1:
             try:
@@ -27,11 +27,18 @@ class Client():
             except:
                 raise TypeError("Mode must be a number")
             
-            to_encode = {"ckey": self.ckey, "mode": game_mode}
-            info = make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
-            self.jsonResponse = info
+            if mode == 0 and opponent_name is None:
+                to_encode = {"ckey": self.ckey, "mode": game_mode}
+                info = make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
+                self.jsonResponse = info
+            elif mode == 1 and opponent_name is not None:
+                to_encode = {"ckey": self.ckey, "mode": game_mode, "opponent": opponent_name}
+                info = make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
+                self.jsonResponse = info
+            else:
+                raise FlowError("Mode not supported or wrong arguments!")
             
-            print("Room Created!")
+            print("Request Room Sended!")
             return info
         else:
             raise FlowError("Game already in Course")
