@@ -67,7 +67,7 @@ class Graph():
             column = positionCell["x"]
             name = cell["id"]
             if type == 1 or type == 3 or type == 12 or type == 14 or type == 17:
-                pass
+                continue
             elif type == 0 or type == 2 or type == 4 or type == 5 or type == 6 or type == 7 or type == 8 or type == 9 or type == 10 or type == 11 or type == 13 or type == 15:
                 pass
             else:
