@@ -52,6 +52,7 @@ def loopGames(player):
             time.sleep(5)
         elif CountMatchs > 1000:
             print(f"1000 Matchs Played! Times Won:{CountWins} Times Lossed:{CountLosses}")
+            break
         else:
             print(f"Unknown status! {idStatus}")
             
