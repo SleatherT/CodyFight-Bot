@@ -14,8 +14,7 @@ exitbot.py is the implementation of all the files mentioned to create a bot to d
 
 testmap.txt and tests.py are files to test that modifications on the code are not raising errors
 
-history.txt everytime we make a request to the api this file write the info recieved, if we found a map that cause errors or we want
-to test something we can copy one of the responses in the testmap.py
+history.txt everytime we make a request to the api this file is written with the info recieved, if we found a map that cause errors or we want to test something we can copy one of the responses in the testmap.py
 
 # How to start
 See the basebot.py and exitbot.py files to get an idea of how the code works
