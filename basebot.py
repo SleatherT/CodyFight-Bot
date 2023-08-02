@@ -1,4 +1,4 @@
-from pathfinding2 import Graph, dijkstra, bidirectionalCheck
+from nodemap import Graph, dijkstra
 
 # This function is the core of the bot, use all the information of the graph, node and connections to create the strategy that the bot will follow
 # This is also an example of a basic bot that simply moves towards the exit (cell type 2), if there is no exit moves close to ryo
