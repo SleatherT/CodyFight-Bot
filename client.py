@@ -1,0 +1,142 @@
+import urllib.request, urllib.parse, urllib.error
+import json
+import time
+
+fhandler = open("History.txt", "w")
+
+class BadRequest(Exception):
+    def __init__(self, urllibError):
+        self.body = urllibError.read().decode("utf-8")
+        super().__init__(f"Bad request sended to the api, check the parameters are correct\nApi response: {self.body}")
+
+
+class FlowError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+# The main function to send requests to the api
+def make_request(url, method_api, data_to_encode):
+    if type(data_to_encode) != dict:
+        raise TypeError("Data to encode must be a dictionary")
+        
+    encode_data = urllib.parse.urlencode(data_to_encode)
+    url = f"{url}{encode_data}"
+    request = urllib.request.Request(url, method=method_api)
+    request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
+    
+    try:
+        response = urllib.request.urlopen(request)
+    except urllib.error.HTTPError as e:
+        raise BadRequest(e)
+    
+    response_data = response.read()
+    decoded = response_data.decode("utf-8")
+
+    json_loaded = json.loads(decoded)
+    json_dumped = json.dump(json_loaded, fhandler, indent=4)
+    
+    return json_loaded
+
+# Class that allows to execute basic actions and save information
+class Client():
+    def __init__(self, ckey):
+        self.url_api = f"https://game.codyfight.com/?"
+        self.ckey = ckey
+        self.status = None
+        self.jsonResponse = None
+        self.get_status()
+    
+    def get_status(self):
+        to_encode = {"ckey": self.ckey}
+        info = make_request(url=self.url_api, method_api="GET", data_to_encode=to_encode)
+        
+        self.jsonResponse = info
+        self.status = self.jsonResponse["state"]["status"]
+            
+        return info
+    
+    # Creation of room defaults to 0 if not passed
+    def create_room(self, mode=0, opponent_name=None):
+        if self.status != 1:
+            try:
+                game_mode = int(mode)
+            except:
+                raise TypeError("Mode must be a number")
+            
+            if mode == 0 and opponent_name is None:
+                to_encode = {"ckey": self.ckey, "mode": game_mode}
+                info = make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
+                self.jsonResponse = info
+            elif mode == 1 and opponent_name is not None:
+                to_encode = {"ckey": self.ckey, "mode": game_mode, "opponent": opponent_name}
+                info = make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
+                self.jsonResponse = info
+            elif mode == 3:
+                to_encode = {"ckey": self.ckey, "mode": game_mode}
+                info = make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
+                self.jsonResponse = info
+            else:
+                raise FlowError("Mode not supported or wrong arguments!")
+                
+            
+            print("Room Created!")
+            return info
+        else:
+            raise FlowError("Game already in Course")
+        
+    def cast_skill(self, x_value, y_value, skill_id=None):
+        # Defaults to first skill if not passed, the skill id must be his unique id, not positional id
+        if self.status == 1:
+            try:
+                x_value = int(x_value)
+                y_value = int(y_value)
+            except:
+                raise TypeError("x and y values must be numbers")
+            
+            listSkills = self.jsonResponse["players"]["bearer"]["skills"]
+            if skill_id == None:
+                skill_id = listSkills[0]["id"]
+                    
+            to_encode = {"ckey": self.ckey, "skill_id": skill_id, "x": x_value, "y": y_value}
+            info = make_request(url=self.url_api, method_api="PATCH", data_to_encode=to_encode)
+            self.jsonResponse = info
+            
+            return info
+        else:
+            raise FlowError("There is no game in course to cast skill")
+        
+    def move_player(self, x_value, y_value):
+        if self.status == 1:
+            try:
+                x_value = int(x_value)
+                y_value = int(y_value)
+            except:
+                raise TypeError("x and y values must be numbers")
+        
+            to_encode = {"ckey": self.ckey, "x": x_value, "y": y_value}
+            info = make_request(url=self.url_api, method_api="PUT", data_to_encode=to_encode)
+            self.jsonResponse = info
+        
+            return info
+        else:
+            raise FlowError("There is no game in course to move player")
+        
+    def surrender(self):
+        to_encode = {"ckey": self.ckey}
+        info = make_request(url=self.url_api, method_api="DELETE", data_to_encode=to_encode)
+        self.get_status()
+        
+        return info
+        
+    def getIdStatus(self):
+        self.get_status()
+        return self.status
+        
+    def getIsPlayerTurn(self):
+        return self.jsonResponse["players"]["bearer"]["is_player_turn"]
+    
+    def getJsonResponse(self):
+        return self.jsonResponse
+        
+    def getWinner(self):
+        return self.jsonResponse["verdict"]["winner"]
