@@ -19,7 +19,7 @@ to test something we can copy one of the responses in the testmap.py
 
 # How to start
 See the basebot.py and exitbot.py files to get an idea of how the code works
-You are going to see that the graph has a lot of usefull info, as well as the Nodes, his info is pretty usefull if you now how to use it
+You are going to see that the graph has a lot of usefull info, as well as the Nodes, their info is pretty usefull if you now how to use it
 
 # Operators Supported
 For now only operators with swap skill are supported, that doesnt means that you can't use other operator, what it means is that the strategyPath() wont take into account the skill of the operator and it wont use it to reach a goal
