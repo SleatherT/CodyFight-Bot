@@ -1,6 +1,33 @@
 # CodyFight-Bot
 Client and Bot for the videogame Codyfight, improvements to make the code more readable, maintainable, etc, are welcome
 
+# Setting up Python on Windows and Mac
+The code is in Python so first we need to install it
+
+Windows
+
+1. Download Python
+  - Visit the oficial Python website: python.org
+  - Go to the "Downloads" section and choose the latest version for Windows
+2. Run the installer
+  - Open the downloaded file
+  - **Check the box that says "Add Python x.x to PATH" during installation**  __IMPORTANT__
+3. Verify the installation
+  - Open the Command Prompt or PowerShell
+  - Type 'python --version' to verify Python is installed
+
+Mac
+
+1. Check Python Version
+  - Mac usually comes with Python pre-installed
+  - Open the terminal
+  - Type 'python3 --version' to check the version
+2. Install Homebrew (if needed):
+  - If Python isn't installed or you want to manage versions, install Homebrew: brew.sh
+  - Install Python using Homebrew: 'brew install python'
+3. Verify Installation
+  - Type 'python3 --version' again to confirm Python is installed
+
 # Files and Classes
 client.py contains the Client class use this to make requests to the api, each request sent responds with info that we can use, like the status of the game or if its our turn, the functions of the Client class are get_status(), create_room(), cast_skill(), move_player() and surrender(), names are self-explanatory 
 
