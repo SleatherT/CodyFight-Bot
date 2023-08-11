@@ -1,8 +1,15 @@
 # Main Classes/Functions
 from nodemap import Graph, Connection, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pre_dijkstra, getMap
 
-def strategyPath(jsonResponse):
-    graphObject = Graph(jsonResponse)
+# Accepts a jsonResponse and a graphObject as optional argument, why? to add info to the graphObject to test outside this file
+def strategyPath(jsonResponse, graphObject=None):
+    if graphObject is None:
+        graphObject = Graph(jsonResponse)
+    elif type(graphObject) is Graph:
+        pass
+    else:
+        graphObject = Graph(jsonResponse)
+        
     dictNodes = graphObject.dictNodes
     
     playerNode = graphObject.userNode
@@ -62,13 +69,13 @@ def strategyPath(jsonResponse):
     listIdAgents = graphObject.listIdAgents
     if swapSkill_flag:
         listIdAlmostFullAgents = list(listIdAgents)
-        listIdAlmostFullAgents.append(enemyNode.id)
-        for id in listIdAlmostFullAgents:
-            pre_dijkstra(dictNodesPure, id, [], True)
-            agentNode = dictNodesPure[id]
+        listIdAlmostFullAgents.append(enemyNode.idNode)
+        for idNode in listIdAlmostFullAgents:
+            pre_dijkstra(dictNodesPure, idNode, [], True)
+            agentNode = dictNodesPure[idNode]
         
             listPseudoNodes = list()
-            for (id, node) in dictNodesPure.items():
+            for (idNode, node) in dictNodesPure.items():
                 cost = node.costToReach
                 usedSliderNode_flag = False
                 usedBiNode_flag = False
@@ -91,7 +98,7 @@ def strategyPath(jsonResponse):
                 if node.type in [1, 3, 17, 12]:
                     continue
                 connection = Connection(cellFrom=node.cell, cellTo=agentNode.cell, cost=0, usedSkill=True, idSkill=idSwapSkill)
-                nodeFromRealDictNodes = dictNodes[node.id]
+                nodeFromRealDictNodes = dictNodes[node.idNode]
                 nodeFromRealDictNodes.listConnections.append(connection)
     
     # Buzz/Ryo Fix
@@ -102,13 +109,16 @@ def strategyPath(jsonResponse):
     # with this we dont need to delete this connections
     if ryoIsObjetive_flag:
         listIdAgentsSorrounding = graphObject.listIdAgentsSorrounding
-        listNoSwap = listIdAgentsSorrounding + [ryoNode.id]
-        for (id, node) in dictNodes.items():
+        listNoSwap = listIdAgentsSorrounding + [ryoNode.idNode]
+        for (idNode, node) in dictNodes.items():
             for connection in node.listConnections:
                 if connection.toNode in listNoSwap and connection.usedSkill is True and connection.idSkill == idSwapSkill:
                     connection.setBan(True)
     
-    goalNode = dijkstra(dictNodes, playerNode.id, listIdGoals)
-    
+    if swapSkill_flag:
+        goalNode = dijkstra(dictNodes, playerNode.idNode, listIdGoals, True)
+    else:
+        goalNode = dijkstra(dictNodes, playerNode.idNode, listIdGoals)
+        
     return goalNode
     
