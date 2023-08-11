@@ -4,6 +4,7 @@
 # defines (hopefully permanently) the basic structure and best way of create the graph, nodes and connections objects to be easy modifiable in case is needed
 import random
 import copy
+import time
 
 
 class Connection():
@@ -38,7 +39,7 @@ class Connection():
 class Node():
     def __init__(self, cell: dict):
         self.cell = cell
-        self.id = self.cell["id"]
+        self.idNode = self.cell["id"]
         self.type = self.cell["type"]
         self.position = self.cell["position"]
         self.config = self.cell["config"]
@@ -50,9 +51,12 @@ class Node():
         self.costToReach = None
         self.pathConnections = list()
         
+        # Variable destined to use in strange dijkstra
+        self.listPathObjects = list()
+        self.customConnectionsList = list()
         
     def __repr__(self):
-        return f"Node Id:{self.id} Type:{self.type} listConnections:{self.listConnections}"
+        return f"Node Id:{self.idNode} Type:{self.type} listConnections:{self.listConnections}"
         
     def saveAdyacentConnections(self, map: list) -> None:
         x_value = self.position["x"]
@@ -275,20 +279,21 @@ class Graph():
         for column in self.map:
             for cell in column:
                 listCells.append(cell)
-
+        
+        
         # IMPROVE: Right now the code its updated so all the nodes are treated in the right way, but if the devs update the game
         # with new cells then there is the possibility of creating invalid connections, the ideal solution would be check first if the node
         # its a known node if not then it should be treated as an invalid node to prevent bugs
         listIdInvalidNodes = [1, 3, 16, 17] # 12: Death Pit  13: Zap Trap  14: Mine  17: Lesser Obstacle  15: Bobby trap  16: Sentry Turret
         listTypesSlider = [7, 8, 9, 10]
-        listDangerousNodes = [12, 14]
+        listDangerousNodes = [12, 13, 14]
         for cell in listCells:
             # No matter the type of the cell its added to the dictNodes, the key is the unique id and the value is a nade object with a list of  
             # connections that could be empty or with the connections if its a valid cell
             nodeObject = Node(cell)
             nodeObject.saveAdyacentConnections(self.map)
             typeNode = nodeObject.type
-            idNode = nodeObject.id
+            idNode = nodeObject.idNode
             
             # IMPROVE: This could be improved, instead of converting after the nodes objects to his type it could be done before creating the node, with the cell
             if cell["type"] in listTypesSlider:
@@ -305,6 +310,10 @@ class Graph():
                 nodeObject.deleteConnections()
             else:
                 nodeObject.deleteInvalidConnections(listIdInvalidNodes)
+            
+            # In case there is a node not known we should avoid create connections to it and from it
+            if typeNode not in listAllKnownNodes:
+                nodeObject.deleteInvalidConnections([typeNode])
             
             if idNode == self.userCell["id"]:
                 nodeObject = PlayerNode(nodeObject)
@@ -362,7 +371,7 @@ class Graph():
         tmpList = list()
         for connection in self.ryoNode.listConnectionsCopy:
             nextNode = dictNodes[connection.toNode]
-            if connection.toNode == self.enemyNode.id or connection.toNode in self.listIdAgents:
+            if connection.toNode == self.enemyNode.idNode or connection.toNode in self.listIdAgents:
                 ryoSorrounded_flag = True
                 self.listIdAgentsSorrounding.append(connection.toNode)
                 tmpList.append(connection)
@@ -380,7 +389,7 @@ class Graph():
         if ryoSorrounded_flag and len(self.ryoNode.listConnectionsCopy) == 1:
             nextNode = dictNodes[self.ryoNode.listConnectionsCopy[0].toNode]
             if type(nextNode) is SliderNode and nextNode.isCharged is True and len(nextNode.listConnections) > 0:
-                if nextNode.toNode == self.ryoNode.id:
+                if nextNode.toNode == self.ryoNode.idNode:
                     confirmation_flag = True
             else:
                 confirmation_flag = True
@@ -578,7 +587,7 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
 # dijkstra will copy the dictNodes connections so the returned nodeGoal.pathConnections should not be trated as the same from the original dictNodes, this also means
 # that the Nodes of original dictNodes doesnt have his dijkstra atributes with data, if you need to access to this processed info use pre_dijkstra, this is because the 
 # following verifications modifies the nodes and since this function is going to be called more that one time not doing this could lead to create bad paths
-def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
+def dijkstra(dictNodes: dict, idStart: int, idsGoal: list, swapSkillCD=False):
     dictNodesCopy = copy.deepcopy(dictNodes)
     x = InfinityDetector()
     
@@ -599,7 +608,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
     
         if usedBiNode_flag is True and usedBiConn_flag is False:
             for node in listBiNodes:
-                deleteConnectionsThatPointsToThisNode(node.id, dictNodesCopy)
+                deleteConnectionsThatPointsToThisNode(node.idNode, dictNodesCopy)
         else:
             break
     
@@ -627,12 +636,204 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
             
             if idDeathNode is None:
                 break
-            elif dictNodesCopy[idDeathNode].id in idsGoal:
+            elif dictNodesCopy[idDeathNode].idNode in idsGoal:
                 break
             else:
                 deleteConnectionsThatPointsToThisNode(idDeathNode, dictNodesCopy)
     
+    # Skill Cooldown
+    # Until now the bot doesn't care if its path uses two consecutive times the same skill, to solve this i have some ideas, the first is ban the connections skill that
+    # are used in a short period of time not respecting the cooldown of the skill
+    # First Problem: This works well the problem is when the goal is only reachable using the skill connection, banning this connection results in chossing other path
+    # i think if i can save the fact that the skill is neccesary to reach the goal must be prioritized so this connection must be used as the start on the checking,
+    # i would need to make a reverse loop to check the connections before this connection
+    if swapSkillCD is not False:
+        idObjective = None
+        random_flag = False
+        firstIter_flag = True
+        listBanned = list()
+        while True:
+            InfinityDetector.CountIter(x)
+            nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
+            if firstIter_flag is True:
+                if nodeGoal.idNode in idsGoal:
+                    idObjective = nodeGoal.idNode
+                else:
+                    random_flag = True
+                firstIter_flag = False
+            else:
+                if random_flag:
+                    pass
+                else:
+                    if idObjective == nodeGoal.idNode:
+                        pass
+                    else:
+                        # In this case is when the banning of the connections caused to make the objetive unreachable so we... hmmm idk
+                        idObjective = None
+                        random_flag = False
+                        firstIter_flag = True
+                    
+            Count = None
+            reCalculate_flag = False
+            for connection in nodeGoal.pathConnections:
+                if Count is not None:
+                    Count = Count + 1
+                if connection.usedSkill is True and connection.idSkill == 5 and Count is None: # IMPROVE: If in the future the id its not longer 5 this must be changed
+                    Count = 0
+                elif connection.usedSkill is True and connection.idSkill == 5 and Count is not None:
+                    if Count <= 4:
+                        connection.setBan(True)
+                        reCalculate_flag = True
+                    else:
+                        Count = 0
+
+            if reCalculate_flag is False:
+                break
+    
     return nodeGoal
+
+# Class to use in the strangeDijkstra function
+class Path():
+    def __init__(self):
+        self.cost = None
+        self.listConnections = list()
+        self.foundAllPaths = False
+        
+    # To check if two paths are the same (same listConnections) first we check if the two paths have the same len of his listConnections, if not its a clear that
+    # the two are not the same, if the two have the same lenght we iterate over the paths to compare if the connection is the same as the path that we are comparing to
+    def __eq__(self, otherPath):
+        confirmation_flag = False
+        if len(self.listConnections) != len(otherPath.listConnections):
+            return confirmation_flag
+        
+        selfIter = iter(self.listConnections)
+        
+        for connection in otherPath.listConnections:
+            tmpTuple = None
+            tmpTuple = (connection, next(selfIter))
+            
+            if tmpTuple[0] is tmpTuple[1]:
+                confirmation_flag = True
+            else:
+                confirmation_flag = False
+                break
+        """
+        print("p", self.listConnections)
+        print("p", otherPath.listConnections)
+        print("p", confirmation_flag)
+        """
+        return confirmation_flag
+    
+    def __repr__(self):
+        return f"|  {self.listConnections}  |"
+        
+    def addConnection(self, connection: Connection):
+        self.listConnections.append(connection)
+        
+
+# So to make the bot take into account the cooldown of the skills i delevoped a new solution, that i dont know if its the best but i think it has more room to be modifiable
+# and it has a lot of potential in solving other problems and making the bot a lot better
+# The solution is a function that creates all the possible paths for the bot, yes its a extreme solution but i think its a lot better that using hardcoded rules, with this
+# we should only need to chosse paths that follow certain rules, perfect! This is going to use A LOT more memory tho
+def strangeDijkstra(dictNodes: dict, idStart: int, idsGoal: list):
+    listPaths = list()
+    Count = 0
+    
+    end_flag = False
+    startTime = time.time()
+    while True:
+        currentNode = dictNodes[idStart]
+        
+        iterConnections = iter(currentNode.listConnections)
+    
+        listUnban = list()
+        
+        path = Path()
+        while len(path.listConnections) < 4:
+            try:
+                nextConnection = next(iterConnections)
+            except StopIteration:
+                try:
+                    currentNode = dictNodes[path.listConnections[-1].fromNode]
+                except IndexError:
+                    end_flag = True
+                    break
+                
+                nextConnection = path.listConnections[-1]
+                
+                iterConnections = iter(currentNode.listConnections)
+                
+                for connection in iterConnections:
+                    if connection is not nextConnection:
+                        pass
+                    else:
+                        break
+                        
+                # Reversing the list so we dont delete the first connection it encounter (there is the possibility of having duplicate connections in the path)
+                path.listConnections.reverse()
+                path.listConnections.remove(nextConnection)
+                path.listConnections.reverse()
+                continue
+            
+            if nextConnection.ban is True or type(dictNodes[nextConnection.toNode]) is DangerousNode:
+                continue
+            
+            path.addConnection(nextConnection)
+            
+            found_flag = False
+            for pathList in listPaths:
+                if path == pathList:
+                    found_flag = True
+            
+            if found_flag:
+                """
+                print()
+                print("TEST", path.listConnections)
+                print("TEST", nextConnection)"""
+                path.listConnections.reverse()
+                path.listConnections.remove(nextConnection)
+                path.listConnections.reverse()
+            else:
+                if currentNode is dictNodes[nextConnection.toNode]:
+                    nextConnection.setBan(True)
+                    listUnban.append(nextConnection)
+                
+                currentNode = dictNodes[nextConnection.toNode]
+                
+                iterConnections = iter(currentNode.listConnections)
+                
+        for connection in listUnban:
+            connection.setBan(False)
+        
+        if end_flag:
+            break
+        else:
+            listPaths.append(path)
+            Count = Count + 1
+            if Count > 100:
+                endTime = time.time()
+                print("LENGHT OF PATHS:", len(listPaths), "TIME TAKE IT:", {endTime - startTime})
+                Count = 0
+                startTime = time.time()
+            """
+            print("\n")
+            print(listPaths) """
+    
+    endTime = time.time()
+    print("LAST LENGHT:", len(listPaths),"LAST TIME:", endTime - startTime)
+    
+    listPathGoals = list()
+    for path in listPaths:
+        if path.listConnections[-1].toNode in idsGoal:
+            listPathGoals.append(path)
+    
+    return listPathGoals
+
+def returnItemInList(lst: list):
+    if len(lst) > 0:
+        return lst[0]
+    else:
+        return None
 
 # Function to visualize the map in the console
 def getMap(jsonResponse):
