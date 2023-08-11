@@ -10,7 +10,6 @@ def loopGames(player):
     CountWins = 0
     CountLosses = 0
     continuePlaying_flag = True
-    CountWait = 1
     while continuePlaying_flag:
         idStatus = player.getIdStatus()
         playerTurn_flag = player.getIsPlayerTurn()
@@ -57,9 +56,6 @@ def loopGames(player):
         elif idStatus == 0:
             print("Registering players.. waiting 15 seconds")
             time.sleep(15)
-            CountWait = CountWait + 1
-            if CountWait&2 == 0:
-                player.create_room(0)
         elif idStatus == -1:
             player.create_room(0)
         else:
