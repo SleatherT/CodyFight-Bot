@@ -275,10 +275,13 @@ class Graph():
         for column in self.map:
             for cell in column:
                 listCells.append(cell)
-        
-        listIdInvalidNodes = [1, 3, 17] # 12: Death Pit  14: Mine  17: Lesser Obstacle
+
+        # IMPROVE: Right now the code its updated so all the nodes are treated in the right way, but if the devs update the game
+        # with new cells then there is the possibility of creating invalid connections, the ideal solution would be check first if the node
+        # its a known node if not then it should be treated as an invalid node to prevent bugs
+        listIdInvalidNodes = [1, 3, 16, 17] # 12: Death Pit  13: Zap Trap  14: Mine  17: Lesser Obstacle  15: Bobby trap  16: Sentry Turret
         listTypesSlider = [7, 8, 9, 10]
-        listDangerousNodes = [12, 13, 14]
+        listDangerousNodes = [12, 14]
         for cell in listCells:
             # No matter the type of the cell its added to the dictNodes, the key is the unique id and the value is a nade object with a list of  
             # connections that could be empty or with the connections if its a valid cell
@@ -701,6 +704,8 @@ def returnChar(type: int, isAgent: bool) -> str:
             character = "*"
         elif type == 15:
             character = "'"
+        elif type == 16:
+            character = "{"
         elif type == 17:
             character = "|"
         else:
