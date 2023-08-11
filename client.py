@@ -2,7 +2,7 @@ import urllib.request, urllib.parse, urllib.error
 import json
 import time
 
-fhandler = open("History.txt", "w")
+fhandler = open("history.txt", "w")
 
 class BadRequest(Exception):
     def __init__(self, urllibError):
