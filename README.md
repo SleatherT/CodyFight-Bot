@@ -51,7 +51,7 @@ You are going to see that the graph has a lot of usefull info, as well as the No
 For now only operators with swap skill are supported, that doesnt means that you can't use other operator, what it means is that the strategyPath() wont take into account the skill of the operator and it wont use it to reach a goal
 
 # Deploy bot
-To deploy the bot just edit the exit bot file with your ckey and execute this file
+To deploy the bot just edit the exitbot.py file with your ckey and execute this file
 ```
 player = Client(ckey="your key")
 
