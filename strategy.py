@@ -126,13 +126,17 @@ def strategyAttack(jsonResponse):
     
     directAttack_flag = False
     idDirectAttack = None
+    Count = 0
+    positionDirectAttack = None
     for skill in listskills:
         if skill["id"] == 38 and skill["status"] == 1:
             directAttack_flag = True
             idDirectAttack = 38
-            
+            positionDirectAttack = Count
+        Count = Count + 1
+    
     if directAttack_flag:
-        listNodesToConnect = jsonResponse["players"]["bearer"]["skills"][0]["possible_targets"]
+        listNodesToConnect = jsonResponse["players"]["bearer"]["skills"][positionDirectAttack]["possible_targets"]
         
         for target in listNodesToConnect:
             objetiveCell = graphObject.getCell(target)
