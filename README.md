@@ -52,6 +52,6 @@ For now only operators with swap skill are supported, that doesnt means that you
 
 # Deploy bot
 To deploy the bot just edit the exit bot file with your ckey and execute this file
-´´´
+```
 player = Client(ckey="your key")
-´´´
+```
