@@ -112,3 +112,41 @@ def strategyPath(jsonResponse):
     
     return goalNode
     
+# Function separated from strategyPath, strategyPath should be only used to reach certain objective while this function decides what agent attack
+def strategyAttack(jsonResponse):
+    graphObject = Graph(jsonResponse)
+    dictNodes = graphObject.dictNodes
+    
+    playerNode = graphObject.userNode
+    enemyNode = graphObject.enemyNode
+    
+    listskills = graphObject.players["bearer"]["skills"]
+    
+    listTargetsConnections = list()
+    
+    directAttack_flag = False
+    idDirectAttack = None
+    for skill in listskills:
+        if skill["id"] == 38 and skill["status"] == 1:
+            directAttack_flag = True
+            idDirectAttack = 38
+            
+    if directAttack_flag:
+        listNodesToConnect = jsonResponse["players"]["bearer"]["skills"][0]["possible_targets"]
+        
+        for target in listNodesToConnect:
+            objetiveCell = graphObject.getCell(target)
+            objetiveNode = dictNodes[objetiveCell["id"]]
+            # Here we check what nearby agents we want to attack, attacking llama is a no no
+            listAgentsAttack = [1, 2, 4, 200] # 1: Ryo  2: Kix  4: Ripper  200: Enemy
+            listAgentsAvoid = [3, 5] # 3: Llama  5: Buzz
+            if objetiveNode.typeAgentIn in listAgentsAvoid:
+                pass
+            elif objetiveNode.typeAgentIn in listAgentsAttack :
+                connection = Connection(cellFrom=playerNode.cell, cellTo=objetiveCell, cost=0, usedSkill=True, idSkill=idDirectAttack)
+                listTargetsConnections.append(connection)
+            else:
+                print(f"UNKNOWN AGENT!! more info node: {objetiveNode} id: {objetiveNode.typeAgentIn}")
+    
+    return listTargetsConnections
+    
