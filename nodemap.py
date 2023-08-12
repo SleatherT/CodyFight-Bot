@@ -325,7 +325,7 @@ class Graph():
                     self.bidirectionalTileActive_flag = True
         
         # Creating connection between bidirectional cells and saving them
-        if self.bidirectionalTileActive_flag is True:
+        if self.bidirectionalTileActive_flag is True and len(self.listIdBidirectionals) == 2:
             firstNode = dictNodes[self.listIdBidirectionals[0]]
             secondNode = dictNodes[self.listIdBidirectionals[1]]
             
