@@ -1,9 +1,9 @@
 from client import Client
-from strategy import strategyPath
+from strategy import strategyPath, strategyAttack
 from nodemap import getMap
 import time
 
-player = Client(ckey="your key")
+player = Client(ckey="0c54fc-865616-a96319-3b749f")
 
 def loopGames(player):
     CountMatchs = 0
@@ -16,17 +16,27 @@ def loopGames(player):
         if CountMatchs > 1000:
             print(f"1000 Matchs Played! Times Won:{CountWins} Times Lossed:{CountLosses}")
         elif idStatus == 1 and playerTurn_flag:
+            time.sleep(1)
             jsonResponse = player.getJsonResponse()
             goalNode = strategyPath(jsonResponse)
+            listTargetsConnections = strategyAttack(jsonResponse)
             print(getMap(jsonResponse))
             print(goalNode.pathConnections)
             
+            # First the execution of the attacks
+            for targetConnection in listTargetsConnections:
+                coords = targetConnection.positionTo
+                idSkill = targetConnection.idSkill
+                player.cast_skill(coords["x"], coords["y"], idSkill)
+                
             connection = goalNode.pathConnections[0]
             coords = connection.positionTo
             x_coord = coords["x"]
             y_coord = coords["y"]
             
+            
             skillConfirmation = connection.usedSkill
+            
             if skillConfirmation is True:
                 idSkill = connection.idSkill
                 sJsonResponse = player.cast_skill(x_coord, y_coord, idSkill)
