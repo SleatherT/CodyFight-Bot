@@ -366,10 +366,10 @@ class Graph():
                 ryoSorrounded_flag = True
                 self.listIdAgentsSorrounding.append(connection.toNode)
                 tmpList.append(connection)
-            if nextNode.type == 12:
+            elif nextNode.type == 12:
                 ryoCloseToPit = True
                 tmpList.append(connection)
-            if nextNode.type == 14:
+            elif nextNode.type == 14:
                 ryoCloseToMine = True
                 tmpList.append(connection)
             
