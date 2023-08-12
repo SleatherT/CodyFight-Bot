@@ -1,5 +1,5 @@
 from client import Client
-from strategy import strategyPath
+from strategy import strategyPath, strategyAttack
 from nodemap import getMap
 import time
 
@@ -18,8 +18,15 @@ def loopGames(player):
         elif idStatus == 1 and playerTurn_flag:
             jsonResponse = player.getJsonResponse()
             goalNode = strategyPath(jsonResponse)
+            listTargetsConnections = strategyAttack(jsonResponse)
             print(getMap(jsonResponse))
             print(goalNode.pathConnections)
+            
+            # First the execution of the attacks
+            for targetConnection in listTargetsConnections:
+                coords = targetConnection.positionTo
+                idSkill = targetConnection.idSkill
+                player.cast_skill(coords["x"], coords["y"], idSkill)
             
             connection = goalNode.pathConnections[0]
             coords = connection.positionTo
