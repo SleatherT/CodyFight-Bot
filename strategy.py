@@ -135,6 +135,7 @@ def strategyAttack(jsonResponse):
             
     if directAttack_flag:
         listNodesToConnect = jsonResponse["players"]["bearer"]["skills"][skillPositionDirectAttack]["possible_targets"]
+        connection = None
         
         for target in listNodesToConnect:
             objetiveCell = graphObject.getCell(target)
@@ -152,4 +153,6 @@ def strategyAttack(jsonResponse):
                 print(f"UNKNOWN AGENT!! more info node: {objetiveNode} id: {objetiveNode.typeAgentIn}") 
         
         return connection
+    else:
+        return None
     
