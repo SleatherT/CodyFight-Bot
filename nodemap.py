@@ -43,6 +43,7 @@ class Node():
         self.position = self.cell["position"]
         self.config = self.cell["config"]
         self.listConnections = list()
+        self.listAgentConnections = list()
         self.dictIdNearNodes = dict()
         self.typeAgentIn = None
         
@@ -463,9 +464,15 @@ class Graph():
                 nextNode = dictNodes[connection.toNode]
                 if nextNode.typeAgentIn is not None and type(node) is not PlayerNode:
                     tmpList.append(connection)
+                    node.listAgentConnections.append(connection)
                     
             for connection in tmpList:
                 node.listConnections.remove(connection)
+    
+    def reverseDeleteAgentConnections(self):
+        for (id, node) in self.dictNodes.items():
+            for connection in node.listAgentConnections:
+                node.listConnections.append(connection)
     
     def getCell(self, position: dict) -> dict:
         x_value = position["x"]
