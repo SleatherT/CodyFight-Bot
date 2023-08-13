@@ -18,17 +18,15 @@ def loopGames(player):
         elif idStatus == 1 and playerTurn_flag:
             jsonResponse = player.getJsonResponse()
             goalNode = strategyPath(jsonResponse)
-            targetConnection = strategyAttack(jsonResponse)
+            listTargetsConnections = strategyAttack(jsonResponse)
             print(getMap(jsonResponse))
             print(goalNode.pathConnections)
             
-            # IMPROVE: First executing the attack and looping in case the attack caused the match to end, it works well but i dont like
-            # how it looks
-            if targetConnection is not None:
+            # First the execution of the attacks
+            for targetConnection in listTargetsConnections:
                 coords = targetConnection.positionTo
                 idSkill = targetConnection.idSkill
                 player.cast_skill(coords["x"], coords["y"], idSkill)
-                continue
             
             connection = goalNode.pathConnections[0]
             coords = connection.positionTo
