@@ -149,8 +149,6 @@ def strategyAttack(jsonResponse):
             elif objetiveNode.typeAgentIn in listAgentsAttack :
                 connection = Connection(cellFrom=playerNode.cell, cellTo=objetiveCell, cost=0, usedSkill=True, idSkill=idDirectAttack)
                 listTargetsConnections.append(connection)
-                # IMPROVE: Breaking after the first connection is created so the bot doesnt try to execute the same skill two or more times
-                break
             else:
                 print(f"UNKNOWN AGENT!! more info node: {objetiveNode} id: {objetiveNode.typeAgentIn}") 
     
