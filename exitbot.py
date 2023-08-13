@@ -22,11 +22,19 @@ def loopGames(player):
             print(getMap(jsonResponse))
             print(goalNode.pathConnections)
             
-            # First the execution of the attacks
+            # First the execution of the attack
+            reLoop_flag = False
             for targetConnection in listTargetsConnections:
                 coords = targetConnection.positionTo
                 idSkill = targetConnection.idSkill
                 player.cast_skill(coords["x"], coords["y"], idSkill)
+                # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
+                # this works well but i dont like how it looks
+                reLoop_flag = True
+                break
+
+            if reLoop_flag:
+                continue
             
             connection = goalNode.pathConnections[0]
             coords = connection.positionTo
