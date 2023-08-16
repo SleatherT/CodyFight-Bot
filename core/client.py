@@ -140,3 +140,24 @@ class Client():
         
     def getWinner(self):
         return self.jsonResponse["verdict"]["winner"]
+    
+    def getLife(self):
+        return self.jsonResponse["players"]["bearer"]["stats"]["hitpoints"]
+    
+    def getArmor(self):
+        return self.jsonResponse["players"]["bearer"]["stats"]["armor"]
+    
+    def getEnergy(self):
+        return self.jsonResponse["players"]["bearer"]["stats"]["energy"]
+        
+    def getSkills(self):
+        finalStr = str()
+        for skill in self.jsonResponse["players"]["bearer"]["skills"]:
+            if skill["status"] == 1:
+                finalStr = f"{finalStr}{skill['name']}   "
+            elif skill["status"] == -1:
+                finalStr = f"{finalStr}{skill['name']} Not Enough Energy   "
+            elif skill["status"] == 0:
+                finalStr = f"{finalStr}{skill['name']} In Cooldown   "
+        
+        return finalStr

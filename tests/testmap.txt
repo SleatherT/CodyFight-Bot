@@ -1,0 +1,831 @@
+{
+    "state": {
+        "id": 1322091,
+        "status": 1,
+        "mode": 0,
+        "round": 0,
+        "total_turns": 20,
+        "total_rounds": 5,
+        "max_turn_time": 60,
+        "turn_time_left": 60
+    },
+    "players": {
+        "bearer": {
+            "name": "HunterMaster",
+            "owner": "Sleather",
+            "stats": {
+                "is_alive": true,
+                "is_demolished": false,
+                "armor": 0,
+                "armor_cap": 0,
+                "hitpoints": 40,
+                "hitpoints_cap": 40,
+                "energy": 60,
+                "energy_cap": 60,
+                "movement_range": 1,
+                "movement_range_cap": 1,
+                "durability": 1885,
+                "durability_cap": 2000,
+                "is_stunned": false,
+                "stun_duration": 0
+            },
+            "codyfighter": {
+                "type": 19,
+                "name": "Preseason Rare Hunter",
+                "class": "HUNTER",
+                "rarity": "RARE"
+            },
+            "turn": 0,
+            "position": {
+                "x": 6,
+                "y": 6
+            },
+            "possible_moves": [
+                {
+                    "x": 6,
+                    "y": 6,
+                    "direction": "stay"
+                },
+                {
+                    "x": 6,
+                    "y": 5,
+                    "direction": "up"
+                },
+                {
+                    "x": 5,
+                    "y": 6,
+                    "direction": "left"
+                }
+            ],
+            "is_player_turn": true,
+            "skills": [
+                {
+                    "id": 2,
+                    "name": "Push",
+                    "type": 1,
+                    "is_native": false,
+                    "description": "Push any game agent.",
+                    "level": 0,
+                    "status": 1,
+                    "cost": 10,
+                    "cooldown": 0,
+                    "range": 1,
+                    "damage": 0,
+                    "duration": 0,
+                    "targeting_type": 0,
+                    "possible_targets": []
+                },
+                {
+                    "id": 3,
+                    "name": "Magnetic Pull",
+                    "type": 1,
+                    "is_native": true,
+                    "description": "Pulls any game agent towards the caster and deal damage to the target.",
+                    "level": 0,
+                    "status": 1,
+                    "cost": 30,
+                    "cooldown": 0,
+                    "range": 3,
+                    "damage": 5,
+                    "duration": 0,
+                    "targeting_type": 0,
+                    "possible_targets": []
+                },
+                {
+                    "id": 45,
+                    "name": "H1t",
+                    "type": 1,
+                    "is_native": false,
+                    "description": "Deal minimal damage to any game agent within the given range.",
+                    "level": 0,
+                    "status": 1,
+                    "cost": 20,
+                    "cooldown": 0,
+                    "range": 1,
+                    "damage": 5,
+                    "duration": 0,
+                    "targeting_type": 0,
+                    "possible_targets": []
+                }
+            ],
+            "score": {
+                "points": 0,
+                "ryo_count": 0,
+                "exit_count": 0,
+                "kill_count": 0,
+                "death_count": 0
+            }
+        },
+        "opponent": {
+            "name": "vinimart_bot",
+            "owner": "vinimart",
+            "stats": {
+                "is_alive": true,
+                "is_demolished": false,
+                "armor": 10,
+                "armor_cap": 10,
+                "hitpoints": 25,
+                "hitpoints_cap": 25,
+                "energy": 60,
+                "energy_cap": 60,
+                "movement_range": 1,
+                "movement_range_cap": 1,
+                "durability": 2205,
+                "durability_cap": 3000,
+                "is_stunned": false,
+                "stun_duration": 0
+            },
+            "codyfighter": {
+                "type": 24,
+                "name": "Preseason Epic Scout",
+                "class": "SCOUT",
+                "rarity": "EPIC"
+            },
+            "turn": 0,
+            "position": {
+                "x": 6,
+                "y": 6
+            },
+            "possible_moves": [
+                {
+                    "x": 6,
+                    "y": 6,
+                    "direction": "stay"
+                },
+                {
+                    "x": 6,
+                    "y": 5,
+                    "direction": "up"
+                },
+                {
+                    "x": 5,
+                    "y": 6,
+                    "direction": "left"
+                }
+            ],
+            "is_player_turn": true,
+            "skills": [
+                {
+                    "id": 7,
+                    "name": "Blink",
+                    "type": 1,
+                    "is_native": true,
+                    "description": "Blink to a location within the given range.",
+                    "level": 0,
+                    "status": 1,
+                    "cost": 35,
+                    "cooldown": 0,
+                    "range": 2,
+                    "damage": 0,
+                    "duration": 0,
+                    "targeting_type": 3,
+                    "possible_targets": [
+                        {
+                            "x": 4,
+                            "y": 6
+                        },
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 6,
+                            "y": 4
+                        },
+                        {
+                            "x": 6,
+                            "y": 5
+                        }
+                    ]
+                },
+                {
+                    "id": 17,
+                    "name": "Rush",
+                    "type": 1,
+                    "is_native": false,
+                    "description": "Rush to the target tile.",
+                    "level": 0,
+                    "status": 1,
+                    "cost": 20,
+                    "cooldown": 0,
+                    "range": 1,
+                    "damage": 0,
+                    "duration": 0,
+                    "targeting_type": 0,
+                    "possible_targets": [
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 6,
+                            "y": 5
+                        }
+                    ]
+                },
+                {
+                    "id": 19,
+                    "name": "Dash",
+                    "type": 1,
+                    "is_native": false,
+                    "description": "Move to a tile within the given range.",
+                    "level": 0,
+                    "status": 1,
+                    "cost": 20,
+                    "cooldown": 0,
+                    "range": 1,
+                    "damage": 0,
+                    "duration": 0,
+                    "targeting_type": 0,
+                    "possible_targets": [
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 6,
+                            "y": 5
+                        }
+                    ]
+                },
+                {
+                    "id": 48,
+                    "name": "Pathmaking",
+                    "type": 1,
+                    "is_native": true,
+                    "description": "Allows the caster to move 1 tile in any linear direction.",
+                    "level": 0,
+                    "status": 1,
+                    "cost": 30,
+                    "cooldown": 0,
+                    "range": 1,
+                    "damage": 0,
+                    "duration": 0,
+                    "targeting_type": 1,
+                    "possible_targets": [
+                        {
+                            "x": 5,
+                            "y": 6
+                        },
+                        {
+                            "x": 6,
+                            "y": 5
+                        }
+                    ]
+                }
+            ],
+            "score": {
+                "points": 0,
+                "ryo_count": 0,
+                "exit_count": 0,
+                "kill_count": 0,
+                "death_count": 0
+            }
+        }
+    },
+    "special_agents": [
+        {
+            "id": 0,
+            "type": 1,
+            "name": "Mr. Ryo",
+            "stats": {
+                "armor": 50,
+                "hitpoints": 50,
+                "energy": 40,
+                "movement_range": 1,
+                "movement_range_cap": 1,
+                "is_stunned": false,
+                "stun_duration": 0
+            },
+            "position": {
+                "x": 2,
+                "y": 6
+            }
+        }
+    ],
+    "map": [
+        [
+            {
+                "id": 0,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "config": []
+            },
+            {
+                "id": 1,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 0,
+                    "y": 1
+                },
+                "config": []
+            },
+            {
+                "id": 2,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 0,
+                    "y": 2
+                },
+                "config": []
+            },
+            {
+                "id": 3,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 0,
+                    "y": 3
+                },
+                "config": []
+            },
+            {
+                "id": 4,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 0,
+                    "y": 4
+                },
+                "config": []
+            },
+            {
+                "id": 5,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 0,
+                    "y": 5
+                },
+                "config": []
+            },
+            {
+                "id": 6,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 0,
+                    "y": 6
+                },
+                "config": []
+            }
+        ],
+        [
+            {
+                "id": 7,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 1,
+                    "y": 0
+                },
+                "config": []
+            },
+            {
+                "id": 8,
+                "type": 1,
+                "name": "Obstacle",
+                "position": {
+                    "x": 1,
+                    "y": 1
+                },
+                "config": []
+            },
+            {
+                "id": 9,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 1,
+                    "y": 2
+                },
+                "config": []
+            },
+            {
+                "id": 10,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 1,
+                    "y": 3
+                },
+                "config": []
+            },
+            {
+                "id": 11,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 1,
+                    "y": 4
+                },
+                "config": []
+            },
+            {
+                "id": 12,
+                "type": 4,
+                "name": "Energy Regenerator",
+                "position": {
+                    "x": 1,
+                    "y": 5
+                },
+                "config": {
+                    "is_charged": true
+                }
+            },
+            {
+                "id": 13,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 1,
+                    "y": 6
+                },
+                "config": []
+            }
+        ],
+        [
+            {
+                "id": 14,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 2,
+                    "y": 0
+                },
+                "config": []
+            },
+            {
+                "id": 15,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 2,
+                    "y": 1
+                },
+                "config": []
+            },
+            {
+                "id": 16,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 2,
+                    "y": 2
+                },
+                "config": []
+            },
+            {
+                "id": 17,
+                "type": 10,
+                "name": "Right Side Directional Slider",
+                "position": {
+                    "x": 2,
+                    "y": 3
+                },
+                "config": {
+                    "is_charged": true
+                }
+            },
+            {
+                "id": 18,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 2,
+                    "y": 4
+                },
+                "config": []
+            },
+            {
+                "id": 19,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 2,
+                    "y": 5
+                },
+                "config": []
+            },
+            {
+                "id": 20,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 2,
+                    "y": 6
+                },
+                "config": []
+            }
+        ],
+        [
+            {
+                "id": 21,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 3,
+                    "y": 0
+                },
+                "config": []
+            },
+            {
+                "id": 22,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 3,
+                    "y": 1
+                },
+                "config": []
+            },
+            {
+                "id": 23,
+                "type": 8,
+                "name": "Downwards Directional Slider",
+                "position": {
+                    "x": 3,
+                    "y": 2
+                },
+                "config": {
+                    "is_charged": true
+                }
+            },
+            {
+                "id": 24,
+                "type": 12,
+                "name": "Death Pit",
+                "position": {
+                    "x": 3,
+                    "y": 3
+                },
+                "config": {
+                    "is_charged": false
+                }
+            },
+            {
+                "id": 25,
+                "type": 7,
+                "name": "Upwards Directional Slider",
+                "position": {
+                    "x": 3,
+                    "y": 4
+                },
+                "config": {
+                    "is_charged": true
+                }
+            },
+            {
+                "id": 26,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 3,
+                    "y": 5
+                },
+                "config": []
+            },
+            {
+                "id": 27,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 3,
+                    "y": 6
+                },
+                "config": []
+            }
+        ],
+        [
+            {
+                "id": 28,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 4,
+                    "y": 0
+                },
+                "config": []
+            },
+            {
+                "id": 29,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 4,
+                    "y": 1
+                },
+                "config": []
+            },
+            {
+                "id": 30,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 4,
+                    "y": 2
+                },
+                "config": []
+            },
+            {
+                "id": 31,
+                "type": 9,
+                "name": "Left Side Directional Slider",
+                "position": {
+                    "x": 4,
+                    "y": 3
+                },
+                "config": {
+                    "is_charged": true
+                }
+            },
+            {
+                "id": 32,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 4,
+                    "y": 4
+                },
+                "config": []
+            },
+            {
+                "id": 33,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 4,
+                    "y": 5
+                },
+                "config": []
+            },
+            {
+                "id": 34,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 4,
+                    "y": 6
+                },
+                "config": []
+            }
+        ],
+        [
+            {
+                "id": 35,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 5,
+                    "y": 0
+                },
+                "config": []
+            },
+            {
+                "id": 36,
+                "type": 4,
+                "name": "Energy Regenerator",
+                "position": {
+                    "x": 5,
+                    "y": 1
+                },
+                "config": {
+                    "is_charged": true
+                }
+            },
+            {
+                "id": 37,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 5,
+                    "y": 2
+                },
+                "config": []
+            },
+            {
+                "id": 38,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 5,
+                    "y": 3
+                },
+                "config": []
+            },
+            {
+                "id": 39,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 5,
+                    "y": 4
+                },
+                "config": []
+            },
+            {
+                "id": 40,
+                "type": 1,
+                "name": "Obstacle",
+                "position": {
+                    "x": 5,
+                    "y": 5
+                },
+                "config": []
+            },
+            {
+                "id": 41,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 5,
+                    "y": 6
+                },
+                "config": []
+            }
+        ],
+        [
+            {
+                "id": 42,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 6,
+                    "y": 0
+                },
+                "config": []
+            },
+            {
+                "id": 43,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 6,
+                    "y": 1
+                },
+                "config": []
+            },
+            {
+                "id": 44,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 6,
+                    "y": 2
+                },
+                "config": []
+            },
+            {
+                "id": 45,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 6,
+                    "y": 3
+                },
+                "config": []
+            },
+            {
+                "id": 46,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 6,
+                    "y": 4
+                },
+                "config": []
+            },
+            {
+                "id": 47,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 6,
+                    "y": 5
+                },
+                "config": []
+            },
+            {
+                "id": 48,
+                "type": 0,
+                "name": "Blank",
+                "position": {
+                    "x": 6,
+                    "y": 6
+                },
+                "config": []
+            }
+        ]
+    ],
+    "verdict": {
+        "context": "game-in-progress",
+        "statement": null,
+        "winner": null
+    }
+}

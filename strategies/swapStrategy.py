@@ -1,5 +1,5 @@
 # Main Classes/Functions
-from nodemap import Graph, Connection, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pre_dijkstra, getMap
+from core.nodemap import Graph, Connection, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pre_dijkstra, getMap
 
 def strategyPath(jsonResponse):
     graphObject = Graph(jsonResponse)

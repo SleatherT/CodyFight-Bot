@@ -1,6 +1,6 @@
-from client import Client
-from hunterstrategy import strategyPath, strategyAttack
-from nodemap import getMap
+from core.client import Client
+from core.nodemap import Graph, getMap
+from strategies.hunterStrategy import strategyPath, strategyAttack
 import time
 
 player = Client(ckey="your key")
@@ -17,16 +17,22 @@ def loopGames(player):
             print(f"1000 Matchs Played! Times Won:{CountWins} Times Lossed:{CountLosses}")
         elif idStatus == 1 and playerTurn_flag:
             jsonResponse = player.getJsonResponse()
+            graphObject = Graph(jsonResponse)
+            dictNodes = graphObject.dictNodes
             goalNode = strategyPath(jsonResponse)
             listTargetsConnections = strategyAttack(jsonResponse)
             print(getMap(jsonResponse))
             print(goalNode.pathConnections)
+            print(f"PLAYER LIFE : {player.getLife()}  ARMOR: {player.getArmor()} ENERGY: {player.getEnergy()}")
+            print(f"SKILLS:  {player.getSkills()}")
             
             # First the execution of the attack
             reLoop_flag = False
             for targetConnection in listTargetsConnections:
                 coords = targetConnection.positionTo
                 idSkill = targetConnection.idSkill
+                objectiveNode = dictNodes[targetConnection.toNode]
+                print(f"USING SKILL: ID = {idSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE TYPE: {objectiveNode.typeAgentIn} OBJECTIVE LIFE: {objectiveNode.totalLife}")
                 player.cast_skill(coords["x"], coords["y"], idSkill)
                 # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
                 # this works well but i dont like how it looks

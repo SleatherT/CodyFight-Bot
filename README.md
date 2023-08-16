@@ -29,29 +29,31 @@ Mac
   - Type 'python3 --version' again to confirm Python is installed
 
 # Files and Classes
-client.py contains the Client class use this to make requests to the api, each request sent responds with info that we can use, like the status of the game or if its our turn, the functions of the Client class are get_status(), create_room(), cast_skill(), move_player() and surrender(), names are self-explanatory 
+The **core** folder as his name implies, has the framework to make possible code bots. His files are:
+	- client.py contains the Client class use this to make requests to the api, each request sent responds with info that we can use, like the status of the game or if its our turn, the functions of the Client class are get_status(), create_room(), cast_skill(), move_player() and surrender(), names are self-explanatory 
+	- nodemap.py has the Graph, Node, Connection classes and the dijkstra, getMap functions, you can see his properties and get an idea of what information they hold
+The **strategies** folder has some strategies i have build to some codyfigthers:
+	- baseStrategy.py as his name says is a example of a basic strategy using the classes and data obtained from the Graph, you can use it as a point of start for your own strategy
+	- swapStrategy.py this is a more complex strategy for the Trickster codyfigther with swap
+	- hunterStrategy. build for Hunter codyfigther, in comparison to the swapStrategy the strategyAttack function is more developed here
+The **tests** folder has files to test the code:
+	- testmap.txt and tests.py, names self-explanatory
 
-nodemap.py has the Graph, Node, Connection classes and the dijkstra, getMap functions
-
-baseStrategy.py as his name says is a example of a basic strategy using the classes and data obtained from the Graph
-
-strategy.py this is a more complex strategy for the swap codyfigthers
-
-exitbot.py is the implementation of all the files mentioned to create a bot to deploy
-
-testmap.txt and tests.py are files to test that modifications on the code are not raising errors
-
-history.txt everytime we make a request to the api this file is written with the info recieved, if we found a map that cause errors or we want to test something we can copy one of the responses in the testmap.py
+Outside we have the bots
+	- swapbot.py is the implementation of all the files mentioned to create a bot to deploy using swapStrategy
+	- hunterbot.py same as exitbot using hunterStrategy
+	- history.txt everytime we make a request to the api this file is written with the info recieved, if we found a map that cause errors or we want to test something we can copy one of the responses in the testmap.py
 
 # How to start
-See the basebot.py and exitbot.py files to get an idea of how the code works
+See the baseStrategy.py and some of the bot files to get an idea of how the code works
 You are going to see that the graph has a lot of usefull info, as well as the Nodes, their info is pretty usefull if you now how to use it
 
 # Operators Supported
-For now only operators with swap skill are supported, that doesnt means that you can't use other operator, what it means is that the strategyPath() wont take into account the skill of the operator and it wont use it to reach a goal
+If you want to use a bot to avoid spending time in completing rarity missions use hunterbot if it has some skills that make damage, otherwise use swapbot.
+If you want a solid strategy for now you must create it unless you have a Hunter or a Trickster with Swap, in that case you can use the hunterbot or swapbot
 
 # Deploy bot
-To deploy the bot just edit the exitbot.py file with your ckey and execute this file
+To deploy the bot just edit the exitbot.py or hunterbot.py file with your ckey and execute this file
 ```
 player = Client(ckey="your key")
 

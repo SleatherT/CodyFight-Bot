@@ -17,6 +17,7 @@ class Connection():
         self.cost = cost
         self.usedSkill = usedSkill
         self.idSkill = idSkill
+        self.damage = None
         self.ban = ban
     
     def __repr__(self):
@@ -34,6 +35,14 @@ class Connection():
     
     def setBan(self, ban: bool) -> None:
         self.ban = ban
+    
+    def setDamage(self, damage: int) -> None:
+        self.damage = damage
+
+class SkillConnection(Connection):
+    def __init__(self, cellFrom: dict, cellTo: dict, cost=1, usedSkill=False, idSkill=None, ban=False):
+        super().__init__(cellFrom, cellTo, cost, usedSkill, idSkill, ban)
+        
 
 class Node():
     def __init__(self, cell: dict):
@@ -191,6 +200,7 @@ class BidirectionalNode(ChildNode):
 class PlayerNode(ChildNode):
     def __init__(self, node: Node):
         super().__init__(node)
+        self.totalLife = None
     
     def savePossibleMoves(self, possibleMoves: list, map: list):
         self.deleteConnections()
@@ -207,14 +217,27 @@ class PlayerNode(ChildNode):
         if len(self.pathConnections) > 1 or len(self.pathConnections) == 0:
             print("WARNING: playerNodeIsGoal function has found two connections or nothing!")
             
+    def saveStats(self, dictStats: dict):
+        armor = dictStats["armor"]
+        hitpoints = dictStats["hitpoints"]
+        
+        self.totalLife = armor + hitpoints
+        
             
 class AgentNode(ChildNode):
     def __init__(self, node: Node):
         super().__init__(node)
         self.listConnectionsCopy = list()
+        self.totalLife = None
         
     def copyListConnections(self):
         self.listConnectionsCopy = copy.deepcopy(self.listConnections)
+    
+    def saveStats(self, dictStats: dict):
+        armor = dictStats["armor"]
+        hitpoints = dictStats["hitpoints"]
+        
+        self.totalLife = armor + hitpoints
 
 # Class used in some while loops that are supossed to loop only a few times
 class InfinityDetector():
@@ -343,8 +366,8 @@ class Graph():
         self.saveNodesAndType(dictNodes)
         self.simpleSetType(self.dictNodesPure)
         
-        # Coverting the player node to a special node class with his name, and saving his possible moves from the jsonResponse, usefull when the player is in a slider,
-        # also prevents the use of invalid movements and if its chossen as the goal node, adds to his pathConnections list the stay movement to keep him there
+        # Saving player possible moves from the jsonResponse, usefull when the player is in a slider, also prevents the use of invalid movements and if its chossen 
+        # as the goal node, adds to his pathConnections list the stay movement to keep him there
         possibleMoves = self.players["bearer"]["possible_moves"]
         self.userNode.savePossibleMoves(possibleMoves, self.map)
         self.userNode.deleteInvalidConnections(listIdInvalidNodes)
@@ -407,6 +430,7 @@ class Graph():
         for agent in self.specialAgents:
             typeAgent = agent["type"]
             position = agent["position"]
+            stats = agent["stats"]
             if typeAgent == 1:
                 self.ryoCell = self.getCell(position)
             elif typeAgent == 2:
@@ -421,28 +445,37 @@ class Graph():
                 print(f"Unkown Agent!: {self.getCell(position)}")
             
             cell = self.getCell(position)
-            self.dictAgentsCells[typeAgent] = cell
+            self.dictAgentsCells[typeAgent] = {"cell": cell, "stats": stats}
             self.listIdAgents.append(cell["id"])
             
     def saveNodesAndType(self, dictNodes: dict) -> None:
         self.userNode = dictNodes[self.userCell["id"]]
         self.userNode.setTypeAgentIn(100)
+        self.userNode.saveStats(self.players["bearer"]["stats"])
         self.enemyNode = dictNodes[self.enemyCell["id"]]
         self.enemyNode.setTypeAgentIn(200)
+        self.enemyNode.saveStats(self.players["opponent"]["stats"])
         
-        for (type, cell) in self.dictAgentsCells.items():
+        for (type, info) in self.dictAgentsCells.items():
+            cell = info["cell"]
+            stats = info["stats"]
             agentNode = dictNodes[cell["id"]]
             agentNode.setTypeAgentIn(type)
             if type == 1:
                 self.ryoNode = agentNode
+                self.ryoNode.saveStats(stats)
             elif type == 2:
                 self.kixNode = agentNode
+                self.kixNode.saveStats(stats)
             elif type == 3:
                 self.llamaNode = agentNode
+                self.llamaNode.saveStats(stats)
             elif type == 4:
                 self.ripperNode = agentNode
+                self.ripperNode.saveStats(stats)
             elif type == 5:
                 self.buzzNode = agentNode
+                self.buzzNode.saveStats(stats)
             else:
                 print(f"Unkown Agent in Node!: {agentNode}")
     
@@ -452,7 +485,8 @@ class Graph():
         enemyNode = dictNodes [self.enemyCell["id"]]
         enemyNode.setTypeAgentIn(200)
         
-        for (type, cell) in self.dictAgentsCells.items():
+        for (type, info) in self.dictAgentsCells.items():
+            cell = info["cell"]
             agentNode = dictNodes[cell["id"]]
             agentNode.setTypeAgentIn(type)
         
