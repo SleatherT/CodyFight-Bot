@@ -31,22 +31,18 @@ Mac
 # Files and Classes
 
 The **core** folder as his name implies, has the framework to make possible code bots. His files are:
-
 	- client.py contains the Client class use this to make requests to the api, each request sent responds with info that we can use, like the status of the game or if its our turn, the functions of the Client class are get_status(), create_room(), cast_skill(), move_player() and surrender(), names are self-explanatory 
  	- nodemap.py has the Graph, Node, Connection classes and the dijkstra, getMap functions, you can see his properties and get an idea of what information they hold
 
 The **strategies** folder has some strategies i have build to some codyfigthers:
-
 	- baseStrategy.py as his name says is a example of a basic strategy using the classes and data obtained from the Graph, you can use it as a point of start for your own strategy
  	- swapStrategy.py this is a more complex strategy for the Trickster codyfigther with swap
   	- hunterStrategy. build for Hunter codyfigther, in comparison to the swapStrategy the strategyAttack function is more developed here
 
 The **tests** folder has files to test the code:
-
 	- testmap.txt and tests.py, names self-explanatory
 
 Outside we have the bots:
-
 	- swapbot.py is the implementation of all the files mentioned to create a bot to deploy using swapStrategy
 	- hunterbot.py same as exitbot using hunterStrategy
 	- history.txt everytime we make a request to the api this file is written with the info recieved, if we found a map that cause errors or we want to test something we can copy one of the responses in the testmap.py
