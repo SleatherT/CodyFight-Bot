@@ -59,46 +59,31 @@ def strategyAttack(jsonResponse):
     
     # This dictionary is going to be used to organize the skill we want to use first, the key is the id of the skill and the value is the priority we want to give it
     # less the number = major priority. 
+    # IMPORTANT: Make sure you add the skill and his priority, you will recieve a error if you dont
     customOrder = {27: 0,
-                    3: 1,
-                    38: 2,
-                    45:3
+                    29: 1,
+                    3: 2,
+                    38: 3,
+                    45:4
                 }
     
-    # This list is used to define which skills to prioritize, if the bot has two or more of the prioritize skills it choose the first
-    listPriorizedSkills = [27, 38]
-    listPriorizedSkills.reverse()
+    # This variable is used to define which skill to prioritize, if you dont want to prioritized any skill put a random number 
+    idPrioritizedSkill = 27
+    
+    # The listIdDamageSkills is a list with the skills we want the bot to execute
+    listIdDamageSkills = [38, 45, 27, 3, 29] # 2: Push  45: Hit  3: Magnetic Pull 27: Blade Strike  29: Laser Blast  38: Direct Attack  
     
     Count = 0
     # Here we add the information of the skill we want to execute to a dictionary
     for skill in listskills:
-        # 2: Push  45: Hit  3: Magnetic Pull 27: Blade Strike
-        if skill["id"] == 38 and skill["status"] == 1:
-            keyName = "directAttack"
-            idDirectAttack = 38
-            skillPositionDirectAttack = Count
-            dictSkills[keyName] = {"idSkill": idDirectAttack, "skillPosition": skillPositionDirectAttack, "damage": skill["damage"]}
-            
-        elif skill["id"] == 45 and skill["status"] == 1:
-            keyName = "hit"
-            idHit = 45
-            skillPositionHit = Count
-            dictSkills[keyName] = {"idSkill": idHit, "skillPosition": skillPositionHit, "damage": skill["damage"]}
-        
-        elif skill["id"] == 27 and skill["status"] == 1:
-            keyName = "blade"
-            idBlade = 27
-            skillPositionBlade = Count
-            dictSkills[keyName] = {"idSkill": idBlade, "skillPosition": skillPositionBlade, "damage": skill["damage"]}
-        
-        elif skill["id"] == 3 and skill["status"] == 1:
-            keyName = "pull"
-            idPull = 3
-            skillPositionPull = Count
-            dictSkills[keyName] = {"idSkill": idPull, "skillPosition": skillPositionPull, "damage": skill["damage"]}
+        if skill["id"] in listIdDamageSkills and skill["status"] == 1:
+            keyName = skill["name"]
+            idSkill = skill["id"]
+            skillPosition = Count
+            dictSkills[keyName] = {"idSkill": idSkill, "skillPosition": skillPosition, "damage": skill["damage"]}
         
         # Here we choose a skill to prioritize, this will make the bot hoard energy to use this skill unless any skill would eliminate any nearby agent
-        if skill["id"] in listPriorizedSkills:
+        if skill["id"] == idPrioritizedSkill:
             dictPrioritizedSkill = skill
         
         Count = Count + 1
