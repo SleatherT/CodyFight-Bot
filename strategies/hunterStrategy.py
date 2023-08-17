@@ -169,7 +169,9 @@ def strategyAttack(jsonResponse):
     if objetiveNode is not None and dictPrioritizedSkill is not None:
         # Here we check if the prioritized skill is in cooldown or not
         if dictPrioritizedSkill["status"] == 1: # Status: 1 = Avalible tu use, -1 = Not enough energy to use, 0 = In cooldown
-            customOrder[skill["id"]] = 0
+            for skillConnection in listTargetsConnections:
+                if skillConnection.idSkill == dictPrioritizedSkill["id"]:
+                    return [skillConnection]
         # If there is not energy to use it hoard energy so we reset the listTargetsConnections
         elif dictPrioritizedSkill["status"] == -1:
             listTargetsConnections = list()
