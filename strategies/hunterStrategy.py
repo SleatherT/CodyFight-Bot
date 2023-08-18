@@ -80,7 +80,7 @@ def strategyAttack(jsonResponse):
             keyName = skill["name"]
             idSkill = skill["id"]
             skillPosition = Count
-            dictSkills[keyName] = {"idSkill": idSkill, "skillPosition": skillPosition, "damage": skill["damage"]}
+            dictSkills[keyName] = {"idSkill": idSkill, "skillPosition": skillPosition, "damage": skill["damage"], "energy": skill["cost"]}
         
         # Here we choose a skill to prioritize, this will make the bot hoard energy to use this skill unless any skill would eliminate any nearby agent
         if skill["id"] == idPrioritizedSkill:
@@ -106,7 +106,7 @@ def strategyAttack(jsonResponse):
             if objetiveNode.typeAgentIn in listAgentsAvoid:
                 pass
             elif objetiveNode.typeAgentIn in listAgentsAttack :
-                connection = Connection(cellFrom=playerNode.cell, cellTo=objetiveCell, cost=0, usedSkill=True, idSkill=infoSkill["idSkill"])
+                connection = Connection(cellFrom=playerNode.cell, cellTo=objetiveCell, cost=infoSkill["energy"], usedSkill=True, idSkill=infoSkill["idSkill"])
                 connection.setDamage(infoSkill["damage"])
                 listTargetsConnections.append(connection)
                 
@@ -166,7 +166,7 @@ def strategyAttack(jsonResponse):
             playerEnergy = jsonResponse["players"]["bearer"]["stats"]["energy"]
             tmpList = list()
             for skillConnection in listTargetsConnections:
-                energyLeft = dictPrioritizedSkill["cost"] + playerEnergy - skillConnection.damage
+                energyLeft = dictPrioritizedSkill["cost"] + playerEnergy - skillConnection.cost
                 if energyLeft >= dictPrioritizedSkill["cost"]:
                     pass
                 else:
