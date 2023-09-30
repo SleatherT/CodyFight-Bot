@@ -36,23 +36,23 @@ def strategyPath(jsonResponse):
         listIdGoals.append(connection.toNode)
     
     # Movement Skills 
-    
-    # Double Time
-    # If Double Time is available to use, it will use it, no restrictions of energy for now
     # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
-    doubleTime_flag = False
+    
+    # Add Here the id of the skills
+    listIdMovementSkills = [28] # 28: Double Time
+    
+    # If any movement skill is available to use, it will use it, no restrictions of energy for now
+    
     listskills = graphObject.players["bearer"]["skills"]
     for skill in listskills:
-        if skill["id"] == 28 and skill["status"] == 1:
-            doubleTime_flag = True
-            idDoubleTime = 28
-            doubleTimeObjectives = skill["possible_targets"]
-    
-    if doubleTime_flag:
-        for nextCellCoord in doubleTimeObjectives:
-            nextCell = graphObject.getCell(nextCellCoord)
-            connection = Connection(cellFrom=playerNode.cell, cellTo=nextCell, cost=0, usedSkill=True, idSkill=idDoubleTime)
-            playerNode.listConnections.append(connection)
+        if skill["id"] in listIdMovementSkills and skill["status"] == 1:
+            idSkill = skill["id"]
+            skillObjectives = skill["possible_targets"]
+            
+            for nextCellCoord in skillObjectives:
+                nextCell = graphObject.getCell(nextCellCoord)
+                connection = Connection(cellFrom=playerNode.cell, cellTo=nextCell, cost=0, usedSkill=True, idSkill=idSkill)
+                playerNode.listConnections.append(connection)
     
     # And that should be all for now, "life awareness" is other think i want to add but i want to see first if it would help
     
@@ -82,7 +82,7 @@ def strategyAttack(jsonResponse):
                     3: 2,
                     38: 3,
                     45: 4,
-                    50: 5
+                    50: 1
                 }
     
     # This variable is used to define which skill to prioritize, if you dont want to prioritized any skill put a random number 
@@ -156,7 +156,7 @@ def strategyAttack(jsonResponse):
         # Removing the targets connections that doesnt point to this agent with less life
         tmpList = list()
         for skillConnection in listTargetsConnections:
-            if dictNodes[skillConnection.toNode].typeAgentIn == agentNode.typeAgentIn:
+            if dictNodes[skillConnection.toNode].typeAgentIn == objetiveNode.typeAgentIn:
                 continue
             else:
                 tmpList.append(skillConnection)
