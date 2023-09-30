@@ -35,7 +35,24 @@ def strategyPath(jsonResponse):
     for connection in enemyNode.listConnections:
         listIdGoals.append(connection.toNode)
     
+    # Movement Skills 
     
+    # Double Time
+    # If Double Time is available to use, it will use it, no restrictions of energy for now
+    # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
+    doubleTime_flag = False
+    listskills = graphObject.players["bearer"]["skills"]
+    for skill in listskills:
+        if skill["id"] == 28 and skill["status"] == 1:
+            doubleTime_flag = True
+            idDoubleTime = 28
+            doubleTimeObjectives = skill["possible_targets"]
+    
+    if doubleTime_flag:
+        for nextCellCoord in doubleTimeObjectives:
+            nextCell = graphObject.getCell(nextCellCoord)
+            connection = Connection(cellFrom=playerNode.cell, cellTo=nextCell, cost=0, usedSkill=True, idSkill=idDoubleTime)
+            playerNode.listConnections.append(connection)
     
     # And that should be all for now, "life awareness" is other think i want to add but i want to see first if it would help
     
@@ -64,14 +81,15 @@ def strategyAttack(jsonResponse):
                     29: 1,
                     3: 2,
                     38: 3,
-                    45:4
+                    45: 4,
+                    50: 5
                 }
     
     # This variable is used to define which skill to prioritize, if you dont want to prioritized any skill put a random number 
     idPrioritizedSkill = 27
     
     # The listIdDamageSkills is a list with the skills we want the bot to execute
-    listIdDamageSkills = [38, 45, 27, 3, 29] # 2: Push  45: Hit  3: Magnetic Pull 27: Blade Strike  29: Laser Blast  38: Direct Attack  
+    listIdDamageSkills = [38, 45, 27, 3, 29, 50] # 2: Push  45: Hit  3: Magnetic Pull 27: Blade Strike  29: Laser Blast  38: Direct Attack  50: Detain
     
     Count = 0
     # Here we add the information of the skill we want to execute to a dictionary

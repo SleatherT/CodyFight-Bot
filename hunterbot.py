@@ -49,6 +49,7 @@ def loopGames(player):
             
             skillConfirmation = connection.usedSkill
             if skillConfirmation is True:
+                print(f"USING MOVEMENT SKILL: ID = {connection.idSkill}")
                 idSkill = connection.idSkill
                 sJsonResponse = player.cast_skill(x_coord, y_coord, idSkill)
             else:
