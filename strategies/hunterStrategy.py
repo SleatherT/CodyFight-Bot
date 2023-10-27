@@ -51,7 +51,7 @@ def strategyPath(jsonResponse):
             for nextCellCoord in skillObjectives:
                 nextCell = graphObject.getCell(nextCellCoord)
                 nextNode = graphObject.getNode(nextCell["id"])
-                connection = MovementSkill(nodeFrom=playerNode, nodeTo=nextNode, infoSkill=skill)
+                connection = MovementSkill(nodeFrom=playerNode, nodeTo=nextNode, infoSkill=skill, cost=0)
                 playerNode.listConnections.append(connection)
     
     # And that should be all for now, "life awareness" is other think i want to add but i want to see first if it would help
@@ -107,8 +107,8 @@ def strategyAttack(jsonResponse):
     
     # The rest of the code does the verifications, you dont need to add anything
     # Here we check what nearby agents we want to attack, attacking llama is a no no
-    listAgentsAttack = [1, 2, 200] # 1: Ryo  2: Kix  4: Ripper  200: Enemy
-    listAgentsAvoid = [3, 4, 5] # 3: Llama  5: Buzz
+    listAgentsAttack = [2, 200] # 2: Kix  4: Ripper  200: Enemy
+    listAgentsAvoid = [1, 3, 4, 5] # 1: Ryo 3: Llama  5: Buzz
     
     listAgentsNearby = list()
     
@@ -181,7 +181,7 @@ def strategyAttack(jsonResponse):
             playerEnergy = jsonResponse["players"]["bearer"]["stats"]["energy"]
             tmpList = list()
             for skillConnection in listTargetsConnections:
-                energyLeft = dictPrioritizedSkill["cost"] + playerEnergy - skillConnection.cost
+                energyLeft = dictPrioritizedSkill["cost"] + playerEnergy - skillConnection.castCost
                 if energyLeft >= dictPrioritizedSkill["cost"]:
                     pass
                 else:
