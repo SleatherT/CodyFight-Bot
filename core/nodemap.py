@@ -743,7 +743,6 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
     listIdMovementSkillsBan = [28]
     
     if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
-        print("AAAAAAAAAAA", nodeGoal.pathConnections[0])
         nodeGoal.pathConnections[0].setBan(True)
         nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
     
