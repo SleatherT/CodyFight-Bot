@@ -1,5 +1,5 @@
 # Main Classes/Functions
-from core.nodemap import Graph, Connection, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pre_dijkstra, getMap
+from core.nodemap import Graph, Connection, AttackSKill, MovementSkill, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pre_dijkstra, getMap
 
 def strategyPath(jsonResponse):
     graphObject = Graph(jsonResponse)
@@ -46,12 +46,12 @@ def strategyPath(jsonResponse):
     listskills = graphObject.players["bearer"]["skills"]
     for skill in listskills:
         if skill["id"] in listIdMovementSkills and skill["status"] == 1:
-            idSkill = skill["id"]
             skillObjectives = skill["possible_targets"]
             
             for nextCellCoord in skillObjectives:
                 nextCell = graphObject.getCell(nextCellCoord)
-                connection = Connection(cellFrom=playerNode.cell, cellTo=nextCell, cost=0, usedSkill=True, idSkill=idSkill)
+                nextNode = graphObject.getNode(nextCell["id"])
+                connection = MovementSkill(nodeFrom=playerNode, nodeTo=nextNode, infoSkill=skill)
                 playerNode.listConnections.append(connection)
     
     # And that should be all for now, "life awareness" is other think i want to add but i want to see first if it would help
@@ -96,9 +96,8 @@ def strategyAttack(jsonResponse):
     for skill in listskills:
         if skill["id"] in listIdDamageSkills and skill["status"] == 1:
             keyName = skill["name"]
-            idSkill = skill["id"]
             skillPosition = Count
-            dictSkills[keyName] = {"idSkill": idSkill, "skillPosition": skillPosition, "damage": skill["damage"], "energy": skill["cost"]}
+            dictSkills[keyName] = {"skillPosition": skillPosition, "dictSkill": skill}
         
         # Here we choose a skill to prioritize, this will make the bot hoard energy to use this skill unless any skill would eliminate any nearby agent
         if skill["id"] == idPrioritizedSkill:
@@ -124,8 +123,7 @@ def strategyAttack(jsonResponse):
             if objetiveNode.typeAgentIn in listAgentsAvoid:
                 pass
             elif objetiveNode.typeAgentIn in listAgentsAttack :
-                connection = Connection(cellFrom=playerNode.cell, cellTo=objetiveCell, cost=infoSkill["energy"], usedSkill=True, idSkill=infoSkill["idSkill"])
-                connection.setDamage(infoSkill["damage"])
+                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
                 listTargetsConnections.append(connection)
                 
                 listAgentsNearby.append(objetiveNode)
@@ -135,9 +133,8 @@ def strategyAttack(jsonResponse):
     
     # Checking if any avalible skill would kill any close agent, return the skillConnection if True
     for skillConnection in listTargetsConnections:
-        for agentNode in listAgentsNearby:
-            if skillConnection.damage >= agentNode.totalLife:
-                return [skillConnection]
+        if skillConnection.killConfirmation is True:
+            return [skillConnection]
     
     objetiveNode = None
     # Checking the agent with less life (if there is more of two agents to attack)
@@ -174,7 +171,7 @@ def strategyAttack(jsonResponse):
         if dictPrioritizedSkill["status"] == 1: # Status: 1 = Avalible tu use, -1 = Not enough energy to use, 0 = In cooldown
             for skillConnection in listTargetsConnections:
                 if skillConnection.idSkill == dictPrioritizedSkill["id"]:
-                    return [skillConnection]
+                    return [skillConnection] # FIX: Returning right away the prioritized skill is okay if its possible to use always (if it has a big range), otherwise...
         # If there is not energy to use it hoard energy so we reset the listTargetsConnections
         elif dictPrioritizedSkill["status"] == -1:
             listTargetsConnections = list()

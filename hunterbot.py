@@ -3,7 +3,7 @@ from core.nodemap import Graph, getMap
 from strategies.hunterStrategy import strategyPath, strategyAttack
 import time
 
-player = Client(ckey="your key")
+player = Client(ckey="your_key")
 
 def loopGames(player):
     CountMatchs = 0
@@ -32,7 +32,7 @@ def loopGames(player):
                 coords = targetConnection.positionTo
                 idSkill = targetConnection.idSkill
                 objectiveNode = dictNodes[targetConnection.toNode]
-                print(f"USING SKILL: ID = {idSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE TYPE: {objectiveNode.typeAgentIn} OBJECTIVE LIFE: {objectiveNode.totalLife}")
+                print(f"ATTACKING: {targetConnection.nameSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE: {objectiveNode.nameAgent} OBJECTIVE LIFE: {objectiveNode.totalLife}")
                 player.cast_skill(coords["x"], coords["y"], idSkill)
                 # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
                 # this works well but i dont like how it looks
@@ -49,7 +49,7 @@ def loopGames(player):
             
             skillConfirmation = connection.usedSkill
             if skillConfirmation is True:
-                print(f"USING MOVEMENT SKILL: ID = {connection.idSkill}")
+                print(f"USING MOVEMENT SKILL: {connection.nameSkill}")
                 idSkill = connection.idSkill
                 sJsonResponse = player.cast_skill(x_coord, y_coord, idSkill)
             else:

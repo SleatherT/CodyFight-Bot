@@ -8,6 +8,10 @@ import copy
 
 class Connection():
     def __init__(self, cellFrom: dict, cellTo: dict, cost=1, usedSkill=False, idSkill=None, ban=False):
+    # INFO: After separating the types of connections (attack, movement...), usedSkill and idSkill variables are not longer need it, but can maybe be still
+    # usefull in some cases to check if a connection is a skill connection instead of making reference to his class?
+        self.nodeFrom = None
+        self.nodeTo = None
         self.fromNode = cellFrom["id"]
         self.typeFromNode = cellFrom["type"]
         self.positionFrom = cellFrom["position"]
@@ -38,11 +42,17 @@ class Connection():
     
     def setDamage(self, damage: int) -> None:
         self.damage = damage
-
-class SkillConnection(Connection):
-    def __init__(self, cellFrom: dict, cellTo: dict, cost=1, usedSkill=False, idSkill=None, ban=False):
-        super().__init__(cellFrom, cellTo, cost, usedSkill, idSkill, ban)
+    
+    @classmethod
+    def initWithNodes(cls, nodeFrom, nodeTo, cost=1, usedSkill=False, idSkill=None, ban=False):
+        cellFrom = nodeFrom.cell
+        cellTo = nodeTo.cell
+        clsObj = cls(cellFrom, cellTo, cost, usedSkill, idSkill, ban)
+        clsObj.nodeFrom = nodeFrom
+        clsObj.nodeTo = nodeTo
         
+        return clsObj
+
 
 class Node():
     def __init__(self, cell: dict):
@@ -128,6 +138,52 @@ class Node():
         self.pathConnections = list()
         self.costToReach = None
         
+# Complex Connections
+# These connections can be created with nodes, as his name implies "nodeFrom", but it can also be created with cells, like a normal connnection but depending of
+# the class of connection it could throw an error if depends of the data nodes (like AttackSkill)
+
+class SkillConnection(Connection):
+    def __init__(self, nodeFrom, nodeTo, infoSkill: dict, cost=1, usedSkill=True, idSkill=None, ban=False):
+        if type(nodeFrom) is dict and type(nodeTo) is dict:
+            super().__init__(nodeFrom, nodeTo, cost, usedSkill, idSkill, ban)
+        elif isinstance(nodeFrom, Node) and isinstance(nodeTo, Node):
+            super().__init__(nodeFrom.cell, nodeTo.cell, cost, usedSkill, idSkill, ban)
+            self.nodeFrom = nodeFrom
+            self.nodeTo = nodeTo
+        else:
+            raise ValueError("Type of Nodes/Cells is wrong, please check those values")
+        
+        self.infoSkill = infoSkill
+        self.idSkill = infoSkill["id"]
+        self.nameSkill = infoSkill["name"]
+        self.cost = infoSkill["cost"]
+
+
+class MovementSkill(SkillConnection):
+    def __init__(self, nodeFrom, nodeTo, infoSkill: dict, cost=1, usedSkill=True, idSkill=None, ban=False):
+        super().__init__(nodeFrom, nodeTo, infoSkill, cost, usedSkill, idSkill, ban)
+
+
+class AttackSKill(SkillConnection):
+    def __init__(self, nodeFrom, nodeTo, infoSkill: dict, cost=1, usedSkill=True, idSkill=None, ban=False):
+        super().__init__(nodeFrom, nodeTo, infoSkill, cost, usedSkill, idSkill, ban)
+        self.damage = self.infoSkill["damage"]
+        self.killConfirmation = False
+        if self.damage >= self.nodeTo.totalLife:
+            self.killConfirmation = True
+    
+    def __repr__(self):
+        baseStr = f"#{self.fromNode}-{self.nodeFrom.nameAgent}--{self.cost}--{self.nodeTo.nameAgent}->{self.toNode} SKILL: {self.nameSkill}"
+        
+        if self.killConfirmation is True:
+            baseStr = f"{baseStr} KILL!!"
+        if self.ban:
+            baseStr = f"{baseStr} BANNED"
+        baseStr = f"{baseStr}#"
+        
+        return baseStr
+
+# Complex Nodes
 
 class ChildNode(Node):
     def __init__(self, node: Node):
@@ -218,10 +274,11 @@ class PlayerNode(ChildNode):
             print("WARNING: playerNodeIsGoal function has found two connections or nothing!")
             
     def saveStats(self, dictStats: dict):
-        armor = dictStats["armor"]
-        hitpoints = dictStats["hitpoints"]
+        self.nameAgent = dictStats["name"]
+        self.armor = dictStats["stats"]["armor"]
+        self.hitpoints = dictStats["stats"]["hitpoints"]
         
-        self.totalLife = armor + hitpoints
+        self.totalLife = self.armor + self.hitpoints
         
             
 class AgentNode(ChildNode):
@@ -234,10 +291,11 @@ class AgentNode(ChildNode):
         self.listConnectionsCopy = copy.deepcopy(self.listConnections)
     
     def saveStats(self, dictStats: dict):
-        armor = dictStats["armor"]
-        hitpoints = dictStats["hitpoints"]
+        self.nameAgent = dictStats["name"]
+        self.armor = dictStats["stats"]["armor"]
+        self.hitpoints = dictStats["stats"]["hitpoints"]
         
-        self.totalLife = armor + hitpoints
+        self.totalLife = self.armor + self.hitpoints
 
 # Class used in some while loops that are supossed to loop only a few times
 class InfinityDetector():
@@ -430,7 +488,7 @@ class Graph():
         for agent in self.specialAgents:
             typeAgent = agent["type"]
             position = agent["position"]
-            stats = agent["stats"]
+            stats = agent
             if typeAgent == 1:
                 self.ryoCell = self.getCell(position)
             elif typeAgent == 2:
@@ -451,10 +509,10 @@ class Graph():
     def saveNodesAndType(self, dictNodes: dict) -> None:
         self.userNode = dictNodes[self.userCell["id"]]
         self.userNode.setTypeAgentIn(100)
-        self.userNode.saveStats(self.players["bearer"]["stats"])
+        self.userNode.saveStats(self.players["bearer"])
         self.enemyNode = dictNodes[self.enemyCell["id"]]
         self.enemyNode.setTypeAgentIn(200)
-        self.enemyNode.saveStats(self.players["opponent"]["stats"])
+        self.enemyNode.saveStats(self.players["opponent"])
         
         for (type, info) in self.dictAgentsCells.items():
             cell = info["cell"]
@@ -508,12 +566,16 @@ class Graph():
             for connection in node.listAgentConnections:
                 node.listConnections.append(connection)
     
+    # getCell() uses the x and y value (position), and returns the cell
     def getCell(self, position: dict) -> dict:
         x_value = position["x"]
         y_value= position["y"]
         cell = self.map[x_value][y_value]
         return cell
-        
+    
+    # getNode() instead uses only the id of the node to retrive it from the dictNodes
+    def getNode(self, idNode: int) -> Node:
+        return self.dictNodes[idNode]
 
 def getCell(position: dict, map:list) -> dict:
     x_value = position["x"]
@@ -672,6 +734,16 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
                 break
             else:
                 deleteConnectionsThatPointsToThisNode(idDeathNode, dictNodesCopy)
+    
+    # Casting skill precaution (Uses previous nodeGoal value generated)
+    # If the objective is 1 cell away and a skill will be used to reach it, it will ban this connection skill so it doesnt use it and it uses the normal move
+    # IMPROVE: To ban, the id of the skill is connection is used, and is added here, would be better to use the list passed from the strategy code, but how?,
+    # problems or more likely the not execution of this code are in the future if the id's are changed
+    listIdMovementSkillsBan = [28]
+    
+    if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
+        nodeGoal.pathConnections[0].setBan(True)
+        nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
     
     return nodeGoal
 
