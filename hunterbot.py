@@ -3,7 +3,7 @@ from core.nodemap import Graph, getMap
 from strategies.hunterStrategy import strategyPath, strategyAttack
 import time
 
-player = Client(ckey="your_key")
+player = Client(ckey="your key")
 
 def loopGames(player):
     CountMatchs = 0
