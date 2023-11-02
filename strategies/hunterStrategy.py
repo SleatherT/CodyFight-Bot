@@ -20,7 +20,8 @@ def strategyPath(jsonResponse):
     # want to eliminate
     
     # If we get close to an agent his connection to our node gets deleted so using the listConnections of the agent doesnt work in this case, this is done by the Graph
-    # with the purpose of creating a "logic" map of nodes but we can reverse it with the new function i added reverseDeleteAgentConnections()
+    # with the purpose of creating a "logic" map of nodes but we can reverse it with the new function i added reverseDeleteAgentConnections() to keep the bot in the place
+    # FIX: reverseDeleteAgentConnections() destroys this logic map so it would be better if we avoid using this
     
     graphObject.reverseDeleteAgentConnections()
     
