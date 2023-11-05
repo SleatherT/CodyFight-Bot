@@ -22,7 +22,8 @@ def strategyPath(jsonResponse):
     # If we get close to an agent his connection to our node gets deleted so using the listConnections of the agent doesnt work in this case, this is done by the Graph
     # with the purpose of creating a "logic" map of nodes but we can reverse it with the new function i added reverseDeleteAgentConnections()
     
-    graphObject.reverseDeleteAgentConnections()
+    #Suspending this until a error caused by this is fixed
+    #graphObject.reverseDeleteAgentConnections()
     
     ryoTrapped_flag = graphObject.ryoTrapped_flag
     if ryoTrapped_flag:
