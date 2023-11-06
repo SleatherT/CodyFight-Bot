@@ -23,8 +23,8 @@ def strategyPath(jsonResponse):
     # with the purpose of creating a "logic" map of nodes but we can reverse it with the new function i added reverseDeleteAgentConnections() to keep the bot in the place
     # FIX: reverseDeleteAgentConnections() destroys this logic map so it would be better if we avoid using this
     
-    # Temporarily suspended until an error caused by this is corrected
-    # graphObject.reverseDeleteAgentConnections()
+    #Suspending this until a error caused by this is fixed
+    #graphObject.reverseDeleteAgentConnections()
     
     ryoTrapped_flag = graphObject.ryoTrapped_flag
     if ryoTrapped_flag:
