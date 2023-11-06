@@ -9,6 +9,9 @@ class BadRequest(Exception):
         self.body = urllibError.read().decode("utf-8")
         super().__init__(f"Bad request sended to the api, check the parameters are correct\nApi response: {self.body}")
 
+class ConnectionError(Exception):
+    def __init__(self, urllibError):
+        super.__init__(f"A urllib.error.URLError has ocurred, details: {urllibError}")
 
 class FlowError(Exception):
     def __init__(self, message):
@@ -24,10 +27,21 @@ def make_request(url, method_api, data_to_encode):
     request = urllib.request.Request(url, method=method_api)
     request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3')
     
-    try:
-        response = urllib.request.urlopen(request)
-    except urllib.error.HTTPError as e:
-        raise BadRequest(e)
+    rTimes = 9
+    for n in range(rTimes):
+        try:
+            response = urllib.request.urlopen(request)
+        except urllib.error.HTTPError as e:
+            raise BadRequest(e)
+        # Testing except block for connection errors
+        except urllib.error.URLError as e:
+            print("WARNING: Opening the url of the api failed, this may be caused by connection issues or the url is invalid, waiting and sending again the request!")
+            time.sleep(5)
+            if n < rTimes - 1:
+                continue
+            else:
+                raise ConnectionError(e)
+        break
     
     response_data = response.read()
     decoded = response_data.decode("utf-8")
