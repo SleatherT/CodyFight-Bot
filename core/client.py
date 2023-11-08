@@ -34,8 +34,12 @@ def make_request(url, method_api, data_to_encode):
         try:
             response = urllib.request.urlopen(request)
         except urllib.error.HTTPError as e:
+            # Testing server errors handling
             if e.code >= 500:
                 errMsg = f"\nWARNING: SERVER ERROR, waiting and sending again the request"
+                current_time = datetime.datetime.now()
+                print(errMsg)
+                fhandlerLogs.write(f"{current_time}{errMsg}")
                 time.sleep(5),
                 if n < rTimes - 1:
                     continue
