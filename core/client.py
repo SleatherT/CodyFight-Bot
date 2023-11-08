@@ -1,8 +1,10 @@
 import urllib.request, urllib.parse, urllib.error
 import json
 import time
+import datetime
 
 fhandler = open("history.txt", "w")
+fhandlerLogs = open("connection_errors.txt", "w")
 
 class BadRequest(Exception):
     def __init__(self, urllibError):
@@ -11,7 +13,7 @@ class BadRequest(Exception):
 
 class ConnectionError(Exception):
     def __init__(self, urllibError):
-        super.__init__(f"A urllib.error.URLError has ocurred, details: {urllibError}")
+        super.__init__(f"A urllib.error.URLError has ocurred and it was not possible to resolve it, details: {urllibError}")
 
 class FlowError(Exception):
     def __init__(self, message):
@@ -32,10 +34,21 @@ def make_request(url, method_api, data_to_encode):
         try:
             response = urllib.request.urlopen(request)
         except urllib.error.HTTPError as e:
-            raise BadRequest(e)
+            if e.code >= 500:
+                errMsg = f"\nWARNING: SERVER ERROR, waiting and sending again the request"
+                time.sleep(5),
+                if n < rTimes - 1:
+                    continue
+                else:
+                    raise ConnectionError(e)
+            else:
+                raise BadRequest(e)
         # Testing except block for connection errors
         except urllib.error.URLError as e:
-            print("WARNING: Opening the url of the api failed, this may be caused by connection issues or the url is invalid, waiting and sending again the request!")
+            errMsg = f"\nWARNING: Opening the url of the api failed, this may be caused by connection issues or the url is invalid, waiting and sending again the request!\nDetails:{e}"
+            current_time = datetime.datetime.now()
+            print(errMsg)
+            fhandlerLogs.write(f"{current_time}{errMsg}")
             time.sleep(5)
             if n < rTimes - 1:
                 continue
