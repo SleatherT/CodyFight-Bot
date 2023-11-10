@@ -2,6 +2,7 @@ import urllib.request, urllib.parse, urllib.error
 import json
 import time
 import datetime
+import http.client
 
 fhandler = open("history.txt", "w")
 fhandlerLogs = open("connection_errors.txt", "w")
@@ -50,6 +51,17 @@ def make_request(url, method_api, data_to_encode):
         # Testing except block for connection errors
         except urllib.error.URLError as e:
             errMsg = f"\nWARNING: Opening the url of the api failed, this may be caused by connection issues or the url is invalid, waiting and sending again the request!\nDetails:{e}"
+            current_time = datetime.datetime.now()
+            print(errMsg)
+            fhandlerLogs.write(f"{current_time}{errMsg}")
+            time.sleep(5)
+            if n < rTimes - 1:
+                continue
+            else:
+                raise ConnectionError(e)
+        # Testing another server error handling
+        except http.client.RemoteDisconnected as e:
+            errMsg = f"\nWARNING: SERVER DISCONNECTED \nDetails:{e}"
             current_time = datetime.datetime.now()
             print(errMsg)
             fhandlerLogs.write(f"{current_time}{errMsg}")
