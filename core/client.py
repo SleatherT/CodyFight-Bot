@@ -14,7 +14,9 @@ class BadRequest(Exception):
 
 class ConnectionError(Exception):
     def __init__(self, urllibError):
-        super.__init__(f"A urllib.error.URLError has ocurred and it was not possible to resolve it, details: {urllibError}")
+        errMsg = f"A urllib.error.URLError has ocurred and it was not possible to resolve it, details: {urllibError}"
+        super().__init__(errMsg)
+        fhandlerLogs.write(f"{current_time}{errMsg}")
 
 class FlowError(Exception):
     def __init__(self, message):
@@ -41,7 +43,7 @@ def make_request(url, method_api, data_to_encode):
                 current_time = datetime.datetime.now()
                 print(errMsg)
                 fhandlerLogs.write(f"{current_time}{errMsg}")
-                time.sleep(5),
+                time.sleep(40),
                 if n < rTimes - 1:
                     continue
                 else:
@@ -65,7 +67,7 @@ def make_request(url, method_api, data_to_encode):
             current_time = datetime.datetime.now()
             print(errMsg)
             fhandlerLogs.write(f"{current_time}{errMsg}")
-            time.sleep(5)
+            time.sleep(40)
             if n < rTimes - 1:
                 continue
             else:
@@ -123,6 +125,7 @@ class Client():
                 
             
             print("Room Created!")
+            time.sleep(0.7)
             return info
         else:
             raise FlowError("Game already in Course")
