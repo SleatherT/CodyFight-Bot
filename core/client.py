@@ -5,6 +5,8 @@ import datetime
 import http.client
 
 fhandler = open("history.txt", "w")
+fhandler = open("history.txt", "r+")
+fhandler.write("[")
 fhandlerLogs = open("connection_errors.txt", "w")
 
 class BadRequest(Exception):
@@ -76,9 +78,21 @@ def make_request(url, method_api, data_to_encode):
     
     response_data = response.read()
     decoded = response_data.decode("utf-8")
-
+    
+    fhandler.seek(0)
+    # Deleting previous "]" character
+    fhandler.seek(0, 2)
+    pointer = fhandler.tell()
+    fhandler.seek(pointer - 1)
+    lastChar = fhandler.read()
+    if lastChar == "]":
+        fhandler.seek(pointer - 1)
+        fhandler.write(",")
+    
     json_loaded = json.loads(decoded)
-    json_dumped = json.dump(json_loaded, fhandler, indent=4)
+    json_dumped = json.dumps(json_loaded, indent=4)
+    fhandler.write(json_dumped)
+    fhandler.write("]")
     
     return json_loaded
 
@@ -89,7 +103,6 @@ class Client():
         self.ckey = ckey
         self.status = None
         self.jsonResponse = None
-        self.get_status()
     
     def get_status(self):
         to_encode = {"ckey": self.ckey}
@@ -203,6 +216,9 @@ class Client():
                 finalStr = f"{finalStr}{skill['name']}   "
             elif skill["status"] == -1:
                 finalStr = f"{finalStr}{skill['name']} Not Enough Energy   "
+            # Status -2: Skill available but without targets
+            elif skill["status"] == -2:
+                finalStr = f"{finalStr}{skill['name']}   "
             elif skill["status"] == 0:
                 finalStr = f"{finalStr}{skill['name']} In Cooldown   "
         
