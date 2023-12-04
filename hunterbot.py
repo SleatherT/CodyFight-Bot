@@ -32,7 +32,7 @@ def loopGames(player):
                 coords = targetConnection.positionTo
                 idSkill = targetConnection.idSkill
                 objectiveNode = dictNodes[targetConnection.toNode]
-                print(f"ATTACKING: {targetConnection.nameSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE: {objectiveNode.nameAgent} OBJECTIVE LIFE: {objectiveNode.totalLife}")
+                print(f"ATTACKING: {targetConnection.nameSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE: {objectiveNode.nameNode} OBJECTIVE LIFE: {objectiveNode.totalLife}")
                 player.cast_skill(coords["x"], coords["y"], idSkill)
                 # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
                 # this works well but i dont like how it looks
