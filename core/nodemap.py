@@ -57,14 +57,20 @@ class Connection():
 class Node():
     def __init__(self, cell: dict):
         self.cell = cell
-        self.id = self.cell["id"]
-        self.type = self.cell["type"]
-        self.position = self.cell["position"]
-        self.config = self.cell["config"]
+        # FIX: I just noticed this name conflict, i will fix it, some day
+        self.id = cell["id"]
+        self.typeNode = cell["type"]
+        self.position = cell["position"]
+        self.config = cell["config"]
+        self.nameNode = cell["name"]
         self.listConnections = list()
         self.listAgentConnections = list()
         self.dictIdNearNodes = dict()
         self.typeAgentIn = None
+        self.totalLife = None
+        
+        # Each Node has access to the graph, making easy the access to info about all the nodes
+        self.dictGraphNodes = None
         
         # Variables destined to use in the dijkstra algorithm
         self.costToReach = None
@@ -72,7 +78,7 @@ class Node():
         
         
     def __repr__(self):
-        return f"Node Id:{self.id} Type:{self.type} listConnections:{self.listConnections}"
+        return f"Node Id:{self.id} Type:{self.typeNode} listConnections:{self.listConnections}"
         
     def saveAdyacentConnections(self, map: list) -> None:
         x_value = self.position["x"]
@@ -124,8 +130,8 @@ class Node():
     def addConnection(self, connection: Connection) -> None:
         self.listConnections.append(connection)
         
-    def setTypeAgentIn(self, type: int) -> None:
-        self.typeAgentIn = type
+    def setTypeAgentIn(self, typeAgent: int) -> None:
+        self.typeAgentIn = typeAgent
     
     def setCostToReach(self, cost: int) -> None:
         self.costToReach = cost
@@ -137,10 +143,22 @@ class Node():
     def deletePathConnections(self):
         self.pathConnections = list()
         self.costToReach = None
-        
+    
+    def loadUniqueConfig(self):
+        pass
+    
 # Complex Connections
 # These connections can be created with nodes, as his name implies "nodeFrom", but it can also be created with cells, like a normal connnection but depending of
 # the class of connection it could throw an error if depends of the data nodes (like AttackSkill)
+
+class SkillCellConnection(Connection):
+    def __init__(self, nodeFrom, nodeTo, cost=1, usedSkill=False, idSkill=None, ban=False):
+        super().__init__(nodeFrom, nodeTo, cost, usedSkill, idSkill, ban)
+
+class BidirectionalConnection(SkillCellConnection):
+    def __init__(self, nodeFrom, nodeTo, cost=1, usedSkill=False, idSkill=None, ban=False):
+        super().__init__(nodeFrom, nodeTo, cost, usedSkill, idSkill, ban)
+
 
 class SkillConnection(Connection):
     def __init__(self, nodeFrom, nodeTo, infoSkill: dict, cost=1, usedSkill=True, idSkill=None, ban=False):
@@ -157,7 +175,6 @@ class SkillConnection(Connection):
         self.idSkill = infoSkill["id"]
         self.nameSkill = infoSkill["name"]
         self.castCost = infoSkill["cost"]
-        self.cost = cost
 
 
 class MovementSkill(SkillConnection):
@@ -169,12 +186,22 @@ class AttackSKill(SkillConnection):
     def __init__(self, nodeFrom, nodeTo, infoSkill: dict, cost=1, usedSkill=True, idSkill=None, ban=False):
         super().__init__(nodeFrom, nodeTo, infoSkill, cost, usedSkill, idSkill, ban)
         self.damage = self.infoSkill["damage"]
+        self.againstAgent = False
+        self.againstTrap = False
+        self.againstSentry = False
         self.killConfirmation = False
-        if self.damage >= self.nodeTo.totalLife:
+        
+        if type(self.nodeTo) is AgentNode:
+            self.againstAgent = True
+        elif type(self.nodeTo) is TrapNode:
+            self.againstTrap = True
+        elif type(self.nodeTo) is SentryNode:
+            self.againstSentry = True
+        if self.againstAgent and self.damage >= self.nodeTo.totalLife:
             self.killConfirmation = True
     
     def __repr__(self):
-        baseStr = f"#{self.fromNode}-{self.nodeFrom.nameAgent}--{self.cost}--{self.nodeTo.nameAgent}->{self.toNode} SKILL: {self.nameSkill}"
+        baseStr = f"#{self.fromNode}-{self.nodeFrom.nameNode}--{self.damage}--{self.nodeTo.nameNode}->{self.toNode} SKILL: {self.nameSkill}"
         
         if self.killConfirmation is True:
             baseStr = f"{baseStr} KILL!!"
@@ -187,76 +214,101 @@ class AttackSKill(SkillConnection):
 # Complex Nodes
 
 class ChildNode(Node):
-    def __init__(self, node: Node):
-        super().__init__(node.cell)
-        self.listConnections = node.listConnections
-        self.dictIdNearNodes = node.dictIdNearNodes
-        self.typeAgentIn = node.typeAgentIn
-        
-        self.costToReach = node.costToReach
-        self.pathConnections = node.pathConnections
+    def __init__(self, cell: dict):
+        super().__init__(cell)
         
 
 class SliderNode(ChildNode):
-    def __init__(self, node: Node):
-        super().__init__(node)
+    def __init__(self, cell: dict):
+        super().__init__(cell)
         self.isCharged = self.config["is_charged"]
         self.toNode = None
+    
+    def saveAdyacentConnections(self, map: list) -> None:
+        super().saveAdyacentConnections(map)
         
+        for connection in self.listConnections:
+            connection.setCost(0)
+            self.toNode = connection.toNode
+    
     def deleteInvalidConnections(self, listIds: list) -> None:
+        super().deleteInvalidConnections(listIds)
+        # Info: We asume that the listIds has the id of the nodes that are inamovible, if thats not the case in the future, the code to prevent 
+        # deleting the connection (uniqueSliderConn) must be changed
         charged = self.config["is_charged"]
             
+        dictSliderTypes = [{"type": 7, "direction": "up"}, {"type": 8, "direction": "down"}, {"type": 9, "direction": "left"}, {"type": 10, "direction": "right"}]
+        deleteConn_flag = True
         tmpList = list()
+        uniqueSliderConn = None
         if charged is False:
             pass
-        elif self.type == 7 and self.dictIdNearNodes["up"] is not None:
-            for connection in self.listConnections:
-                if connection.toNode != self.dictIdNearNodes["up"]:
-                    tmpList.append(connection)
-        elif self.type == 8 and self.dictIdNearNodes["down"] is not None:
-            for connection in self.listConnections:
-                if connection.toNode != self.dictIdNearNodes["down"]:
-                    tmpList.append(connection)
-        elif self.type == 9 and self.dictIdNearNodes["left"] is not None:
-            for connection in self.listConnections:
-                if connection.toNode != self.dictIdNearNodes["left"]:
-                    tmpList.append(connection)
-        elif self.type == 10 and self.dictIdNearNodes["right"] is not None:
-            for connection in self.listConnections:
-                if connection.toNode != self.dictIdNearNodes["right"]:
-                    tmpList.append(connection)
         else:
-            self.deleteConnections()
+            for dictSlider in dictSliderTypes:
+                if self.typeNode == dictSlider["type"] and self.dictIdNearNodes[dictSlider["direction"]] is not None:
+                    for connection in self.listConnections:
+                        if connection.toNode != self.dictIdNearNodes[dictSlider["direction"]]:
+                            tmpList.append(connection)
+                        else:
+                            uniqueSliderConn = connection
         
+        if uniqueSliderConn:
+            nextNodeType = self.dictGraphNodes[uniqueSliderConn.toNode].typeNode
+            nextNodeAgent = self.dictGraphNodes[uniqueSliderConn.toNode].typeAgentIn
+            if nextNodeAgent is not None:
+                deleteConn_flag = False
+            elif nextNodeType in listIds:
+                deleteConn_flag = False
+        
+        if deleteConn_flag:
+            for connection in tmpList:
+                self.listConnections.remove(connection)
+        
+    
+class BidirectionalNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+        self.isCharged = self.config["is_charged"]
+    
+    def loadUniqueConfig(self):
+        if self.isCharged is False:
+            return None
+        tmpList = [connection for connection in self.listConnections if type(connection) is not BidirectionalConnection]
         for connection in tmpList:
             self.listConnections.remove(connection)
         
-        tmpList = list()
-        for connection in self.listConnections:
-            if connection.typeToNode in listIds:
-                tmpList.append(connection)
+        self.isCharged = False
         
-        for connection in tmpList:
-            self.listConnections.remove(connection)
+class PitNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+class TrapNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+class SentryNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+class ObstacleNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+class IceNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+    
+    def saveAdyacentConnections(self, map: list) -> None:
+        super().saveAdyacentConnections(map)
         
         for connection in self.listConnections:
             connection.setCost(0)
             self.toNode = connection.toNode
 
-class DangerousNode(ChildNode):
-    def __init__(self, node: Node):
-        super().__init__(node)
-        
-
-class BidirectionalNode(ChildNode):
-    def __init__(self, node: Node):
-        super().__init__(node)
-        self.isCharged = self.config["is_charged"]
-        
-
 class PlayerNode(ChildNode):
-    def __init__(self, node: Node):
-        super().__init__(node)
+    def __init__(self, cell: dict):
+        super().__init__(cell)
         self.totalLife = None
     
     def savePossibleMoves(self, possibleMoves: list, map: list):
@@ -275,16 +327,15 @@ class PlayerNode(ChildNode):
             print("WARNING: playerNodeIsGoal function has found two connections or nothing!")
             
     def saveStats(self, dictStats: dict):
-        self.nameAgent = dictStats["name"]
+        self.nameNode = dictStats["name"]
         self.armor = dictStats["stats"]["armor"]
         self.hitpoints = dictStats["stats"]["hitpoints"]
         
         self.totalLife = self.armor + self.hitpoints
         
-            
-class AgentNode(ChildNode):
-    def __init__(self, node: Node):
-        super().__init__(node)
+class EnemyNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
         self.listConnectionsCopy = list()
         self.totalLife = None
         
@@ -292,9 +343,26 @@ class AgentNode(ChildNode):
         self.listConnectionsCopy = copy.deepcopy(self.listConnections)
     
     def saveStats(self, dictStats: dict):
-        self.nameAgent = dictStats["name"]
+        self.nameNode = dictStats["name"]
         self.armor = dictStats["stats"]["armor"]
         self.hitpoints = dictStats["stats"]["hitpoints"]
+        
+        self.totalLife = self.armor + self.hitpoints
+
+class AgentNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+        self.listConnectionsCopy = list()
+        self.totalLife = None
+        
+    def copyListConnections(self):
+        self.listConnectionsCopy = copy.deepcopy(self.listConnections)
+    
+    def saveStats(self, dictStats: dict):
+        self.nameNode = dictStats["name"]
+        self.armor = dictStats["stats"]["armor"]
+        self.hitpoints = dictStats["stats"]["hitpoints"]
+        self.typeAgentIn = dictStats["type"]
         
         self.totalLife = self.armor + self.hitpoints
 
@@ -359,44 +427,75 @@ class Graph():
             for cell in column:
                 listCells.append(cell)
 
-        # IMPROVE: Right now the code its updated so all the nodes are treated in the right way, but if the devs update the game
-        # with new cells then there is the possibility of creating invalid connections, the ideal solution would be check first if the node
-        # its a known node if not then it should be treated as an invalid node to prevent bugs
-        listIdInvalidNodes = [1, 3, 16, 17] # 12: Death Pit  13: Zap Trap  14: Mine  17: Lesser Obstacle  15: Bobby trap  16: Sentry Turret
-        listTypesSlider = [7, 8, 9, 10]
-        listDangerousNodes = [12, 14]
+        # INFO: If the game is updated with new cell types, the code will handle them like invalid nodes, several Warning messages will alert about this,
+        # so report it to me or if you understand the code a little you can create a new class for it
+        # 12: Death Pit  13: Zap Trap  14: Mine  15: Bobby trap  16: Sentry Turret  17: Lesser Obstacle  18: Ice Cell
+        listIdKnownNodes = {idNode for idNode in range(19)}
+        # Invalid nodes are nodes that are not possible to go("enter")
+        listIdInvalidNodes = {1, 3, 16, 17}
+        listTypesSlider = {7, 8, 9, 10}
+        idBidirectional = 11
+        idDeathPit = 12
+        listIdTraps = {13, 14, 15}
+        idSentryTurret = 16
+        idLesserObstacle = 17
+        idIce = 18
         for cell in listCells:
             # No matter the type of the cell its added to the dictNodes, the key is the unique id and the value is a nade object with a list of  
             # connections that could be empty or with the connections if its a valid cell
-            nodeObject = Node(cell)
+            cellId = cell["id"]
+            cellType = cell["type"]
+            if cellId not in listIdKnownNodes:
+                listIdInvalidNodes.add(cellId)
+            
+            if cellId == self.userCell["id"]:
+                nodeObject = PlayerNode(cell)
+            elif cellId == self.enemyCell["id"]:
+                nodeObject = EnemyNode(cell)
+            elif cellId in self.listIdAgents:
+                nodeObject = AgentNode(cell)
+            elif cellType in listTypesSlider:
+                nodeObject = SliderNode(cell)
+            elif cellType == idBidirectional:
+                nodeObject = BidirectionalNode(cell)
+            elif cellType == idDeathPit:
+                nodeObject = PitNode(cell)
+            elif cellType in listIdTraps:
+                nodeObject = TrapNode(cell)
+            elif cellType == idSentryTurret:
+                nodeObject = SentryNode(cell)
+            elif cellType == idLesserObstacle:
+                nodeObject = ObstacleNode(cell)
+            elif cellType == idIce:
+                nodeObject = IceNode(cell) 
+            else:
+                nodeObject = Node(cell)
+            
             nodeObject.saveAdyacentConnections(self.map)
-            typeNode = nodeObject.type
             idNode = nodeObject.id
             
-            # IMPROVE: This could be improved, instead of converting after the nodes objects to his type it could be done before creating the node, with the cell
-            if cell["type"] in listTypesSlider:
-                nodeObject = SliderNode(nodeObject)
-            elif cell["type"] in listDangerousNodes:
-                nodeObject = DangerousNode(nodeObject)
-            elif cell["type"] == 11:
-                nodeObject = BidirectionalNode(nodeObject)
-            
+            self.dictNodes[idNode] = nodeObject
             # Adding the pure node to the dictNodesPure, used to create connections of the skills like swap or toss
             self.dictNodesPure[idNode] = copy.deepcopy(nodeObject)
+        
+        # INFO: For some reason assigning the self.dictNodes to the nodeObject.dictGraphNodes in the previous loop cause the time to execute to skyrocket x40
+        # This problem seems to be called "mutable default argument" or "mutable default parameter", thats is why its outside and must be outside
+        for idNode, nodeObject in self.dictNodes.items():
+            nodeObject.dictGraphNodes = self.dictNodes
+        
+        # Saving the nodes and setting the typeAgentIn in the nodes where the player, enemies and agents are
+        self.saveNodesAndType()
+        self.simpleSetType(self.dictNodesPure)
+        
+        # INFO: We loop again but after we created all the nodes since the next function access to the dictNodes
+        for idNode, nodeObject in self.dictNodes.items():
+            typeNode = nodeObject.typeNode
             
+            # Deleting invalid/impossible connections
             if typeNode in listIdInvalidNodes:
                 nodeObject.deleteConnections()
             else:
                 nodeObject.deleteInvalidConnections(listIdInvalidNodes)
-            
-            if idNode == self.userCell["id"]:
-                nodeObject = PlayerNode(nodeObject)
-            elif idNode == self.enemyCell["id"]:
-                nodeObject = AgentNode(nodeObject)
-            elif idNode in self.listIdAgents:
-                nodeObject = AgentNode(nodeObject)
-            
-            dictNodes[idNode] = nodeObject
             
             # Saving id of the Goal cells and bidirectional cells
             if typeNode == 2:
@@ -409,21 +508,17 @@ class Graph():
         
         # Creating connection between bidirectional cells and saving them
         if self.bidirectionalTileActive_flag is True and len(self.listIdBidirectionals) == 2:
-            firstNode = dictNodes[self.listIdBidirectionals[0]]
-            secondNode = dictNodes[self.listIdBidirectionals[1]]
+            firstNode = self.dictNodes[self.listIdBidirectionals[0]]
+            secondNode = self.dictNodes[self.listIdBidirectionals[1]]
             
-            connectionOne = Connection(firstNode.cell, secondNode.cell, 0)
-            connectionTwo = Connection(secondNode.cell, firstNode.cell, 0)
+            connectionOne = BidirectionalConnection(firstNode.cell, secondNode.cell, 0)
+            connectionTwo = BidirectionalConnection(secondNode.cell, firstNode.cell, 0)
             
             firstNode.addConnection(connectionOne)
             secondNode.addConnection(connectionTwo)
             
             self.listConnectionsBidirectionals.append(connectionOne)
             self.listConnectionsBidirectionals.append(connectionTwo)
-        
-        # Saving the nodes and setting the typeAgentIn in the nodes where the player, enemies and agents are
-        self.saveNodesAndType(dictNodes)
-        self.simpleSetType(self.dictNodesPure)
         
         # Saving player possible moves from the jsonResponse, usefull when the player is in a slider, also prevents the use of invalid movements and if its chossen 
         # as the goal node, adds to his pathConnections list the stay movement to keep him there
@@ -434,7 +529,7 @@ class Graph():
         # Creating copy of the listConnections in the AgentNodes (must be done after saving the nodes and types)
         self.enemyNode.copyListConnections()
         for id in self.listIdAgents:
-            node = dictNodes[id]
+            node = self.dictNodes[id]
             node.copyListConnections()
         
         # Checking if ryo is close to be trapped (sorrounded by an agent/enemy and with only one move), before this code was outside this class in the strategyPath function
@@ -444,15 +539,15 @@ class Graph():
         ryoCloseToMine = False
         tmpList = list()
         for connection in self.ryoNode.listConnectionsCopy:
-            nextNode = dictNodes[connection.toNode]
+            nextNode = self.dictNodes[connection.toNode]
             if connection.toNode == self.enemyNode.id or connection.toNode in self.listIdAgents:
                 ryoSorrounded_flag = True
                 self.listIdAgentsSorrounding.append(connection.toNode)
                 tmpList.append(connection)
-            elif nextNode.type == 12:
+            elif nextNode.typeNode == 12:
                 ryoCloseToPit = True
                 tmpList.append(connection)
-            elif nextNode.type == 14:
+            elif nextNode.typeNode == 14:
                 ryoCloseToMine = True
                 tmpList.append(connection)
             
@@ -461,7 +556,7 @@ class Graph():
         
         confirmation_flag = False
         if ryoSorrounded_flag and len(self.ryoNode.listConnectionsCopy) == 1:
-            nextNode = dictNodes[self.ryoNode.listConnectionsCopy[0].toNode]
+            nextNode = self.dictNodes[self.ryoNode.listConnectionsCopy[0].toNode]
             if type(nextNode) is SliderNode and nextNode.isCharged is True and len(nextNode.listConnections) > 0:
                 if nextNode.toNode == self.ryoNode.id:
                     confirmation_flag = True
@@ -475,10 +570,7 @@ class Graph():
         self.ryoNode.copyListConnections()
         
         # Deleting the connections that points to agent nodes
-        self.deleteConnectionsToAgentNodes(dictNodes)
-        
-        # Binding at the end the self.dictNodes with the dictNodes for convenience 
-        self.dictNodes = dictNodes
+        self.deleteConnectionsToAgentNodes(self.dictNodes)
         
     def saveCells(self) -> None:
         cell = self.getCell(self.players["bearer"]["position"])
@@ -507,32 +599,31 @@ class Graph():
             self.dictAgentsCells[typeAgent] = {"cell": cell, "stats": stats}
             self.listIdAgents.append(cell["id"])
             
-    def saveNodesAndType(self, dictNodes: dict) -> None:
-        self.userNode = dictNodes[self.userCell["id"]]
+    def saveNodesAndType(self) -> None:
+        self.userNode = self.dictNodes[self.userCell["id"]]
         self.userNode.setTypeAgentIn(100)
         self.userNode.saveStats(self.players["bearer"])
-        self.enemyNode = dictNodes[self.enemyCell["id"]]
+        self.enemyNode = self.dictNodes[self.enemyCell["id"]]
         self.enemyNode.setTypeAgentIn(200)
         self.enemyNode.saveStats(self.players["opponent"])
         
-        for (type, info) in self.dictAgentsCells.items():
+        for (typeAgent, info) in self.dictAgentsCells.items():
             cell = info["cell"]
             stats = info["stats"]
-            agentNode = dictNodes[cell["id"]]
-            agentNode.setTypeAgentIn(type)
-            if type == 1:
+            agentNode = self.dictNodes[cell["id"]]
+            if typeAgent == 1:
                 self.ryoNode = agentNode
                 self.ryoNode.saveStats(stats)
-            elif type == 2:
+            elif typeAgent == 2:
                 self.kixNode = agentNode
                 self.kixNode.saveStats(stats)
-            elif type == 3:
+            elif typeAgent == 3:
                 self.llamaNode = agentNode
                 self.llamaNode.saveStats(stats)
-            elif type == 4:
+            elif typeAgent == 4:
                 self.ripperNode = agentNode
                 self.ripperNode.saveStats(stats)
-            elif type == 5:
+            elif typeAgent == 5:
                 self.buzzNode = agentNode
                 self.buzzNode.saveStats(stats)
             else:
@@ -544,10 +635,10 @@ class Graph():
         enemyNode = dictNodes [self.enemyCell["id"]]
         enemyNode.setTypeAgentIn(200)
         
-        for (type, info) in self.dictAgentsCells.items():
+        for (typeAgent, info) in self.dictAgentsCells.items():
             cell = info["cell"]
             agentNode = dictNodes[cell["id"]]
-            agentNode.setTypeAgentIn(type)
+            agentNode.setTypeAgentIn(typeAgent)
         
     # Function necessary to create a realistic map of nodes
     def deleteConnectionsToAgentNodes(self, dictNodes: dict) -> None:
@@ -569,7 +660,17 @@ class Graph():
     
     # getCell() uses the x and y value (position), and returns the cell
     def getCell(self, position: dict) -> dict:
-        x_value = position["x"]
+        try:
+            x_value = position["x"]
+        except TypeError as e:
+            errorMsg = e.args[0]
+            errorType = errorMsg[1:errorMsg.rfind("'")]
+            if errorType == "NoneType":
+                errorMsgReturn = "The position given is None Type, check that the jsonResponse you are passing to the Graph object is from a game in course!"
+                raise TypeError(errorMsgReturn)
+            else:
+                raise TypeError(e)
+
         y_value= position["y"]
         cell = self.map[x_value][y_value]
         return cell
@@ -577,7 +678,49 @@ class Graph():
     # getNode() instead uses only the id of the node to retrive it from the dictNodes
     def getNode(self, idNode: int) -> Node:
         return self.dictNodes[idNode]
+        
+    # Returns a minimalist dictNodes with enough info to be used in getMap()
+    @classmethod
+    def getMiniDictNodes(klass, jsonResponse: dict) -> dict:
+        players = jsonResponse["players"]
+        specialAgents = jsonResponse["special_agents"]
+        map = jsonResponse["map"]
+        dictNodes = dict()
+        
+        playerPosition = players["bearer"]["position"]
+        enemyPosition = players["opponent"]["position"]
+        specialAgents = [agent for agent in specialAgents if agent["position"] is not None]
+        listIdAgents = [getCell(agent["position"], map)["id"] for agent in specialAgents]
+        
+        listCells = [cell for column in map for cell in column]
+        for cell in listCells:
+            cellId = cell["id"]
+            if cellId in listIdAgents:
+                nodeObject = AgentNode(cell)
+            else:
+                nodeObject = Node(cell)
+            
+            dictNodes[cellId] = nodeObject
+        
+        if playerPosition:
+            cell = getCell(playerPosition, map)
+            playerNode = dictNodes[cell["id"]]
+            playerNode.setTypeAgentIn(100)
+        
+        if enemyPosition:
+            cell = getCell(enemyPosition, map)
+            enemyNode = dictNodes[cell["id"]]
+            enemyNode.setTypeAgentIn(200)
+        
+        # INFO: This asumes that the agent dict is the same as one of a game status = 1
+        for agent in specialAgents:
+            cell = getCell(agent["position"], map)
+            agentNode = dictNodes[cell["id"]]
+            agentNode.saveStats(agent)
+            
+        return dictNodes
 
+    
 def getCell(position: dict, map:list) -> dict:
     x_value = position["x"]
     y_value= position["y"]
@@ -613,13 +756,24 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
     startNode = dictNodes[idStart]
     startNode.setCostToReach(0)
     listOpen.append(startNode)
-    
+    Count = 0
     while len(listOpen) > 0:
         for node in listOpen:
-            # This is the default behavior of dijkstra, no dangerous node is calculate and by consecuence its not considered as a path in any case
-            if type(node) is DangerousNode and pure is False:
+            # This is the default behavior of dijkstra, no Death Pit node is calculate and by consecuence its not considered as a path in any case
+            # NOTE: After checking again this code, i noticed this is redundant, it would be simpler just removing the pit listConnections like a 
+            # wall node, but, i am not sure, since i want the dictNodes to be realistic this breaks this, since, its possible to go to this node but
+            # not preferable, then this code suits well, i think?
+            if type(node) is PitNode and pure is False:
                 listOpen.remove(node)
                 continue
+            # INFO: This method loads configuration depending of the type potential to salve a lot of things, experimental right now, it should be improvable
+            node.loadUniqueConfig()
+            """
+            if type(node) is BidirectionalNode:
+                print(node.id)
+                print(node)
+                print(node.pathConnections)"""
+            Count = Count + 1
             listConnections = node.listConnections
             nodeCost = node.costToReach
             nodeListPath = node.pathConnections
@@ -686,26 +840,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
     dictNodesCopy = copy.deepcopy(dictNodes)
     x = InfinityDetector()
     
-    listBiNodes = list()
-    # This Checks if the bidirectional nodes were used and the way they were used, and re-calculate if neccesary, should loop a maximum of 2 times
-    while True:
-        InfinityDetector.CountIter(x)
-        usedBiNode_flag = False
-        usedBiConn_flag = False
-        nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
-        for connection in nodeGoal.pathConnections:
-            nextNode = dictNodesCopy[connection.toNode]
-            if type(nextNode) is BidirectionalNode:
-                listBiNodes.append(nextNode)
-                usedBiNode_flag = True
-            if connection.typeFromNode == 11 and connection.typeToNode == 11:
-                usedBiConn_flag = True
-    
-        if usedBiNode_flag is True and usedBiConn_flag is False:
-            for node in listBiNodes:
-                deleteConnectionsThatPointsToThisNode(node.id, dictNodesCopy)
-        else:
-            break
+    nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
     
     # Ripper Precaution
     # Ripper is instakill, getting too close is game over, i dont know when it targets the player or any agent so i cant create a perfect strategy to avoid him, what i 
@@ -750,9 +885,20 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
 
 # Function to visualize the map in the console
 def getMap(jsonResponse):
-    graphObject = Graph(jsonResponse)
-    dictNodes = graphObject.dictNodes
-    map = graphObject.map
+    # INFO: The dictNodes from the Graph.init() function is produced only if the json Responses are from states of games in course (status=1), 
+    # this function solves this by creating a dictNodes depending in the state of the game
+    listIdNOMAP = {-1, 0}
+    if jsonResponse["state"]["status"] == 1:
+        graphObject = Graph(jsonResponse)
+        dictNodes = graphObject.dictNodes
+    elif jsonResponse["state"]["status"] in listIdNOMAP:
+        return "\nNO MAP\n"
+    elif jsonResponse["state"]["status"] == 2:
+        dictNodes = Graph.getMiniDictNodes(jsonResponse)
+    else:
+        return ("\nWARNING: UNKNOWN STATUS, NO MAP")
+    
+    map = jsonResponse["map"]
     lengColumn = len(map[0])
     
     mapStr = str()
@@ -760,10 +906,10 @@ def getMap(jsonResponse):
         for column in map:
             cell = column[num]
             currentNode = dictNodes[cell["id"]]
-            type = currentNode.type
+            typeNode = currentNode.typeNode
             typeAgentIn = currentNode.typeAgentIn
             if typeAgentIn is None:
-                char = returnChar(type, False)
+                char = returnChar(typeNode, False)
             else:
                 char = returnChar(typeAgentIn, True)
             mapStr = f"{mapStr}{char} "
@@ -772,56 +918,58 @@ def getMap(jsonResponse):
             
     return mapStr
             
-def returnChar(type: int, isAgent: bool) -> str:
+def returnChar(typeNode: int, isAgent: bool) -> str:
     character = None
     if isAgent is True:
-        if type == 1:
+        if typeNode == 1:
             character = "R"
-        elif type == 2:
+        elif typeNode == 2:
             character = "K"
-        elif type == 3:
+        elif typeNode == 3:
             character = "L"
-        elif type == 4:
+        elif typeNode == 4:
             character = "!"
-        elif type == 5:
+        elif typeNode == 5:
             character = "B"
-        elif type == 100:
+        elif typeNode == 100:
             character = "P"
-        elif type == 200:
+        elif typeNode == 200:
             character = "E"
         else:
             character = "?"
     else:
-        if type == 0:
+        if typeNode == 0:
             character = "+"
-        elif type == 1 or type == 3:
+        elif typeNode == 1 or typeNode == 3:
             character = " "
-        elif type == 4 or type == 5 or type == 6:
+        elif typeNode == 4 or typeNode == 5 or typeNode == 6:
             character = "="
-        elif type == 2:
+        elif typeNode == 2:
             character = "#"
-        elif type == 7:
+        elif typeNode == 7:
             character = "^"
-        elif type == 8:
+        elif typeNode == 8:
             character = "~"
-        elif type == 9:
+        elif typeNode == 9:
             character = "<"
-        elif type == 10:
+        elif typeNode == 10:
             character = ">"
-        elif type == 11:
+        elif typeNode == 11:
             character = "0"
-        elif type == 13:
+        elif typeNode == 13:
             character = "$"
-        elif type == 12:
+        elif typeNode == 12:
             character = "@"
-        elif type == 14:
+        elif typeNode == 14:
             character = "*"
-        elif type == 15:
+        elif typeNode == 15:
             character = "'"
-        elif type == 16:
+        elif typeNode == 16:
             character = "{"
-        elif type == 17:
+        elif typeNode == 17:
             character = "|"
+        elif typeNode == 18:
+            character = "%"
         else:
             character = "?"
     
