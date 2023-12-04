@@ -1,5 +1,5 @@
 # Main Classes/Functions
-from core.nodemap import Graph, Connection, AttackSKill, MovementSkill, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pre_dijkstra, getMap
+from core.nodemap import Graph, Connection, AttackSKill, MovementSkill, PlayerNode, SliderNode, BidirectionalNode, TrapNode, SentryNode, dijkstra, pre_dijkstra, getMap
 
 def strategyPath(jsonResponse):
     graphObject = Graph(jsonResponse)
@@ -71,10 +71,46 @@ def strategyAttack(jsonResponse):
     
     listskills = graphObject.players["bearer"]["skills"]
     
-    listTargetsConnections = list()
+    listAgentAttacks = list()
+    listTrapAttacks = list()
     dictSkills = dict()
     dictPrioritizedSkill = None
     
+    # Experimental Code
+    # INFO: Automatically saves the skills with damage, i am not sure if all the skills that have the damage atribute > 0, are always casted over enemies, in the
+    # case some arent, like casting buildings that at the same time does damage, well, some parts of this code cant handle that, i think so?
+    
+    Count = 0
+    for skill in listskills:
+        if skill["damage"] > 0:
+            dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
+            Count = Count + 1
+    
+    maxDamage = None
+    # The prioritized skill will be the native skill, if its an attack skill of course, otherwise will be the one with more damage
+    # The dictPrioritizedSkill is always present regardless of his status
+    for (key, skill["dictSkill"]) in dictSkills.items():
+        isNative = skill["is_native"]
+        skillDamage = skill["damage"]
+        if isNative is True:
+            dictPrioritizedSkill = skill
+            break
+        elif maxDamage is None:
+            maxDamage = skillDamage
+            dictPrioritizedSkill = skill
+        elif maxDamage > skillDamage:
+            maxDamage = skillDamage
+            dictPrioritizedSkill = skill
+    
+    # The order of the skills to execute is by default the one with more damage first
+    for n in range(len(dictSkills)):
+        customOrder = {v["dictSkill"]["id"]: n for k, v in sorted(dictSkills.items(), key=lambda skill: skill[1]["dictSkill"]["damage"])}
+    
+    # Taking only the active skills with targets
+    dictSkills = {k: v for k, v in dictSkills.items() if v["dictSkill"]["status"] == 1}
+    
+    # Suppressing the manual code until all the bugs of the automatic code are resolved 
+    """
     # This dictionary is going to be used to organize the skill we want to use first, the key is the id of the skill and the value is the priority we want to give it
     # less the number = major priority. 
     # IMPORTANT: Make sure you add the skill and his priority, you will recieve a error if you dont
@@ -104,11 +140,12 @@ def strategyAttack(jsonResponse):
         if skill["id"] == idPrioritizedSkill:
             dictPrioritizedSkill = skill
         
-        Count = Count + 1
+        Count = Count + 1"""
+    
     
     # The rest of the code does the verifications, you dont need to add anything
     # Here we check what nearby agents we want to attack, attacking llama is a no no
-    listAgentsAttack = [2, 200] # 2: Kix  4: Ripper  200: Enemy
+    listIdAgentsAttack = [2, 200] # 2: Kix  4: Ripper  200: Enemy
     listAgentsAvoid = [1, 3, 4, 5] # 1: Ryo 3: Llama  5: Buzz
     
     listAgentsNearby = list()
@@ -123,17 +160,24 @@ def strategyAttack(jsonResponse):
             
             if objetiveNode.typeAgentIn in listAgentsAvoid:
                 pass
-            elif objetiveNode.typeAgentIn in listAgentsAttack :
+            elif objetiveNode.typeAgentIn in listIdAgentsAttack :
                 connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
-                listTargetsConnections.append(connection)
+                listAgentAttacks.append(connection)
                 
                 listAgentsNearby.append(objetiveNode)
-                
+            elif type(objetiveNode) is TrapNode:
+                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
+                # No Strategy
+                listTrapAttacks.append(connection)
+            elif type(objetiveNode) is SentryNode:
+                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
+                # IMPROVE: Temporary adding attacks against Sentry Turrets to the listAgentAttacks until the creation of a strategy for this objective 
+                listAgentAttacks.append(connection)
             else:
-                print(f"UNKNOWN AGENT!! more info node: {objetiveNode} id: {objetiveNode.typeAgentIn}")
+                print(f"UNKNOWN AGENT OR TILE TO ATTACK!! more info node: {objetiveNode} id agent: {objetiveNode.typeAgentIn}, id node: {objetiveNode.typeNode}")
     
     # Checking if any avalible skill would kill any close agent, return the skillConnection if True
-    for skillConnection in listTargetsConnections:
+    for skillConnection in listAgentAttacks:
         if skillConnection.killConfirmation is True:
             return [skillConnection]
     
@@ -153,14 +197,14 @@ def strategyAttack(jsonResponse):
         
         # Removing the targets connections that doesnt point to this agent with less life
         tmpList = list()
-        for skillConnection in listTargetsConnections:
+        for skillConnection in listAgentAttacks:
             if dictNodes[skillConnection.toNode].typeAgentIn == objetiveNode.typeAgentIn:
                 continue
             else:
                 tmpList.append(skillConnection)
         
         for connection in tmpList:
-            listTargetsConnections.remove(connection)
+            listAgentAttacks.remove(connection)
         
     elif len(listAgentsNearby) == 1:
         objetiveNode = listAgentsNearby[0]
@@ -170,18 +214,18 @@ def strategyAttack(jsonResponse):
     if objetiveNode is not None and dictPrioritizedSkill is not None:
         # Here we check if the prioritized skill is in cooldown or not
         if dictPrioritizedSkill["status"] == 1: # Status: 1 = Avalible tu use, -1 = Not enough energy to use, 0 = In cooldown
-            for skillConnection in listTargetsConnections:
+            for skillConnection in listAgentAttacks:
                 if skillConnection.idSkill == dictPrioritizedSkill["id"]:
                     return [skillConnection] # FIX: Returning right away the prioritized skill is okay if its possible to use always (if it has a big range), otherwise...
-        # If there is not energy to use it hoard energy so we reset the listTargetsConnections
+        # If there is not energy to use it hoard energy so we reset the listAgentAttacks
         elif dictPrioritizedSkill["status"] == -1:
-            listTargetsConnections = list()
+            listAgentAttacks = list()
         # If is in cooldown we check all the skills and we can use and calculate if at the end of the cooldown we are going to have enough energy to use it if we use
         # this skill if false we remove it
         elif dictPrioritizedSkill["status"] == 0:
             playerEnergy = jsonResponse["players"]["bearer"]["stats"]["energy"]
             tmpList = list()
-            for skillConnection in listTargetsConnections:
+            for skillConnection in listAgentAttacks:
                 energyLeft = dictPrioritizedSkill["cost"] + playerEnergy - skillConnection.castCost
                 if energyLeft >= dictPrioritizedSkill["cost"]:
                     pass
@@ -189,11 +233,10 @@ def strategyAttack(jsonResponse):
                     tmpList.append(skillConnection)
             
             for skillConnection in tmpList:
-                listTargetsConnections.remove(skillConnection)
+                listAgentAttacks.remove(skillConnection)
     
     # Ordering the connections using the customOrder dict
-    listTargetsConnections.sort(key=lambda connection: customOrder[connection.idSkill])
+    listAgentAttacks.sort(key=lambda connection: customOrder[connection.idSkill])
 
-
-    return listTargetsConnections
+    return listAgentAttacks
     
