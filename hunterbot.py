@@ -15,7 +15,7 @@ def loopGames(player):
         playerTurn_flag = player.getIsPlayerTurn()
         if CountMatchs > 1000:
             print(f"1000 Matchs Played! Times Won:{CountWins} Times Lossed:{CountLosses}")
-        elif idStatus == 1 and playerTurn_flag:
+        if idStatus == 1 and playerTurn_flag:
             jsonResponse = player.getJsonResponse()
             graphObject = Graph(jsonResponse)
             dictNodes = graphObject.dictNodes
