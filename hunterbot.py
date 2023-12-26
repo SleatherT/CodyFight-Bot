@@ -2,20 +2,50 @@ from core.client import Client
 from core.nodemap import Graph, getMap
 from strategies.hunterStrategy import strategyPath, strategyAttack
 import time
+import multiprocessing
+import signal
+from functools import partial
 
-player = Client(ckey="your_key")
+# ckeys format = {"your ckey", "your another ckey", etc...}
+ckeys = {"your key", "your another ckey"}
 
-def loopGames(player):
+def loopGames(player, stopFlag, firstExecution=True):
+    if firstExecution:
+        print("\n Press CTRL + C To Exit, the bot will stop after the current match has ended\n")
+        time.sleep(7)
     CountMatchs = 0
     CountWins = 0
     CountLosses = 0
     continuePlaying_flag = True
     while continuePlaying_flag:
+        # User Status: # -1: ?  0: Creating the room  1: inGame  2: Game Ended
+        statesToExit = [-1, 2]
         idStatus = player.getIdStatus()
         playerTurn_flag = player.getIsPlayerTurn()
-        if CountMatchs > 1000:
-            print(f"1000 Matchs Played! Times Won:{CountWins} Times Lossed:{CountLosses}")
+        
+        if idStatus == 2:
+            jsonResponse = player.getJsonResponse()
+            winner = player.getWinner()
+            playerName = jsonResponse["players"]["bearer"]["name"]
+            enemyName = jsonResponse["players"]["opponent"]["name"]
+            statement = jsonResponse["verdict"]["statement"]
+            if winner == playerName:
+                print(f"Winner! You won: {playerName}, Losser: {enemyName} Statement: {statement}")
+                CountWins = CountWins + 1
+                print(f"Times Won : {CountWins}")
+                print(f"Times Lossed : {CountLosses}")
+            else:
+                print(f"Defeat! You Won: {enemyName}, Losser: {playerName} Statement: {statement}")
+                CountLosses = CountLosses + 1
+                print(f"Times Won : {CountWins}")
+                print(f"Times Lossed : {CountLosses}")
+            CountMatchs = CountMatchs + 1
+        
+        if stopFlag is True and idStatus in statesToExit :
+            break
         elif idStatus == 1 and playerTurn_flag:
+            if stopFlag is True:
+                print("\nINFO: The bot will stop after this game!\n")
             jsonResponse = player.getJsonResponse()
             graphObject = Graph(jsonResponse)
             dictNodes = graphObject.dictNodes
@@ -32,7 +62,7 @@ def loopGames(player):
                 coords = targetConnection.positionTo
                 idSkill = targetConnection.idSkill
                 objectiveNode = dictNodes[targetConnection.toNode]
-                print(f"ATTACKING: {targetConnection.nameSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE: {objectiveNode.nameAgent} OBJECTIVE LIFE: {objectiveNode.totalLife}")
+                print(f"ATTACKING: {targetConnection.nameSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE: {objectiveNode.nameNode} OBJECTIVE LIFE: {objectiveNode.totalLife}")
                 player.cast_skill(coords["x"], coords["y"], idSkill)
                 # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
                 # this works well but i dont like how it looks
@@ -53,34 +83,63 @@ def loopGames(player):
                 idSkill = connection.idSkill
                 sJsonResponse = player.cast_skill(x_coord, y_coord, idSkill)
             else:
-                player.move_player(x_coord, y_coord)
+                jsonResponse = player.move_player(x_coord, y_coord)
+                print(getMap(jsonResponse))
         elif idStatus == 1:
             print("waiting for oponent")
             time.sleep(5)
+        elif idStatus == -1:
+            player.create_room(0)
         elif idStatus == 2:
-            jsonResponse = player.getJsonResponse()
-            winner = player.getWinner()
-            playerName = jsonResponse["players"]["bearer"]["name"]
-            enemyName = jsonResponse["players"]["opponent"]["name"]
-            statement = jsonResponse["verdict"]["statement"]
-            if winner == playerName:
-                print(f"Winner! You won: {playerName}, Losser: {enemyName} Statement: {statement}")
-                CountWins = CountWins + 1
-                print(f"Times Won : {CountWins}")
-                print(f"Times Lossed : {CountLosses}")
-            else:
-                print(f"Defeat! You Won: {enemyName}, Losser: {playerName} Statement: {statement}")
-                CountLosses = CountLosses + 1
-                print(f"Times Won : {CountWins}")
-                print(f"Times Lossed : {CountLosses}")
-            CountMatchs = CountMatchs + 1
             player.create_room(0)
         elif idStatus == 0:
             print("Registering players.. waiting 15 seconds")
             time.sleep(15)
-        elif idStatus == -1:
-            player.create_room(0)
         else:
             print(f"Unknown status! {idStatus}")
             
-loopGames(player)
+
+
+def sigtermHandler(signum, frame, flag):
+    flag = True
+    print("Received SIGTERM. Finishing bots, wait until the current matchs have ended...")
+
+def bot(player):
+    stopFlag = False
+
+    # Linux Stop with Kill Command, signal SIGTERM
+    sigtermHandlerArgs = partial(sigtermHandler, stopFlag)
+    signal.signal(signal.SIGTERM, sigtermHandlerArgs)
+    
+    # Windows/Linux Stop sending signal SIGINT (CRTL + C)
+    try:
+        loopGames(player, stopFlag)
+    except KeyboardInterrupt:
+        stopFlag = True
+        print(f"Bot = {player.ckey[:7]}... Finishing execution! Wait until the current matchs have ended, Don't Press Ctrl + C again please!")
+        time.sleep(4)
+        loopGames(player, stopFlag, firstExecution=False)
+        print(f"Bot = {player.ckey[:7]}... Finished his last match!")
+    
+
+if __name__ == "__main__":
+    processList = list()
+    Count = 0
+    for ckey in ckeys:
+        player = Client(ckey, multiProcessing=True)
+        processList.append(multiprocessing.Process(target=bot, args=(player, )))
+        Count = 1 + Count
+    
+    for process in processList:
+        process.start()
+        print(f"{Count} Bot started ! ")
+        
+    
+    for process in processList:
+        try:
+            process.join()
+        except KeyboardInterrupt:
+            pass
+    
+    print("All bots finished")
+        

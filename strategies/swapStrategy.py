@@ -1,5 +1,5 @@
 # Main Classes/Functions
-from core.nodemap import Graph, Connection, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pre_dijkstra, getMap
+from core.nodemap import Graph, Connection, PlayerNode, SliderNode, BidirectionalNode, dijkstra, pure_Dijkstra, getMap
 
 def strategyPath(jsonResponse):
     graphObject = Graph(jsonResponse)
@@ -57,14 +57,14 @@ def strategyPath(jsonResponse):
     # is 2 cells if we are aligned in a straight line, we use pre_dijkstra (dijkstra doesnt add info to the nodes in any way because uses a copy of the dictNodes
     # pre_dijkstra do this) and take the nodes less or equal of 2 cost
     # First Problem (Solved): The spreading proccess using the normal dictNodes does work for this because the invalid nodes doesnt have connections so if an agent 
-    # is reachable crossing walls, this will not work, we are going to need a pure dictNodes 
+    # is reachable crossing walls, this will not work, we are going to need a "pure" dictNodes 
     dictNodesPure = graphObject.dictNodesPure
     listIdAgents = graphObject.listIdAgents
     if swapSkill_flag:
         listIdAlmostFullAgents = list(listIdAgents)
         listIdAlmostFullAgents.append(enemyNode.id)
         for id in listIdAlmostFullAgents:
-            pre_dijkstra(dictNodesPure, id, [], True)
+            pure_Dijkstra(dictNodesPure, [], id)
             agentNode = dictNodesPure[id]
         
             listPseudoNodes = list()
@@ -108,7 +108,7 @@ def strategyPath(jsonResponse):
                 if connection.toNode in listNoSwap and connection.usedSkill is True and connection.idSkill == idSwapSkill:
                     connection.setBan(True)
     
-    goalNode = dijkstra(dictNodes, playerNode.id, listIdGoals)
+    goalNode = dijkstra(graphObject, listIdGoals, playerNode.id)
     
     return goalNode
     

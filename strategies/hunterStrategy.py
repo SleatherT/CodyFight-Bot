@@ -57,7 +57,7 @@ def strategyPath(jsonResponse):
     
     # And that should be all for now, "life awareness" is other think i want to add but i want to see first if it would help
     
-    goalNode = dijkstra(dictNodes, playerNode.id, listIdGoals)
+    goalNode = dijkstra(graphObject, listIdGoals, playerNode.id)
     
     return goalNode
     

@@ -23,6 +23,8 @@ class Connection():
         self.idSkill = idSkill
         self.damage = None
         self.ban = ban
+        # If a string is added to this variable, it will be printed
+        self.notes = None
     
     def __repr__(self):
         baseStr = f"#{self.fromNode}-{self.typeFromNode}--{self.cost}--{self.typeToNode}->{self.toNode}"
@@ -30,6 +32,8 @@ class Connection():
             baseStr = f"{baseStr} Skill Used"
         if self.ban:
             baseStr = f"{baseStr} BANNED"
+        if type(self.notes) is str:
+            baseStr = f"{baseStr} {self.notes}"
         baseStr = f"{baseStr}#"
         
         return baseStr
@@ -53,6 +57,11 @@ class Connection():
         
         return clsObj
 
+# A custom list class that saves only an id of his corresponding map 
+class Path(list):
+    def __init__(self, *args, **kwargs):
+        self.idMap_ = 0
+        super().__init__(*args, **kwargs)
 
 class Node():
     def __init__(self, cell: dict):
@@ -74,11 +83,12 @@ class Node():
         
         # Variables destined to use in the dijkstra algorithm
         self.costToReach = None
-        self.pathConnections = list()
+        self.pathConnections = Path()
+        self.idMap = 0
         
         
     def __repr__(self):
-        return f"Node Id:{self.id} Type:{self.typeNode} listConnections:{self.listConnections}"
+        return f"Node Id:{self.id} Type:{self.typeNode} listConnections:{self.listConnections} idMap:{self.idMap}"
         
     def saveAdyacentConnections(self, map: list) -> None:
         x_value = self.position["x"]
@@ -123,7 +133,11 @@ class Node():
         
         for connection in tmpList:
             self.listConnections.remove(connection)
-        
+    
+    def _createAndAppend(self, fCell, sCell, direction):
+        connection = Connection(self.cell, cell)
+        self.listConnections.append(connection)
+    
     def deleteConnections(self) -> None:
         self.listConnections = list()
     
@@ -140,12 +154,35 @@ class Node():
         for connection in connections:
             self.pathConnections.append(connection)
     
+    def saveInfoPath(self, cost: int, pathNode: Path, connFrom: Connection): # Path: list
+        self.costToReach = cost
+        for connection in pathNode:
+            self.pathConnections.append(connection)
+        self.pathConnections.append(connFrom)
+    
     def deletePathConnections(self):
         self.pathConnections = list()
         self.costToReach = None
     
     def loadUniqueConfig(self):
-        pass
+        return None
+    
+    def confirmChanges(self):
+        return None
+    
+    def removeUniqueConfig(self):
+        return None
+
+# Map is the dict of nodes with an unique id that is meant to be used in dijkstra algorithm
+class Map(dict):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.idMap_ = 0
+    
+    def updateId(self, newId: int) -> None:
+        for id, node in self.items():
+            node.idMap = newId
+        self.idMap_ = newId
     
 # Complex Connections
 # These connections can be created with nodes, as his name implies "nodeFrom", but it can also be created with cells, like a normal connnection but depending of
@@ -153,7 +190,14 @@ class Node():
 
 class SkillCellConnection(Connection):
     def __init__(self, nodeFrom, nodeTo, cost=1, usedSkill=False, idSkill=None, ban=False):
-        super().__init__(nodeFrom, nodeTo, cost, usedSkill, idSkill, ban)
+        if type(nodeFrom) is dict and type(nodeTo) is dict:
+            super().__init__(nodeFrom, nodeTo, cost, usedSkill, idSkill, ban)
+        elif isinstance(nodeFrom, Node) and isinstance(nodeTo, Node):
+            super().__init__(nodeFrom.cell, nodeTo.cell, cost, usedSkill, idSkill, ban)
+            self.nodeFrom = nodeFrom
+            self.nodeTo = nodeTo
+        else:
+            raise ValueError("Type of Nodes/Cells is wrong, please check those values")
 
 class BidirectionalConnection(SkillCellConnection):
     def __init__(self, nodeFrom, nodeTo, cost=1, usedSkill=False, idSkill=None, ban=False):
@@ -216,7 +260,27 @@ class AttackSKill(SkillConnection):
 class ChildNode(Node):
     def __init__(self, cell: dict):
         super().__init__(cell)
-        
+
+
+class ObstacleNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+
+class ExitNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+
+class WallNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+
+class RegeneratorNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
 
 class SliderNode(ChildNode):
     def __init__(self, cell: dict):
@@ -234,7 +298,7 @@ class SliderNode(ChildNode):
     def deleteInvalidConnections(self, listIds: list) -> None:
         super().deleteInvalidConnections(listIds)
         # Info: We asume that the listIds has the id of the nodes that are inamovible, if thats not the case in the future, the code to prevent 
-        # deleting the connection (uniqueSliderConn) must be changed
+        # deleting the connections (uniqueSliderConn) must be changed
         charged = self.config["is_charged"]
             
         dictSliderTypes = [{"type": 7, "direction": "up"}, {"type": 8, "direction": "down"}, {"type": 9, "direction": "left"}, {"type": 10, "direction": "right"}]
@@ -263,22 +327,41 @@ class SliderNode(ChildNode):
         if deleteConn_flag:
             for connection in tmpList:
                 self.listConnections.remove(connection)
+        """
+        # If deleteConn_flag is False it wont remove the rest of connections and is like if the node were non charged, this variable is used in
+        # swap to verify valid swap pseudo-skill connections, but if deleteConn_flag is false, the pseudo-skill wont be be added even tho
+        # its possible but not since it uses charged variable, i am adding this only as a reminder of this, i dont think its the best
+        
+        else:
+            self.isCharged = False
+        """
         
     
 class BidirectionalNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
         self.isCharged = self.config["is_charged"]
+        self.twinNodeId = None
     
     def loadUniqueConfig(self):
         if self.isCharged is False:
             return None
+        
         tmpList = [connection for connection in self.listConnections if type(connection) is not BidirectionalConnection]
         for connection in tmpList:
             self.listConnections.remove(connection)
         
         self.isCharged = False
         
+        twinNode = self.dictGraphNodes[self.twinNodeId]
+        twinNode.isCharged = False
+        
+        twinBiConn = [connection for connection in twinNode.listConnections if type(connection) is BidirectionalConnection]
+        twinNode.listConnections.remove(twinBiConn[0])
+    
+    def confirmChanges(self):
+        return self.isCharged
+    
 class PitNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
@@ -291,13 +374,16 @@ class SentryNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
-class ObstacleNode(ChildNode):
+class LesserObsNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
 class IceNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
+        self.tmpListConnections = list()
+        self.redirects = False
+        self.tmpPathConnections = None
     
     def saveAdyacentConnections(self, map: list) -> None:
         super().saveAdyacentConnections(map)
@@ -305,6 +391,50 @@ class IceNode(ChildNode):
         for connection in self.listConnections:
             connection.setCost(0)
             self.toNode = connection.toNode
+    
+    def loadUniqueConfig(self):
+        fromNodeId = self.pathConnections[-1].fromNode
+        dictIdNearNodes = {idNode: direction  for direction, idNode in self.dictIdNearNodes.items()}
+        
+        inamovibleTypeNodes = [AgentNode, EnemyNode, ObstacleNode, WallNode, SentryNode, LesserObsNode]
+        redirectRules = {"down": "up", "right": "left", "left": "right", "up": "down"}
+        # Only movements from adyacent nodes are valid
+        if fromNodeId in dictIdNearNodes:
+            direction = dictIdNearNodes[fromNodeId]
+            validConnectionId = self.dictIdNearNodes[redirectRules[direction]]
+            # IF is the validConnectionId is None, there is no Node in that direction
+            if not validConnectionId:
+                pass
+            elif type(self.dictGraphNodes[validConnectionId]) in inamovibleTypeNodes:
+                pass
+            else:
+                tmpList = [connection for connection in self.listConnections if connection.toNode != validConnectionId]
+                for connection in tmpList:
+                    self.listConnections.remove(connection)
+                    self.tmpListConnections.append(connection)
+                self.redirects = True
+        
+        return True
+    
+    def removeUniqueConfig(self):
+        for connection in self.tmpListConnections:
+            self.listConnections.append(connection)
+        self.tmpListConnections = list()
+        self.redirects = False
+    
+    # It creates a temporary copy of itself to check if it redirects depending of the path
+    def redirectsTo(self, pathNode: Node, connectionFrom: Connection):
+        tmpSelfCopy = copy.deepcopy(self)
+        tmpSelfCopy.saveInfoPath(cost=None, pathNode=pathNode, connFrom=connectionFrom)
+        tmpSelfCopy.loadUniqueConfig()
+        
+        if tmpSelfCopy.redirects is True:
+            return tmpSelfCopy.listConnections[0]
+        else:
+            return None
+    
+    #def tmpSavePathInfo(self, Path):
+        
 
 class PlayerNode(ChildNode):
     def __init__(self, cell: dict):
@@ -332,8 +462,12 @@ class PlayerNode(ChildNode):
         self.hitpoints = dictStats["stats"]["hitpoints"]
         
         self.totalLife = self.armor + self.hitpoints
-        
-class EnemyNode(ChildNode):
+
+class EntityNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+class EnemyNode(EntityNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
         self.listConnectionsCopy = list()
@@ -349,7 +483,7 @@ class EnemyNode(ChildNode):
         
         self.totalLife = self.armor + self.hitpoints
 
-class AgentNode(ChildNode):
+class AgentNode(EntityNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
         self.listConnectionsCopy = list()
@@ -409,6 +543,9 @@ class Graph():
         self.listIdAgents = list()
         self.dictAgentsCells = dict()
         
+        # Dijkstra Variables
+        self.dictMaps = dict()
+        
         # Saving cells of player and agents
         self.saveCells()
         
@@ -418,9 +555,8 @@ class Graph():
         self.listIdBidirectionals = list()
         self.listConnectionsBidirectionals = list()
         self.listIdGoals = list()
-        self.dictNodes = dict()
-        self.dictNodesPure = dict()
-        dictNodes = dict()
+        self.dictNodes = Map()
+        self.dictNodesPure = Map()
         
         listCells = list()
         for column in self.map:
@@ -433,6 +569,10 @@ class Graph():
         listIdKnownNodes = {idNode for idNode in range(19)}
         # Invalid nodes are nodes that are not possible to go("enter")
         listIdInvalidNodes = {1, 3, 16, 17}
+        idObstacle = 1
+        idExit = 2
+        idWall = 3
+        listIdRegenerators = {4, 5, 6}
         listTypesSlider = {7, 8, 9, 10}
         idBidirectional = 11
         idDeathPit = 12
@@ -454,6 +594,14 @@ class Graph():
                 nodeObject = EnemyNode(cell)
             elif cellId in self.listIdAgents:
                 nodeObject = AgentNode(cell)
+            elif cellType == idObstacle:
+                nodeObject = ObstacleNode(cell)
+            elif cellType == idExit:
+                nodeObject = ExitNode(cell)
+            elif cellType == idWall:
+                nodeObject = WallNode(cell)
+            elif cellType in listIdRegenerators:
+                nodeObject = RegeneratorNode(cell)
             elif cellType in listTypesSlider:
                 nodeObject = SliderNode(cell)
             elif cellType == idBidirectional:
@@ -465,7 +613,7 @@ class Graph():
             elif cellType == idSentryTurret:
                 nodeObject = SentryNode(cell)
             elif cellType == idLesserObstacle:
-                nodeObject = ObstacleNode(cell)
+                nodeObject = LesserObsNode(cell)
             elif cellType == idIce:
                 nodeObject = IceNode(cell) 
             else:
@@ -510,6 +658,9 @@ class Graph():
         if self.bidirectionalTileActive_flag is True and len(self.listIdBidirectionals) == 2:
             firstNode = self.dictNodes[self.listIdBidirectionals[0]]
             secondNode = self.dictNodes[self.listIdBidirectionals[1]]
+            
+            firstNode.twinNodeId = secondNode.id
+            secondNode.twinNodeId = firstNode.id
             
             connectionOne = BidirectionalConnection(firstNode.cell, secondNode.cell, 0)
             connectionTwo = BidirectionalConnection(secondNode.cell, firstNode.cell, 0)
@@ -571,6 +722,9 @@ class Graph():
         
         # Deleting the connections that points to agent nodes
         self.deleteConnectionsToAgentNodes(self.dictNodes)
+        
+        # Saving the original dictNodes
+        self.dictMaps[0] = self.dictNodes
         
     def saveCells(self) -> None:
         cell = self.getCell(self.players["bearer"]["position"])
@@ -646,10 +800,15 @@ class Graph():
             tmpList = list()
             for connection in node.listConnections:
                 nextNode = dictNodes[connection.toNode]
-                if nextNode.typeAgentIn is not None and type(node) is not PlayerNode:
+                # If the nextNode is the PlayerNode is bypassed, because in theory we can return to our cell, and also solves a bug of dijkstra when handling
+                # the IceNode(this is the major reason actuallly). If we do this we are going to break the code so thats why a elif block is added
+                if nextNode.typeAgentIn is not None and type(nextNode) is not PlayerNode:
                     tmpList.append(connection)
                     node.listAgentConnections.append(connection)
-                    
+                elif nextNode.typeAgentIn is not None and type(nextNode) is PlayerNode and isinstance(node, EntityNode) is True:
+                    tmpList.append(connection)
+                    node.listAgentConnections.append(connection)
+            
             for connection in tmpList:
                 node.listConnections.remove(connection)
     
@@ -679,6 +838,45 @@ class Graph():
     def getNode(self, idNode: int) -> Node:
         return self.dictNodes[idNode]
         
+    
+    def loadMap(self, node:Node):
+        idMap = node.idMap
+        
+        if idMap == self.dictNodes.idMap_:
+            pass
+        else:
+            self.dictNodes = self.dictMaps[idMap]
+    
+    def createMap(self, node: Node):
+        newKey = list(self.dictMaps.keys())[-1] + 1
+        
+        mapCopy = copy.deepcopy(self.dictNodes)
+        mapCopy.updateId(newKey)
+        mapCopy[node.id].loadUniqueConfig()
+        self.dictMaps[newKey] = mapCopy
+        
+        # Reseting all the nodes path info, cost, if are not from the path of this generator node
+        idsPath = [connection.fromNode for connection in node.pathConnections]
+        idsPath.append(node.id)
+        for id, nodeCopy in mapCopy.items():
+            if id in idsPath:
+                continue
+            nodeCopy.deletePathConnections()
+        
+        return mapCopy[node.id]
+        
+    def loadExternalConfigs(self, node: Node):
+        # This makes sure a generator node its not processed here
+        if node.confirmChanges() is True:
+            return None
+        
+        node.loadUniqueConfig()
+        # IMPROVE: Since this is called everytime a node is processed in the listOpen, it probably consumes a lot of processing power, it should be a better way
+        for id, dNode in self.dictNodes.items():
+            if dNode == node:
+                continue
+            dNode.removeUniqueConfig()
+    
     # Returns a minimalist dictNodes with enough info to be used in getMap()
     @classmethod
     def getMiniDictNodes(klass, jsonResponse: dict) -> dict:
@@ -738,8 +936,152 @@ def deleteConnectionsThatPointsToThisNode(idNode: int, dictNodes: dict):
             node.listConnections.remove(connection)
     
 
-# This is the pure algorithm, if passed the pure argument to True, it will ignore the dangerous restricction, used for create possible connections of the skills
-def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
+# The main dijkstra function, it creates new maps (dictNodes) depending of where the bot goes and it returns the less cost path to the objective
+def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
+    if idStart is None:
+        idStart = graphObject.userNode.id
+    
+    listGoalNodes = list()
+    for id in idsGoal:
+        listGoalNodes.append(graphObject.dictNodes[id])
+        
+    # Restoring values of the dictNodes in case they have already been processed by this function
+    for (id, node) in graphObject.dictNodes.items():
+        node.deletePathConnections()
+    
+        
+    listOpen = list()
+    listClosed = list()
+    
+    startNode = graphObject.dictNodes[idStart]
+    startNode.setCostToReach(0)
+    listOpen.append(startNode)
+    Count = 0
+    while len(listOpen) > 0:
+        for node in listOpen:
+            #print(f"\nNEXT NODE ITER: {node}\n{node.pathConnections}")#\nOPEN LIST: {[[item.id, item.idMap] for item in listOpen]}\nCLOSED LIST: {[[item.id, item.idMap] for item in listClosed]}\nID MAP: {graphObject.dictNodes.idMap_}\n")
+            
+            # This is the default behavior of dijkstra, no Death Pit node is calculate and by consecuence its not considered as a path in any case
+            # NOTE: After checking again this code, i noticed this is redundant, it would be simpler just removing the pit listConnections like a 
+            # wall node, but, i am not sure, since i want the dictNodes to be realistic this breaks this, since, its possible to go to this node but
+            # not preferable, then this code suits well, i think?
+            if type(node) is PitNode:
+                listOpen.remove(node)
+                continue
+            
+            # INFO: This methods loads the map (dictNodes) depending of the path, it solves a lot of things because now each path, if it has made changes 
+            # to the map or position of the player, it has a unique map depending of where the bot goes and comes from
+            graphObject.loadMap(node)
+            
+            # INFO: This function call loadUniqueConfig of the node but its handles diferent from createMap because its a unique config that its treated like
+            # a temporary change in the map, not permanent like the bidirectional node, experimental, bugs are probable and more cases are needed to polish it
+            graphObject.loadExternalConfigs(node)
+            
+            Count = Count + 1
+            listConnections = node.listConnections
+            nodeCost = node.costToReach
+            nodeListPath = node.pathConnections
+            
+            for connection in listConnections:
+                # INFO: Ignoring banned connections
+                if connection.ban is True:
+                    continue
+                
+                costToReach = connection.cost + nodeCost
+                
+                nextNode = graphObject.dictNodes[connection.toNode]
+                
+                nextNodeCost = nextNode.costToReach
+                
+                # INFO: This works along side with graphObject.loadExternalConfigs(node)
+                if type(nextNode) is IceNode:
+                    # INFO: The connection returned is a copy, trying to find it (in a list, ditc..) after dijkstra execution will fail
+                    redirectConnection = nextNode.redirectsTo(pathNode=nodeListPath, connectionFrom=connection)
+                    if redirectConnection:
+                        nextNode.deletePathConnections()
+                        nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
+                        
+                        connection = redirectConnection
+                        
+                        nodeListPath = nextNode.pathConnections
+                        
+                        costToReach = redirectConnection.cost + costToReach
+                        
+                        nextNode = graphObject.dictNodes[redirectConnection.toNode]
+                        
+                        nextNodeCost = nextNode.costToReach
+                
+                if nextNodeCost is None:
+                    nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
+                    
+                    # INFO: Creating new map if changes must be made
+                    if nextNode.confirmChanges() is True:
+                        nextNode = graphObject.createMap(nextNode)
+                    
+                    listOpen.append(nextNode)
+                else:
+                    if costToReach >= nextNodeCost:
+                        pass
+                    elif costToReach < nextNodeCost:
+                        nextNode.deletePathConnections()
+                        
+                        nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
+                        
+                        cFlag = False
+                        aFlag = False
+                        
+                        #
+                        if nextNode.confirmChanges() is True:
+                            nextNode = graphObject.createMap(nextNode)
+                            listOpen.append(nextNode)
+                            cFlag = True
+                        
+                        # INFO: If the costToReach is low that the actual nextNodeCost his data is only updated and we check if it has terminated checking 
+                        # all his next nodes, if it has, we bring it back to the open list, if not, it means it havent been checked by the main loop
+                        # It shouldn't be executed if nextNode.confirmChanges() was True
+                        if nextNode in listClosed:
+                            listClosed.remove(nextNode)
+                            listOpen.append(nextNode)
+                            aFlag = True
+                        
+                        if cFlag and aFlag:
+                            raise ValueError("Something went wrong in dijkstra")
+                        
+                        
+            listOpen.remove(node)
+            listClosed.append(node)
+    
+    listFinal = list()
+    for node in listGoalNodes:
+        if node in listClosed:
+            listFinal.append(node)
+    
+    for id, map in graphObject.dictMaps.items():
+        print(11111111, map[20].pathConnections, "ID MAP", map.idMap_)
+    
+    winnerNode = None
+    if len(listFinal) > 1:
+        for node in listFinal:
+            if winnerNode is None:
+                winnerNode = node
+            elif node.costToReach < winnerNode.costToReach:
+                winnerNode = node
+    elif len(listFinal) == 1:
+        winnerNode = listFinal[0]
+    
+    # IMPROVE: If the goal nodes are unreachable the listFinal is empty, that it means we are sorrounded by obstacles type 17, 14, 1 or 3 if that happens we can 
+    # only calculate a node far from the enemy if we are trapped with him, but i dont have good ideas of how do it, i will choose a random node until the obstacles 
+    # type 17 dissapear or the match ends
+    if len(listFinal) == 0:
+        winnerNode = random.choice(listClosed)
+    
+    if type(winnerNode) is PlayerNode:
+        winnerNode.playerNodeIsGoal()
+        
+    return winnerNode
+
+# This is the pure algorithm, uses only one dictNodes/Map and it will not create new ones. Used to create possible connections of the skills
+def pure_Dijkstra(dictNodes: dict, idsGoal: list, idStart: int):
     listGoalNodes = list()
     
     for id in idsGoal:
@@ -748,7 +1090,6 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
     # Restoring values of the dictNodes in case they have already been processed by this function
     for (id, node) in dictNodes.items():
         node.deletePathConnections()
-    
         
     listOpen = list()
     listClosed = list()
@@ -759,20 +1100,6 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
     Count = 0
     while len(listOpen) > 0:
         for node in listOpen:
-            # This is the default behavior of dijkstra, no Death Pit node is calculate and by consecuence its not considered as a path in any case
-            # NOTE: After checking again this code, i noticed this is redundant, it would be simpler just removing the pit listConnections like a 
-            # wall node, but, i am not sure, since i want the dictNodes to be realistic this breaks this, since, its possible to go to this node but
-            # not preferable, then this code suits well, i think?
-            if type(node) is PitNode and pure is False:
-                listOpen.remove(node)
-                continue
-            # INFO: This method loads configuration depending of the type potential to salve a lot of things, experimental right now, it should be improvable
-            node.loadUniqueConfig()
-            """
-            if type(node) is BidirectionalNode:
-                print(node.id)
-                print(node)
-                print(node.pathConnections)"""
             Count = Count + 1
             listConnections = node.listConnections
             nodeCost = node.costToReach
@@ -807,40 +1134,19 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
             listOpen.remove(node)
             listClosed.append(node)
     
-    listFinal = list()
-    for node in listGoalNodes:
-        if node in listClosed:
-            listFinal.append(node)
-    
-    winnerNode = None
-    if len(listFinal) > 1:
-        for node in listFinal:
-            if winnerNode is None:
-                winnerNode = node
-            elif node.costToReach < winnerNode.costToReach:
-                winnerNode = node
-    elif len(listFinal) == 1:
-        winnerNode = listFinal[0]
-    
-    # IMPROVE: If the goal nodes are unreachable the listFinal is empty, that it means we are sorrounded by obstacles type 17, 14, 1 or 3 if that happens we can 
-    # only calculate a node far from the enemy if we are trapped with him, but i dont have good ideas of how do it, i will choose a random node until the obstacles 
-    # type 17 dissapear or the match ends
-    if len(listFinal) == 0:
-        winnerNode = random.choice(listClosed)
-    
-    if type(winnerNode) is PlayerNode:
-        winnerNode.playerNodeIsGoal()
-        
-    return winnerNode
-    
+
 # dijkstra will copy the dictNodes connections so the returned nodeGoal.pathConnections should not be trated as the same from the original dictNodes, this also means
 # that the Nodes of original dictNodes doesnt have his dijkstra atributes with data, if you need to access to this processed info use pre_dijkstra, this is because the 
 # following verifications modifies the nodes and since this function is going to be called more that one time not doing this could lead to create bad paths
-def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
-    dictNodesCopy = copy.deepcopy(dictNodes)
+def dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
+    if idStart is None:
+        idStart = graphObject.userNode.id
+        
+    graphObjectCopy = copy.deepcopy(graphObject)
+    dictNodesCopy = graphObjectCopy.dictNodes
     x = InfinityDetector()
     
-    nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
+    nodeGoal = pre_dijkstra(graphObjectCopy, idsGoal, idStart)
     
     # Ripper Precaution
     # Ripper is instakill, getting too close is game over, i dont know when it targets the player or any agent so i cant create a perfect strategy to avoid him, what i 
@@ -854,7 +1160,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
     if ripperNode is not None:
         while True:
             InfinityDetector.CountIter(x)
-            nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
+            nodeGoal = pre_dijkstra(graphObjectCopy, idsGoal, idStart)
             listRipperAdNodes = list()
             idDeathNode = None
             for connection in ripperNode.listConnections:
@@ -879,7 +1185,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
     
     if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
         nodeGoal.pathConnections[0].setBan(True)
-        nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
+        nodeGoal = pre_dijkstra(graphObjectCopy, idsGoal, idStart)
     
     return nodeGoal
 
