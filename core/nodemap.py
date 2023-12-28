@@ -383,7 +383,8 @@ class IceNode(ChildNode):
         super().__init__(cell)
         self.tmpListConnections = list()
         self.redirects = False
-        self.tmpPathConnections = None
+        
+        self.tmpPathConnections = list()
     
     def saveAdyacentConnections(self, map: list) -> None:
         super().saveAdyacentConnections(map)
@@ -433,8 +434,10 @@ class IceNode(ChildNode):
         else:
             return None
     
-    #def tmpSavePathInfo(self, Path):
-        
+    def tmpSaveInfoPath(self, pathNode: Path, connFrom: Connection):
+        for connection in pathNode:
+            self.tmpPathConnections.append(connection)
+        self.tmpPathConnections.append(connFrom)
 
 class PlayerNode(ChildNode):
     def __init__(self, cell: dict):
@@ -982,6 +985,11 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
             nodeCost = node.costToReach
             nodeListPath = node.pathConnections
             
+            debug_flag = False
+            if node.id == 38 and graphObject.dictNodes.idMap_ == 0:
+                debug_flag = True
+                print(graphObject.dictNodes.idMap_, node.pathConnections)
+            
             for connection in listConnections:
                 # INFO: Ignoring banned connections
                 if connection.ban is True:
@@ -993,7 +1001,9 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
                 
                 nextNodeCost = nextNode.costToReach
                 
-                # INFO: This works along side with graphObject.loadExternalConfigs(node)
+                # INFO: To handle ice nodes we create temporary info and store it, the ice node is never added to the open list if it redirects, because 
+                # we use this temporary info to reassign the variables as if we were in the ice node
+                tmpNodeListPath = None
                 if type(nextNode) is IceNode:
                     # INFO: The connection returned is a copy, trying to find it (in a list, ditc..) after dijkstra execution will fail
                     redirectConnection = nextNode.redirectsTo(pathNode=nodeListPath, connectionFrom=connection)
@@ -1001,18 +1011,21 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
                         nextNode.deletePathConnections()
                         nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
                         
+                        tmpNodeListPath = nextNode.pathConnections
+                        
                         connection = redirectConnection
                         
-                        nodeListPath = nextNode.pathConnections
+                        costToReach = connection.cost + costToReach
                         
-                        costToReach = redirectConnection.cost + costToReach
-                        
-                        nextNode = graphObject.dictNodes[redirectConnection.toNode]
+                        nextNode = graphObject.dictNodes[connection.toNode]
                         
                         nextNodeCost = nextNode.costToReach
                 
                 if nextNodeCost is None:
-                    nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
+                    if tmpNodeListPath:
+                        nextNode.saveInfoPath(cost=costToReach, pathNode=tmpNodeListPath, connFrom=connection)
+                    else:
+                        nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
                     
                     # INFO: Creating new map if changes must be made
                     if nextNode.confirmChanges() is True:
@@ -1025,7 +1038,10 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
                     elif costToReach < nextNodeCost:
                         nextNode.deletePathConnections()
                         
-                        nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
+                        if tmpNodeListPath:
+                            nextNode.saveInfoPath(cost=costToReach, pathNode=tmpNodeListPath, connFrom=connection)
+                        else:
+                            nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
                         
                         cFlag = False
                         aFlag = False
@@ -1046,10 +1062,10 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
                         
                         if cFlag and aFlag:
                             raise ValueError("Something went wrong in dijkstra")
-                        
-                        
+                    
             listOpen.remove(node)
             listClosed.append(node)
+            debug_flag = False
     
     listFinal = list()
     for node in listGoalNodes:
@@ -1057,7 +1073,7 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
             listFinal.append(node)
     
     for id, map in graphObject.dictMaps.items():
-        print(11111111, map[20].pathConnections, "ID MAP", map.idMap_)
+        print(11111111, map[38].pathConnections, "ID MAP", map.idMap_)
     
     winnerNode = None
     if len(listFinal) > 1:
