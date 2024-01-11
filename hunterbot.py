@@ -7,7 +7,7 @@ import signal
 from functools import partial
 
 # ckeys format = {"your ckey", "your another ckey", etc...}
-ckeys = {"your key", "your another ckey"}
+ckeys = {"8228bf-07e37d-05ad4f-73416e", "your another ckey"}
 
 def loopGames(player, stopFlag, firstExecution=True):
     if firstExecution:
@@ -30,15 +30,11 @@ def loopGames(player, stopFlag, firstExecution=True):
             enemyName = jsonResponse["players"]["opponent"]["name"]
             statement = jsonResponse["verdict"]["statement"]
             if winner == playerName:
-                print(f"Winner! You won: {playerName}, Losser: {enemyName} Statement: {statement}")
+                print(f"Winner! You won: {playerName}, Losser: {enemyName} Statement: {statement} \nTimes Won : {CountWins} \nTimes Lossed : {CountLosses}")
                 CountWins = CountWins + 1
-                print(f"Times Won : {CountWins}")
-                print(f"Times Lossed : {CountLosses}")
             else:
-                print(f"Defeat! You Won: {enemyName}, Losser: {playerName} Statement: {statement}")
+                print(f"Defeat! You Won: {enemyName}, Losser: {playerName} Statement: {statement} \nTimes Won : {CountWins} \nTimes Lossed : {CountLosses}")
                 CountLosses = CountLosses + 1
-                print(f"Times Won : {CountWins}")
-                print(f"Times Lossed : {CountLosses}")
             CountMatchs = CountMatchs + 1
         
         if stopFlag is True and idStatus in statesToExit :
@@ -46,24 +42,18 @@ def loopGames(player, stopFlag, firstExecution=True):
         elif idStatus == 1 and playerTurn_flag:
             if stopFlag is True:
                 print("\nINFO: The bot will stop after this game!\n")
+            
             jsonResponse = player.getJsonResponse()
-            graphObject = Graph(jsonResponse)
-            dictNodes = graphObject.dictNodes
             goalNode = strategyPath(jsonResponse)
-            listTargetsConnections = strategyAttack(jsonResponse)
-            print(getMap(jsonResponse))
+            player.displayInfo()
             print(goalNode.pathConnections)
-            print(f"PLAYER LIFE : {player.getLife()}  ARMOR: {player.getArmor()} ENERGY: {player.getEnergy()}")
-            print(f"SKILLS:  {player.getSkills()}")
             
             # First the execution of the attack
+            listTargetsConnections = strategyAttack(jsonResponse)
             reLoop_flag = False
             for targetConnection in listTargetsConnections:
-                coords = targetConnection.positionTo
-                idSkill = targetConnection.idSkill
-                objectiveNode = dictNodes[targetConnection.toNode]
-                print(f"ATTACKING: {targetConnection.nameSkill}  DAMAGE: {targetConnection.damage} OBJECTIVE: {objectiveNode.nameNode} OBJECTIVE LIFE: {objectiveNode.totalLife}")
-                player.cast_skill(coords["x"], coords["y"], idSkill)
+                player.cast_skill(connection=targetConnection)
+                player.displayInfo()
                 # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
                 # this works well but i dont like how it looks
                 reLoop_flag = True
@@ -73,18 +63,14 @@ def loopGames(player, stopFlag, firstExecution=True):
                 continue
             
             connection = goalNode.pathConnections[0]
-            coords = connection.positionTo
-            x_coord = coords["x"]
-            y_coord = coords["y"]
             
             skillConfirmation = connection.usedSkill
             if skillConfirmation is True:
-                print(f"USING MOVEMENT SKILL: {connection.nameSkill}")
-                idSkill = connection.idSkill
-                sJsonResponse = player.cast_skill(x_coord, y_coord, idSkill)
+                player.cast_skill(connection=connection)
+                player.displayInfo()
             else:
-                jsonResponse = player.move_player(x_coord, y_coord)
-                print(getMap(jsonResponse))
+                player.move_player(connection=connection)
+                player.displayInfo()
         elif idStatus == 1:
             print("waiting for oponent")
             time.sleep(5)

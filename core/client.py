@@ -4,6 +4,8 @@ import time
 import datetime
 import http.client
 
+from core.nodemap import AttackSKill, MovementSkill, getMap
+
 fhandler = open("history.txt", "w")
 fhandler = open("history.txt", "r+")
 fhandler.write("[")
@@ -26,11 +28,12 @@ class FlowError(Exception):
 
 # Class that allows to execute basic actions and save information
 class Client():
-    def __init__(self, ckey, multiProcessing=False):
+    def __init__(self, ckey, multiProcessing=False, displayActions=True):
         self.url_api = f"https://game.codyfight.com/?"
         self.ckey = ckey
         self.status = None
         self.jsonResponse = None
+        self.displayActions = displayActions
         
         self.saveReq = True
         if multiProcessing is True:
@@ -103,11 +106,16 @@ class Client():
                 fhandler.write(",")
     
             json_loaded = json.loads(decoded)
+            self.jsonResponse = json_loaded
+            self.status = self.jsonResponse["state"]["status"]
+            
             json_dumped = json.dumps(json_loaded, indent=4)
             fhandler.write(json_dumped)
             fhandler.write("]")
         else:
             json_loaded = json.loads(decoded)
+            self.jsonResponse = json_loaded
+            self.status = self.jsonResponse["state"]["status"]
     
         return json_loaded
     
@@ -131,49 +139,61 @@ class Client():
             
             if mode == 0 and opponent_name is None:
                 to_encode = {"ckey": self.ckey, "mode": game_mode}
-                info = self.make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
-                self.jsonResponse = info
+                self.make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
             elif mode == 1 and opponent_name is not None:
                 to_encode = {"ckey": self.ckey, "mode": game_mode, "opponent": opponent_name}
-                info = self.make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
-                self.jsonResponse = info
+                self.make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
             elif mode == 3:
                 to_encode = {"ckey": self.ckey, "mode": game_mode}
-                info = self.make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
-                self.jsonResponse = info
+                self.make_request(url=self.url_api, method_api="POST", data_to_encode=to_encode)
             else:
                 raise FlowError("Mode not supported or wrong arguments!")
                 
             
             print("Room Created!")
             time.sleep(0.7)
-            return info
+            return self.jsonResponse
         else:
             raise FlowError("Game already in Course")
-        
-    def cast_skill(self, x_value, y_value, skill_id=None):
-        # Defaults to first skill if not passed, the skill id must be his unique id, not positional id
-        if self.status == 1:
+    
+    # If passed a connection to cast the skill, it will use it even if x and y values were provided
+    def cast_skill(self, x_value=None, y_value=None, skill_id=None, connection=None):
+        if self.status == 1 and connection is None:
             try:
                 x_value = int(x_value)
                 y_value = int(y_value)
             except:
                 raise TypeError("x and y values must be numbers")
-            
-            listSkills = self.jsonResponse["players"]["bearer"]["skills"]
-            if skill_id == None:
-                skill_id = listSkills[0]["id"]
                     
             to_encode = {"ckey": self.ckey, "skill_id": skill_id, "x": x_value, "y": y_value}
-            info = self.make_request(url=self.url_api, method_api="PATCH", data_to_encode=to_encode)
-            self.jsonResponse = info
+            self.make_request(url=self.url_api, method_api="PATCH", data_to_encode=to_encode)
             
-            return info
+            if self.displayActions:
+                print(f"\nUSING SKILL, ID: {skill_id}")
+            
+            return self.jsonResponse
+        elif self.status == 1 and connection is not None:
+            coords = connection.positionTo
+            
+            to_encode = {"ckey": self.ckey, "skill_id": connection.idSkill, "x": coords["x"], "y": coords["y"]}
+            self.make_request(url=self.url_api, method_api="PATCH", data_to_encode=to_encode)
+            
+            if self.displayActions:
+                if type(connection) is MovementSkill:
+                    print(f"\nUSING MOVEMENT SKILL: {connection.nameSkill}")
+                elif type(connection) is AttackSKill:
+                    objectiveNode = connection.nodeTo
+                    print(f"\nATTACKING: {connection.nameSkill}  DAMAGE: {connection.damage} OBJECTIVE: {objectiveNode.nameNode} OBJECTIVE LIFE: {objectiveNode.totalLife}")
+                else:
+                    print(f"\nUSING SKILL: {connection.nameSkill}")
+            
+            return self.jsonResponse
+            
         else:
             raise FlowError("There is no game in course to cast skill")
         
-    def move_player(self, x_value, y_value):
-        if self.status == 1:
+    def move_player(self, x_value=None, y_value=None, connection=None):
+        if self.status == 1 and connection is None:
             try:
                 x_value = int(x_value)
                 y_value = int(y_value)
@@ -181,10 +201,20 @@ class Client():
                 raise TypeError("x and y values must be numbers")
         
             to_encode = {"ckey": self.ckey, "x": x_value, "y": y_value}
-            info = self.make_request(url=self.url_api, method_api="PUT", data_to_encode=to_encode)
-            self.jsonResponse = info
+            self.make_request(url=self.url_api, method_api="PUT", data_to_encode=to_encode)
+            
+            if self.displayActions:
+                print(f"\nMOVING TO x:{x_value} y:{y_value}")
         
-            return info
+            return self.jsonResponse
+        elif self.status == 1 and connection is not None:
+            coords = connection.positionTo
+            
+            to_encode = {"ckey": self.ckey, "x": coords["x"], "y": coords["y"]}
+            self.make_request(url=self.url_api, method_api="PUT", data_to_encode=to_encode)
+            
+            if self.displayActions:
+                print(f"\nMOVING TO x:{coords['x']} y:{coords['y']}")
         else:
             raise FlowError("There is no game in course to move player")
         
@@ -208,14 +238,23 @@ class Client():
     def getWinner(self):
         return self.jsonResponse["verdict"]["winner"]
     
-    def getLife(self):
-        return self.jsonResponse["players"]["bearer"]["stats"]["hitpoints"]
+    def getLife(self, ofPlayer=True):
+        if ofPlayer:
+            return self.jsonResponse["players"]["bearer"]["stats"]["hitpoints"]
+        else:
+            return self.jsonResponse["players"]["opponent"]["stats"]["hitpoints"]
     
-    def getArmor(self):
-        return self.jsonResponse["players"]["bearer"]["stats"]["armor"]
+    def getArmor(self, ofPlayer=True):
+        if ofPlayer:
+            return self.jsonResponse["players"]["bearer"]["stats"]["armor"]
+        else:
+            return self.jsonResponse["players"]["opponent"]["stats"]["armor"]
     
-    def getEnergy(self):
-        return self.jsonResponse["players"]["bearer"]["stats"]["energy"]
+    def getEnergy(self, ofPlayer=True):
+        if ofPlayer:
+            return self.jsonResponse["players"]["bearer"]["stats"]["energy"]
+        else:
+            return self.jsonResponse["players"]["opponent"]["stats"]["energy"]
         
     def getSkills(self):
         finalStr = str()
@@ -231,3 +270,12 @@ class Client():
                 finalStr = f"{finalStr}{skill['name']} In Cooldown   "
         
         return finalStr
+        
+    def displayInfo(self):
+        finalStr = getMap(self.jsonResponse)
+        if self.status == 1:
+            finalStr = f"\n{finalStr}PLAYER LIFE: {self.getLife()} ARMOR: {self.getArmor()} ENERGY: {self.getEnergy()}"
+            finalStr = f"{finalStr}\nSKILLS: {self.getSkills()}"
+            finalStr = f"{finalStr}\nENEMY LIFE: {self.getLife(ofPlayer=False)} ARMOR: {self.getArmor(ofPlayer=False)} ENERGY: {self.getEnergy(ofPlayer=False)}"
+        
+        print(finalStr)
