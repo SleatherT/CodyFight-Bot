@@ -7,7 +7,7 @@ import signal
 from functools import partial
 
 # ckeys format = {"your ckey", "your another ckey", etc...}
-ckeys = {"8228bf-07e37d-05ad4f-73416e", "your another ckey"}
+ckeys = {"your another ckey", "your another ckey"}
 
 def loopGames(player, stopFlag, firstExecution=True):
     if firstExecution:
