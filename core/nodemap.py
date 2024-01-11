@@ -172,6 +172,15 @@ class Node():
     
     def removeUniqueConfig(self):
         return None
+    
+    @classmethod
+    def createPath(klass, pathNode: Path, connFrom: Connection):
+        path = Path()
+        for connection in pathNode:
+            path.append(connection)
+        path.append(connFrom)
+        
+        return path
 
 # Map is the dict of nodes with an unique id that is meant to be used in dijkstra algorithm
 class Map(dict):
@@ -383,8 +392,6 @@ class IceNode(ChildNode):
         super().__init__(cell)
         self.tmpListConnections = list()
         self.redirects = False
-        
-        self.tmpPathConnections = list()
     
     def saveAdyacentConnections(self, map: list) -> None:
         super().saveAdyacentConnections(map)
@@ -426,6 +433,7 @@ class IceNode(ChildNode):
     # It creates a temporary copy of itself to check if it redirects depending of the path
     def redirectsTo(self, pathNode: Node, connectionFrom: Connection):
         tmpSelfCopy = copy.deepcopy(self)
+        tmpSelfCopy.deletePathConnections()
         tmpSelfCopy.saveInfoPath(cost=None, pathNode=pathNode, connFrom=connectionFrom)
         tmpSelfCopy.loadUniqueConfig()
         
@@ -433,11 +441,6 @@ class IceNode(ChildNode):
             return tmpSelfCopy.listConnections[0]
         else:
             return None
-    
-    def tmpSaveInfoPath(self, pathNode: Path, connFrom: Connection):
-        for connection in pathNode:
-            self.tmpPathConnections.append(connection)
-        self.tmpPathConnections.append(connFrom)
 
 class PlayerNode(ChildNode):
     def __init__(self, cell: dict):
@@ -938,6 +941,35 @@ def deleteConnectionsThatPointsToThisNode(idNode: int, dictNodes: dict):
         for connection in tmpList:
             node.listConnections.remove(connection)
     
+# Class made to find the nodes that are re-added to the open list (when a short path has been found)
+class OpenList(list):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.firstAdd_ = set()
+        self.removed_ = set()
+        self.reAdded_ = set()
+        
+    def append(self, item):
+        super().append(item)
+        if item in self.removed_:
+            self.reAdded_.add(item)
+        self.firstAdd_.add(item)
+    
+    def remove(self, item):
+        super().remove(item)
+        self.removed_.add(item)
+    
+    # idMap = None to print nodes from all the maps
+    def getreadded_(self, idMap=0, onlyIds=True):
+        if idMap == None and onlyIds is True:
+            return [item.id for item in self.reAdded_]
+        elif idMap == None and onlyIds is False:
+            return [item for item in self.reAdded_]
+        elif onlyIds is True:
+            return [item.id for item in self.reAdded_ if item.idMap == idMap]
+        elif onlyIds is False:
+            return [item for item in self.reAdded_ if item.idMap == idMap]
+        
 
 # The main dijkstra function, it creates new maps (dictNodes) depending of where the bot goes and it returns the less cost path to the objective
 def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
@@ -953,7 +985,7 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
         node.deletePathConnections()
     
         
-    listOpen = list()
+    listOpen = OpenList()
     listClosed = list()
     
     startNode = graphObject.dictNodes[idStart]
@@ -986,9 +1018,10 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
             nodeListPath = node.pathConnections
             
             debug_flag = False
-            if node.id == 38 and graphObject.dictNodes.idMap_ == 0:
+            #if node.id == 38 and graphObject.dictNodes.idMap_ == 0:
+            if node.id == 48 and graphObject.dictNodes.idMap_ == 0:
                 debug_flag = True
-                print(graphObject.dictNodes.idMap_, node.pathConnections)
+                print("DEBUG INIT", graphObject.dictNodes.idMap_, node.pathConnections)
             
             for connection in listConnections:
                 # INFO: Ignoring banned connections
@@ -1008,10 +1041,7 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
                     # INFO: The connection returned is a copy, trying to find it (in a list, ditc..) after dijkstra execution will fail
                     redirectConnection = nextNode.redirectsTo(pathNode=nodeListPath, connectionFrom=connection)
                     if redirectConnection:
-                        nextNode.deletePathConnections()
-                        nextNode.saveInfoPath(cost=costToReach, pathNode=nodeListPath, connFrom=connection)
-                        
-                        tmpNodeListPath = nextNode.pathConnections
+                        tmpNodeListPath = Node.createPath(pathNode=nodeListPath, connFrom=connection)
                         
                         connection = redirectConnection
                         
@@ -1073,7 +1103,9 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
             listFinal.append(node)
     
     for id, map in graphObject.dictMaps.items():
-        print(11111111, map[38].pathConnections, "ID MAP", map.idMap_)
+        print(11111111, map[48].pathConnections, "ID MAP", map.idMap_)
+    
+    print("OPEN LIST RE-ADDED NODES", listOpen.getreadded_())
     
     winnerNode = None
     if len(listFinal) > 1:
