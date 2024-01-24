@@ -13,9 +13,7 @@ def loopGames(player):
     while continuePlaying_flag:
         idStatus = player.getIdStatus()
         playerTurn_flag = player.getIsPlayerTurn()
-        if CountMatchs > 1000:
-            print(f"1000 Matchs Played! Times Won:{CountWins} Times Lossed:{CountLosses}")
-        elif idStatus == 1 and playerTurn_flag:
+        if idStatus == 1 and playerTurn_flag:
             jsonResponse = player.getJsonResponse()
             goalNode = strategyPath(jsonResponse)
             listTargetsConnections = strategyAttack(jsonResponse)
