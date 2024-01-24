@@ -108,7 +108,7 @@ def strategyPath(jsonResponse):
                 if connection.toNode in listNoSwap and connection.usedSkill is True and connection.idSkill == idSwapSkill:
                     connection.setBan(True)
     
-    goalNode = dijkstra(dictNodes, playerNode.id, listIdGoals)
+    goalNode = dijkstra(dictNodes, playerNode.id, listIdGoals, ignoreLandmines=False)
     
     return goalNode
     

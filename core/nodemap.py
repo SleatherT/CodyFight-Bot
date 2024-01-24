@@ -739,7 +739,7 @@ def deleteConnectionsThatPointsToThisNode(idNode: int, dictNodes: dict):
     
 
 # This is the pure algorithm, if passed the pure argument to True, it will ignore the dangerous restricction, used for create possible connections of the skills
-def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
+def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False, ignoreLandmines=True):
     listGoalNodes = list()
     
     for id in idsGoal:
@@ -764,6 +764,9 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False):
             # wall node, but, i am not sure, since i want the dictNodes to be realistic this breaks this, since, its possible to go to this node but
             # not preferable, then this code suits well, i think?
             if type(node) is PitNode and pure is False:
+                listOpen.remove(node)
+                continue
+            if pure is False and ignoreLandmines is False and node.typeNode == 14:
                 listOpen.remove(node)
                 continue
             # INFO: This method loads configuration depending of the type potential to salve a lot of things, experimental right now, it should be improvable
