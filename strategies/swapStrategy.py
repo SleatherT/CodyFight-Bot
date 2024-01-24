@@ -88,7 +88,7 @@ def strategyPath(jsonResponse):
             for node in listPseudoNodes:
                 if node.typeAgentIn is not None:
                     continue
-                if node.type in [1, 3, 17, 12]:
+                if node.typeNode in [1, 3, 17, 12]:
                     continue
                 connection = Connection(cellFrom=node.cell, cellTo=agentNode.cell, cost=0, usedSkill=True, idSkill=idSwapSkill)
                 nodeFromRealDictNodes = dictNodes[node.id]
