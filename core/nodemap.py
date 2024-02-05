@@ -255,7 +255,8 @@ class SliderNode(ChildNode):
         if uniqueSliderConn:
             nextNodeType = self.dictGraphNodes[uniqueSliderConn.toNode].typeNode
             nextNodeAgent = self.dictGraphNodes[uniqueSliderConn.toNode].typeAgentIn
-            if nextNodeAgent is not None:
+            # 100 is User Node, specifiying because it should not delete if its ponting to other agents but if its the player it must delete
+            if nextNodeAgent is not None and nextNodeAgent == 100:
                 deleteConn_flag = False
             elif nextNodeType in listIds:
                 deleteConn_flag = False
