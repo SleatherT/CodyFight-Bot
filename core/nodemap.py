@@ -913,9 +913,13 @@ class Graph():
             playerNode.setTypeAgentIn(100)
         
         if enemyPosition:
-            cell = getCell(enemyPosition, map)
-            enemyNode = dictNodes[cell["id"]]
-            enemyNode.setTypeAgentIn(200)
+            # For some reason if the game has ended status: 2 the positionof the enemy no longer conrrespond to the map so it raises a error
+            try:
+                cell = getCell(enemyPosition, map)
+                enemyNode = dictNodes[cell["id"]]
+                enemyNode.setTypeAgentIn(200)
+            except IndexError:
+                pass
         
         # INFO: This asumes that the agent dict is the same as one of a game status = 1
         for agent in specialAgents:
