@@ -23,7 +23,7 @@ def strategyPath(jsonResponse):
     # with the purpose of creating a "logic" map of nodes but we can reverse it with the new function i added reverseDeleteAgentConnections()
     
     #Suspending this until a error caused by this is fixed
-    #graphObject.reverseDeleteAgentConnections()
+    graphObject.reverseDeleteAgentConnections()
     
     ryoTrapped_flag = graphObject.ryoTrapped_flag
     if ryoTrapped_flag:
@@ -84,7 +84,7 @@ def strategyAttack(jsonResponse):
     for skill in listskills:
         if skill["damage"] > 0:
             dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
-            Count = Count + 1
+        Count = Count + 1
     
     maxDamage = None
     # The prioritized skill will be the native skill, if its an attack skill of course, otherwise will be the one with more damage
