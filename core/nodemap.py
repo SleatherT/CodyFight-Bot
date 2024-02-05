@@ -764,8 +764,10 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False, ignor
             # NOTE: After checking again this code, i noticed this is redundant, it would be simpler just removing the pit listConnections like a 
             # wall node, but, i am not sure, since i want the dictNodes to be realistic this breaks this, since, its possible to go to this node but
             # not preferable, then this code suits well, i think?
+            exFlag = False
             if type(node) is PitNode and pure is False:
                 listOpen.remove(node)
+                exFlag = True
                 continue
             if pure is False and ignoreLandmines is False and node.typeNode == 14:
                 listOpen.remove(node)
@@ -858,7 +860,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list, ignoreLandmines=True)
     if ripperNode is not None:
         while True:
             InfinityDetector.CountIter(x)
-            nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal, ignoreLandmines)
+            nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal, ignoreLandmines=ignoreLandmines)
             listRipperAdNodes = list()
             idDeathNode = None
             for connection in ripperNode.listConnections:
@@ -883,7 +885,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list, ignoreLandmines=True)
     
     if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
         nodeGoal.pathConnections[0].setBan(True)
-        nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal, ignoreLandmines)
+        nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal, ignoreLandmines=ignoreLandmines)
     
     return nodeGoal
 
