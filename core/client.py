@@ -1,3 +1,4 @@
+from config import SAVEHISTORY
 import urllib.request, urllib.parse, urllib.error
 import json
 import time
@@ -90,9 +91,10 @@ def make_request(url, method_api, data_to_encode):
         fhandler.write(",")
     
     json_loaded = json.loads(decoded)
-    json_dumped = json.dumps(json_loaded, indent=4)
-    fhandler.write(json_dumped)
-    fhandler.write("]")
+    if SAVEHISTORY is True:
+        json_dumped = json.dumps(json_loaded, indent=4)
+        fhandler.write(json_dumped)
+        fhandler.write("]")
     
     return json_loaded
 
