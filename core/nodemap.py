@@ -840,7 +840,7 @@ def pre_dijkstra(dictNodes: dict, idStart: int, idsGoal: list, pure=False, ignor
 # dijkstra will copy the dictNodes connections so the returned nodeGoal.pathConnections should not be trated as the same from the original dictNodes, this also means
 # that the Nodes of original dictNodes doesnt have his dijkstra atributes with data, if you need to access to this processed info use pre_dijkstra, this is because the 
 # following verifications modifies the nodes and since this function is going to be called more that one time not doing this could lead to create bad paths
-def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
+def dijkstra(dictNodes: dict, idStart: int, idsGoal: list, ignoreLandmines=True):
     dictNodesCopy = copy.deepcopy(dictNodes)
     x = InfinityDetector()
     
@@ -858,7 +858,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
     if ripperNode is not None:
         while True:
             InfinityDetector.CountIter(x)
-            nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
+            nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal, ignoreLandmines)
             listRipperAdNodes = list()
             idDeathNode = None
             for connection in ripperNode.listConnections:
@@ -883,7 +883,7 @@ def dijkstra(dictNodes: dict, idStart: int, idsGoal: list):
     
     if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
         nodeGoal.pathConnections[0].setBan(True)
-        nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal)
+        nodeGoal = pre_dijkstra(dictNodesCopy, idStart, idsGoal, ignoreLandmines)
     
     return nodeGoal
 
