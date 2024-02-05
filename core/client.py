@@ -1,3 +1,4 @@
+from config import SAVEHISTORY
 import urllib.request, urllib.parse, urllib.error
 import json
 import time
@@ -94,7 +95,7 @@ class Client():
         response_data = response.read()
         decoded = response_data.decode("utf-8")
         
-        if self.saveReq is True:
+        if self.saveReq is True and SAVEHISTORY is True:
             fhandler.seek(0)
             # Deleting previous "]" character
             fhandler.seek(0, 2)
