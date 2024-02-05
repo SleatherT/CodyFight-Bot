@@ -1234,6 +1234,7 @@ def dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     
     if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
         nodeGoal.pathConnections[0].setBan(True)
+        
         nodeGoal = pre_dijkstra(graphObjectCopy, idsGoal, idStart)
     
     return nodeGoal
