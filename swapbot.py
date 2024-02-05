@@ -1,9 +1,10 @@
+from config import CKEY, GAMEMODE
 from core.client import Client
 from core.nodemap import getMap
 from strategies.swapStrategy import strategyPath, strategyAttack
 import time
 
-player = Client(ckey="your key")
+player = Client(ckey=CKEY)
 
 def loopGames(player):
     CountMatchs = 0
@@ -66,12 +67,12 @@ def loopGames(player):
                 print(f"Times Won : {CountWins}")
                 print(f"Times Lossed : {CountLosses}")
             CountMatchs = CountMatchs + 1
-            player.create_room(0)
+            player.create_room(GAMEMODE)
         elif idStatus == 0:
             print("Registering players.. waiting 15 seconds")
             time.sleep(15)
         elif idStatus == -1:
-            player.create_room(0)
+            player.create_room(GAMEMODE)
         else:
             print(f"Unknown status! {idStatus}")
             

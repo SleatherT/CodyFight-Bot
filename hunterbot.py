@@ -1,3 +1,4 @@
+from config import CKEY, GAMEMODE
 from core.client import Client
 from core.nodemap import Graph, getMap
 from strategies.hunterStrategy import strategyPath, strategyAttack
