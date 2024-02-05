@@ -28,6 +28,100 @@ Mac
 3. Verify Installation
   - Type 'python3 --version' again to confirm Python is installed
 
+# Coping the repository
+You can copy all the repository manually if you want but its better if you use Git Bash to do it as it is easier to keep it up to date
+
+# How to install Git Bash (Windows)
+
+Windows
+
+1. Download Git 
+  - Open your web browser and navigate to the official Git website: https://git-scm.com/ and download
+2. Run the installer
+  - Follow the on-screen instructions in the installer, you can leave the default settings 
+
+# How to install Git Bash (Unix Systems)
+We can install Git Bash with the command line typing the following commands
+
+-This command updates the package lists, accept if it asks for confirmation to download
+```
+sudo apt-get update
+```
+-Installing git
+```
+sudo apt-get install git
+```
+-Verify installation and version installed
+```
+git --version
+```
+
+# Nevigating with the command line/cmd
+Before cloning the repository you must navigate to the directory where you want to clone it
+- On Windows use the 'dir' command to list/view the names of the files in the directory where you are located and 'cd' command to move to the directory where you want to store the cloned repository. For example:
+
+List/view the files of the directory
+```
+dir
+```
+
+Move to another directory
+```
+cd YourFolder
+```
+
+- In Unix Systems use the 'ls' command to view the files of a directory, is similar to the 'dir' command in windows and same as in windows we use 'cd' to move to another directory
+
+List/view the files of the directory
+```
+ls
+```
+
+Move to another directory
+```
+cd YourFolder
+```
+
+Creating a folder
+```
+mkdir FolderName
+```
+
+# How to copy/clone and update the repository
+-You can clone the repository in your device with Git Bash by typing:
+```
+git clone <repository_url>
+```
+Replace the <repository_url> with the url, in this case https://github.com/SleatherT/CodyFight-Bot
+
+```
+git clone https://github.com/SleatherT/CodyFight-Bot
+```
+
+Once the cloning process is complete, you should see a new directory in your chosen location with the contents of the cloned repository
+
+-To check if your copy is up to date you can use 
+```
+git status
+```
+This command it also show us the name of the branch we are on, keep in mind this name since it will be used to update the cloned repository
+
+-If it tells us that we are behind we can update it by typing:
+```
+git pull origin <branch_name>
+```
+Replace the <branch_name> by the name that the previous command showed you. If you cloned this repository it should be 'main', so it would end up lokking like this
+
+```
+git pull origin main
+```
+
+# Deploy bot and changing the game mode
+
+To deploy the bot just edit the config.py file with your ckey and execute the bot file (e.g. hunterbot.py).
+
+Same to change the game mode, edit the config.py file
+
 # Files and Classes
 
 The **core** folder as his name implies, has the framework to make possible code bots. His files are:
@@ -47,16 +141,12 @@ Outside we have the bots:
   - hunterbot.py same as exitbot using hunterStrategy
   - history.txt everytime we make a request to the api this file is written with the info recieved, if we found a map that cause errors or we want to test something we can copy one of the responses in the testmap.py
 
-# How to start
-See the baseStrategy.py and some of the bot files to get an idea of how the code works
-You are going to see that the graph has a lot of usefull info, as well as the Nodes, their info is pretty usefull if you now how to use it
+# How to create your own bots / Contribute to the repository
+You can start by reading the core files, and after the strategy files, almost all the functions are commented or have type hints
 
-# Operators Supported
-If you want to use a bot to avoid spending time in completing rarity missions use hunterbot if it has some skills that make damage, otherwise use swapbot.
-If you want a solid strategy for now you must create it unless you have a Hunter or a Trickster with Swap, in that case you can use the hunterbot or swapbot
-
-# Deploy bot
-To deploy the bot just edit the exitbot.py or hunterbot.py file with your ckey and execute this file
-```
-player = Client(ckey="your key")
-
+# Skill/Attacks not supported right now
+This change constantly so i am going to forget to update this probably, you can always ask me in the codyfight discord if you want to make sure the skill is still not supported
+- Skills that can be casted on traps
+- Skills that can create traps
+- Almost all the movement skills, like double time
+- Skills that can create structures like walls

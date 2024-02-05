@@ -1,9 +1,10 @@
+from config import CKEY, GAMEMODE
 from core.client import Client
 from core.nodemap import Graph, getMap
 from strategies.hunterStrategy import strategyPath, strategyAttack
 import time
 
-player = Client(ckey="your_key")
+player = Client(ckey=CKEY)
 
 def loopGames(player):
     CountMatchs = 0
@@ -13,8 +14,6 @@ def loopGames(player):
     while continuePlaying_flag:
         idStatus = player.getIdStatus()
         playerTurn_flag = player.getIsPlayerTurn()
-        if CountMatchs > 1000:
-            print(f"1000 Matchs Played! Times Won:{CountWins} Times Lossed:{CountLosses}")
         if idStatus == 1 and playerTurn_flag:
             jsonResponse = player.getJsonResponse()
             graphObject = Graph(jsonResponse)
@@ -74,12 +73,12 @@ def loopGames(player):
                 print(f"Times Won : {CountWins}")
                 print(f"Times Lossed : {CountLosses}")
             CountMatchs = CountMatchs + 1
-            player.create_room(0)
+            player.create_room(GAMEMODE)
         elif idStatus == 0:
             print("Registering players.. waiting 15 seconds")
             time.sleep(15)
         elif idStatus == -1:
-            player.create_room(0)
+            player.create_room(GAMEMODE)
         else:
             print(f"Unknown status! {idStatus}")
             
