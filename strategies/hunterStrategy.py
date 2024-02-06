@@ -1,4 +1,5 @@
 # Main Classes/Functions
+from config import GOEXIT
 from core.nodemap import Graph, Connection, AttackSKill, MovementSkill, PlayerNode, SliderNode, BidirectionalNode, TrapNode, SentryNode, dijkstra, pre_dijkstra, getMap
 
 def strategyPath(jsonResponse):
@@ -26,15 +27,20 @@ def strategyPath(jsonResponse):
     graphObject.reverseDeleteAgentConnections()
     
     ryoTrapped_flag = graphObject.ryoTrapped_flag
-    if ryoTrapped_flag:
-        listIdGoals.append(graphObject.ryoIdGoal)
     
-    if kixNode is not None:
-        for connection in kixNode.listConnections:
+    # If there are exits in the map it will go to them, otherwise it will move towards enemies
+    if GOEXIT is True and len(listIdGoals) > 0:
+        pass
+    else:
+        if ryoTrapped_flag:
+            listIdGoals.append(graphObject.ryoIdGoal)
+    
+        if kixNode is not None:
+            for connection in kixNode.listConnections:
+                listIdGoals.append(connection.toNode)
+    
+        for connection in enemyNode.listConnections:
             listIdGoals.append(connection.toNode)
-    
-    for connection in enemyNode.listConnections:
-        listIdGoals.append(connection.toNode)
     
     # Movement Skills 
     # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
