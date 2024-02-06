@@ -1,0 +1,5 @@
+# This file indicates what files should be left untracked 
+
+# Text files
+
+.txt
