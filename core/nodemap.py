@@ -4,7 +4,7 @@
 # defines (hopefully permanently) the basic structure and best way of create the graph, nodes and connections objects to be easy modifiable in case is needed
 import random
 import copy
-
+import time
 
 class Connection():
     def __init__(self, cellFrom: dict, cellTo: dict, cost=1, usedSkill=False, idSkill=None, ban=False):
@@ -890,6 +890,12 @@ class Graph():
                 continue
             dNode.removeUniqueConfig()
     
+    def resetMaps(self):
+        self.dictMaps = {0: self.dictMaps[0]}
+        for nodeId, node in self.dictMaps[0].items():
+            node.deleteInfoPath()
+        self.dictNodes = self.dictMaps[0]
+    
     # Returns a minimalist dictNodes with enough info to be used in getMap()
     @classmethod
     def getMiniDictNodes(klass, jsonResponse: dict) -> dict:
@@ -986,15 +992,9 @@ class OpenList(list):
 def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     if idStart is None:
         idStart = graphObject.userNode.id
-    
-    listGoalNodes = list()
-    for id in idsGoal:
-        listGoalNodes.append(graphObject.dictNodes[id])
         
     # Restoring values of the dictNodes in case they have already been processed by this function
-    for (id, node) in graphObject.dictNodes.items():
-        node.deletePathConnections()
-    
+    graphObject.resetMaps()
         
     listOpen = OpenList()
     listClosed = list()
@@ -1006,7 +1006,7 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     while len(listOpen) > 0:
         for node in listOpen:
             #print(f"\nNEXT NODE ITER: {node}\n{node.pathConnections}")#\nOPEN LIST: {[[item.id, item.idMap] for item in listOpen]}\nCLOSED LIST: {[[item.id, item.idMap] for item in listClosed]}\nID MAP: {graphObject.dictNodes.idMap_}\n")
-            
+            #time.sleep(3)
             # This is the default behavior of dijkstra, no Death Pit node is calculate and by consecuence its not considered as a path in any case
             # NOTE: After checking again this code, i noticed this is redundant, it would be simpler just removing the pit listConnections like a 
             # wall node, but, i am not sure, since i want the dictNodes to be realistic this breaks this, since, its possible to go to this node but
@@ -1030,10 +1030,15 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
             
             debug_flag = False
             #if node.id == 38 and graphObject.dictNodes.idMap_ == 0:
-            if node.id == 48 and graphObject.dictNodes.idMap_ == 0:
+            """if node.id == 78  and graphObject.dictNodes.idMap_ != 0:
                 debug_flag = True
                 print("DEBUG INIT", graphObject.dictNodes.idMap_, node.pathConnections)
-            
+            try:
+                nodeT = graphObject.dictMaps[1][78]
+                print("DEBUG INIT", nodeT, "PATH", nodeT.pathConnections)
+            except:
+                pass
+            """
             for connection in listConnections:
                 # INFO: Ignoring banned connections
                 if connection.ban is True:
@@ -1109,14 +1114,17 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
             debug_flag = False
     
     listFinal = list()
-    for node in listGoalNodes:
-        if node in listClosed:
-            listFinal.append(node)
+    goalNodesList = list()
+    for idGoal in idsGoal:
+        goalNodesList = [map[idGoal] for mapId, map in graphObject.dictMaps.items() if map[idGoal].costToReach is not None]
+    for node in goalNodesList:
+        listFinal.append(node)
     
+    """
     for id, map in graphObject.dictMaps.items():
-        print(11111111, map[48].pathConnections, "ID MAP", map.idMap_)
-    
-    print("OPEN LIST RE-ADDED NODES", listOpen.getreadded_())
+        print(11111111, map[78], map[78].pathConnections, "ID MAP", map.idMap_, id)
+    """
+    #print("OPEN LIST RE-ADDED NODES", listOpen.getreadded_())
     
     winnerNode = None
     if len(listFinal) > 1:
@@ -1240,7 +1248,7 @@ def dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     # If the objective is 1 cell away and a skill will be used to reach it, it will ban this connection skill so it doesnt use it and it uses the normal move
     # IMPROVE: To ban, the id of the skill is connection is used, and is added here, would be better to use the list passed from the strategy code, but how?,
     # problems or more likely the not execution of this code are in the future if the id's are changed
-    listIdMovementSkillsBan = [28]
+    listIdMovementSkillsBan = [28, 8]
     
     if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
         nodeGoal.pathConnections[0].setBan(True)
