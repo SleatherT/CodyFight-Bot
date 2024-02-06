@@ -1,5 +1,9 @@
 # This file indicates what files should be left untracked 
 
-# Text files
+# Miscellaneous files, history, savedMaps
 
-.txt
+/misc
+
+# CKEY file
+
+ckey.py

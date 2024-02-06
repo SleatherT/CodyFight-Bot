@@ -76,11 +76,11 @@ class UIDebug():
         self.printMaps()
     
     def printMapsOption(self):
-        selectedFile = input("\nUse testmap file? (Rejecting will use the history file) \n y / n   (ENTER = n)\n")
+        selectedFile = input("\nUse testmaps file? (Rejecting will use the history file) \n y / n   (ENTER = n)\n")
         
         if selectedFile == "y":
             print("Opening...")
-            fhandler = open("misc/testmap.txt", "r")
+            fhandler = open("misc/testmaps.txt", "r")
             self.jsonResponses = json.load(fhandler)
         elif selectedFile == "n" or len(selectedFile) == 0:
             print("Opening...")
