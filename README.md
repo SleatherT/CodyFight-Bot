@@ -120,11 +120,15 @@ Replace the <branch_name> by the name that the previous command showed you. If y
 git pull origin main
 ```
 
-# Deploy bot and changing the game mode
+# Deploy bot, Change the game mode and other configuration options
 
-To deploy the bot just edit the config.py file with your ckey and execute the bot file (e.g. hunterbot.py).
+The easy way to deploy the bot is just editing the config.py file with your ckey and execute the bot file (e.g. hunterbot.py)
 
-Same to change the game mode, edit the config.py file
+That works if the repository it would never be updated but since its not the case, you should use the ckey.py.template file to create a ckey.py file, so when pulling/updating the repository you dont need to edit again the config file with your ckey
+
+To change the game mode, edit the config.py file
+
+At the time of writing there are configuration options to make the hunterbot go only to exits and an option to not create/save a history.txt file, usefull when deploying the bot in the cloud
 
 # Files and Classes
 
