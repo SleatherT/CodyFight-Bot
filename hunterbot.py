@@ -14,7 +14,6 @@ def loopGames(player, stopFlag, firstExecution=True):
     if firstExecution:
         print("\n Press CTRL + C To Exit, the bot will stop after the current match has ended\n")
         time.sleep(7)
-    CountMatchs = 0
     CountWins = 0
     CountLosses = 0
     continuePlaying_flag = True
@@ -36,7 +35,6 @@ def loopGames(player, stopFlag, firstExecution=True):
             else:
                 print(f"Defeat! You Won: {enemyName}, Losser: {playerName} Statement: {statement} \nTimes Won : {CountWins} \nTimes Lossed : {CountLosses}")
                 CountLosses = CountLosses + 1
-            CountMatchs = CountMatchs + 1
         
         if stopFlag is True and idStatus in statesToExit :
             break
