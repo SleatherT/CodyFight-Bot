@@ -1,0 +1,7 @@
+BUGS FOUND
+
+- reverseDeleteAgentConnections() raises a bug if the player is sorrounded by Ripper, e.g. is sorrounded by 3 walls and the other cell is occupied by Ripper
+
+MUST BE FIXED
+
+- swapbot will not work right until finish updating the new dijkstra algorithm, caused by 'ignoreLandmines' argument

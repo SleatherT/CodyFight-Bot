@@ -28,6 +28,10 @@ Mac
 3. Verify Installation
   - Type 'python3 --version' again to confirm Python is installed
 
+# Stay up to date
+
+BugsAndFixes files has info about bugs found that are not solved yet and temporal changes if something doesn't work as expected check this file, in case there is no info about your problem submit a Issue or report it in the Codyfight discord
+
 # Coping the repository
 You can copy all the repository manually if you want but its better if you use Git Bash to do it as it is easier to keep it up to date
 
