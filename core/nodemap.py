@@ -160,9 +160,14 @@ class Node():
             self.pathConnections.append(connection)
         self.pathConnections.append(connFrom)
     
+    def deleteInfoPath(self):
+        self.pathConnections = list()
+        self.costToReach = None
+    
     def deletePathConnections(self):
         self.pathConnections = list()
         self.costToReach = None
+        
     
     def loadUniqueConfig(self):
         return None
@@ -464,6 +469,7 @@ class PlayerNode(ChildNode):
             print("WARNING: playerNodeIsGoal function has found two connections or nothing!")
             
     def saveStats(self, dictStats: dict):
+        self.playerStats = dictStats
         self.nameNode = dictStats["name"]
         self.armor = dictStats["stats"]["armor"]
         self.hitpoints = dictStats["stats"]["hitpoints"]

@@ -40,7 +40,7 @@ def strategyPath(jsonResponse):
     # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
     
     # Add Here the id of the skills
-    listIdMovementSkills = [28] # 28: Double Time
+    listIdMovementSkills = [28, 8] # 28: Double Time  8: Run run run
     
     # If any movement skill is available to use, it will use it, no restrictions of energy for now
     
@@ -174,7 +174,7 @@ def strategyAttack(jsonResponse):
                 # IMPROVE: Temporary adding attacks against Sentry Turrets to the listAgentAttacks until the creation of a strategy for this objective 
                 listAgentAttacks.append(connection)
             else:
-                print(f"UNKNOWN AGENT OR TILE TO ATTACK!! more info node: {objetiveNode} id agent: {objetiveNode.typeAgentIn}, id node: {objetiveNode.typeNode}")
+                print(f"UNKNOWN AGENT OR TILE TO ATTACK!! more info node: {objetiveNode} id agent: {objetiveNode.typeAgentIn}, id node: {objetiveNode.typeNode}, skill: {keyName}")
     
     # Checking if any avalible skill would kill any close agent, return the skillConnection if True
     for skillConnection in listAgentAttacks:

@@ -6,11 +6,12 @@ import datetime
 import http.client
 
 from core.nodemap import AttackSKill, MovementSkill, getMap
+#from core.simulator import 
 
-fhandler = open("history.txt", "w")
-fhandler = open("history.txt", "r+")
+fhandler = open("misc/history.txt", "w")
+fhandler = open("misc/history.txt", "r+")
 fhandler.write("[")
-fhandlerLogs = open("connection_errors.txt", "w")
+fhandlerLogs = open("misc/connection_errors.txt", "w")
 
 class BadRequest(Exception):
     def __init__(self, urllibError):
@@ -280,3 +281,6 @@ class Client():
             finalStr = f"{finalStr}\nENEMY LIFE: {self.getLife(ofPlayer=False)} ARMOR: {self.getArmor(ofPlayer=False)} ENERGY: {self.getEnergy(ofPlayer=False)}"
         
         print(finalStr)
+    
+    def findPath(self):
+        pass

@@ -8,7 +8,7 @@ import signal
 from functools import partial
 
 # ckeys format = {"your ckey", "your another ckey", etc...}
-ckeys = {"your another ckey", "your another ckey"}
+ckeys = {CKEY}
 
 def loopGames(player, stopFlag, firstExecution=True):
     if firstExecution:
@@ -68,10 +68,11 @@ def loopGames(player, stopFlag, firstExecution=True):
             skillConfirmation = connection.usedSkill
             if skillConfirmation is True:
                 player.cast_skill(connection=connection)
-                player.displayInfo()
             else:
                 player.move_player(connection=connection)
-                player.displayInfo()
+            
+            player.displayInfo()
+        
         elif idStatus == 1:
             print("waiting for oponent")
             time.sleep(5)
@@ -113,7 +114,7 @@ if __name__ == "__main__":
     processList = list()
     Count = 0
     for ckey in ckeys:
-        player = Client(ckey, multiProcessing=True)
+        player = Client(ckey, multiProcessing=False)
         processList.append(multiprocessing.Process(target=bot, args=(player, )))
         Count = 1 + Count
     

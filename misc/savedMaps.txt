@@ -1,0 +1,1295 @@
+[
+    {
+        "state": {
+            "id": 7252640,
+            "status": 1,
+            "mode": 0,
+            "round": 4,
+            "total_turns": 30,
+            "total_rounds": 5,
+            "max_turn_time": 60,
+            "turn_time_left": 40
+        },
+        "players": {
+            "bearer": {
+                "name": "SwapMaster",
+                "owner": "Sleather",
+                "stats": {
+                    "is_alive": true,
+                    "is_demolished": false,
+                    "armor": 125,
+                    "armor_cap": 125,
+                    "hitpoints": 275,
+                    "hitpoints_cap": 275,
+                    "energy": 350,
+                    "energy_cap": 350,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "durability": 1076,
+                    "durability_cap": 3500,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "codyfighter": {
+                    "type": 14,
+                    "name": "Preseason Rare Sapper",
+                    "class": "SAPPER",
+                    "rarity": "RARE"
+                },
+                "turn": 3,
+                "position": {
+                    "x": 3,
+                    "y": 6
+                },
+                "possible_moves": [
+                    {
+                        "x": 3,
+                        "y": 6,
+                        "direction": "stay"
+                    },
+                    {
+                        "x": 3,
+                        "y": 7,
+                        "direction": "down"
+                    },
+                    {
+                        "x": 2,
+                        "y": 6,
+                        "direction": "left"
+                    }
+                ],
+                "is_player_turn": true,
+                "skills": [
+                    {
+                        "id": 45,
+                        "name": "H1t",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Deal minimal damage to any game agent within the given range.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 75,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 50,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": [
+                            {
+                                "x": 4,
+                                "y": 6
+                            }
+                        ]
+                    },
+                    {
+                        "id": 9,
+                        "name": "Fisticuffs",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Deals damage to the target. Can target opponent, SA and Trap tiles.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 60,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 80,
+                        "duration": 0,
+                        "targeting_type": 1,
+                        "possible_targets": [
+                            {
+                                "x": 4,
+                                "y": 6
+                            }
+                        ]
+                    },
+                    {
+                        "id": 40,
+                        "name": "Workn't",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Throw an explosive with an EMP charge that disables Special Tiles.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 85,
+                        "cooldown": 0,
+                        "range": 2,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 3,
+                        "possible_targets": [
+                            {
+                                "x": 4,
+                                "y": 7
+                            }
+                        ]
+                    },
+                    {
+                        "id": 10,
+                        "name": "Bombs Away",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Throws a bomb onto the selected tile. If the targeted tile is an empty - creates Death Pit. If there is an Agent on the selected tile - deal damage instead. Cannot destroy/disable walls, obstacles or spec. tiles.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 110,
+                        "cooldown": 0,
+                        "range": 2,
+                        "damage": 175,
+                        "duration": 0,
+                        "targeting_type": 2,
+                        "possible_targets": [
+                            {
+                                "x": 1,
+                                "y": 4
+                            },
+                            {
+                                "x": 1,
+                                "y": 6
+                            },
+                            {
+                                "x": 1,
+                                "y": 8
+                            },
+                            {
+                                "x": 2,
+                                "y": 4
+                            },
+                            {
+                                "x": 2,
+                                "y": 6
+                            },
+                            {
+                                "x": 2,
+                                "y": 7
+                            },
+                            {
+                                "x": 2,
+                                "y": 8
+                            },
+                            {
+                                "x": 3,
+                                "y": 4
+                            },
+                            {
+                                "x": 3,
+                                "y": 8
+                            },
+                            {
+                                "x": 4,
+                                "y": 4
+                            },
+                            {
+                                "x": 4,
+                                "y": 5
+                            },
+                            {
+                                "x": 4,
+                                "y": 6
+                            },
+                            {
+                                "x": 4,
+                                "y": 8
+                            },
+                            {
+                                "x": 5,
+                                "y": 4
+                            },
+                            {
+                                "x": 5,
+                                "y": 6
+                            },
+                            {
+                                "x": 5,
+                                "y": 8
+                            }
+                        ]
+                    }
+                ],
+                "score": {
+                    "points": 45,
+                    "ryo_count": 0,
+                    "exit_count": 0,
+                    "kill_count": 3,
+                    "death_count": 1
+                }
+            },
+            "opponent": {
+                "name": "codyfighter-c34",
+                "owner": "Codyfight",
+                "stats": {
+                    "is_alive": true,
+                    "is_demolished": false,
+                    "armor": 208,
+                    "armor_cap": 208,
+                    "hitpoints": 458,
+                    "hitpoints_cap": 458,
+                    "energy": 161,
+                    "energy_cap": 584,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "durability": 2111,
+                    "durability_cap": 8000,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "codyfighter": {
+                    "type": 0,
+                    "name": "Foo",
+                    "class": "SAPPER",
+                    "rarity": "LEGENDARY"
+                },
+                "turn": 4,
+                "position": {
+                    "x": 4,
+                    "y": 6
+                },
+                "possible_moves": [
+                    {
+                        "x": 4,
+                        "y": 6,
+                        "direction": "stay"
+                    },
+                    {
+                        "x": 4,
+                        "y": 5,
+                        "direction": "up"
+                    },
+                    {
+                        "x": 4,
+                        "y": 7,
+                        "direction": "down"
+                    },
+                    {
+                        "x": 5,
+                        "y": 6,
+                        "direction": "right"
+                    }
+                ],
+                "is_player_turn": false,
+                "skills": [
+                    {
+                        "id": 0,
+                        "name": "Demolish",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Demolish any breakable tile within the given range or disable chargeable special tile.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 200,
+                        "cooldown": 3,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 1,
+                        "possible_targets": [
+                            {
+                                "x": 3,
+                                "y": 5
+                            },
+                            {
+                                "x": 4,
+                                "y": 7
+                            },
+                            {
+                                "x": 5,
+                                "y": 5
+                            }
+                        ]
+                    },
+                    {
+                        "id": 54,
+                        "name": "Attack",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Attack the target dealing 30 damage.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 60,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 30,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": [
+                            {
+                                "x": 3,
+                                "y": 6
+                            }
+                        ]
+                    },
+                    {
+                        "id": 53,
+                        "name": "Shove",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Shoves the target 1 tile away from the caster.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 55,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": [
+                            {
+                                "x": 3,
+                                "y": 6
+                            }
+                        ]
+                    },
+                    {
+                        "id": 55,
+                        "name": "Unmake",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Destroys obstacles or disables a special tile. Cannot destroy walls.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 200,
+                        "cooldown": 4,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": [
+                            {
+                                "x": 4,
+                                "y": 7
+                            }
+                        ]
+                    }
+                ],
+                "score": {
+                    "points": 0,
+                    "ryo_count": 0,
+                    "exit_count": 0,
+                    "kill_count": 0,
+                    "death_count": 3
+                }
+            }
+        },
+        "special_agents": [
+            {
+                "id": 0,
+                "type": 1,
+                "name": "Mr. Ryo",
+                "stats": {
+                    "is_alive": true,
+                    "armor": 280,
+                    "armor_cap": 280,
+                    "hitpoints": 420,
+                    "hitpoints_cap": 420,
+                    "energy": 350,
+                    "energy_cap": 350,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "id": 1,
+                "type": 2,
+                "name": "Kix",
+                "stats": {
+                    "is_alive": true,
+                    "armor": 0,
+                    "armor_cap": 0,
+                    "hitpoints": 350,
+                    "hitpoints_cap": 350,
+                    "energy": 250,
+                    "energy_cap": 250,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "position": {
+                    "x": 5,
+                    "y": 3
+                }
+            }
+        ],
+        "map": [
+            [
+                {
+                    "id": 0,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 1,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 2,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 3,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 0,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 4,
+                    "type": 7,
+                    "name": "Upwards Directional Slider",
+                    "position": {
+                        "x": 0,
+                        "y": 4
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 5,
+                    "type": 17,
+                    "name": "Lesser Obstacle",
+                    "position": {
+                        "x": 0,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 2
+                    }
+                },
+                {
+                    "id": 6,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 7,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 0,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 8,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 9,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 1,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 10,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 11,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 12,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 13,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 14,
+                    "type": 17,
+                    "name": "Lesser Obstacle",
+                    "position": {
+                        "x": 1,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 2
+                    }
+                },
+                {
+                    "id": 15,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 16,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 1,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 17,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 18,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 19,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 2,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 20,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 21,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 2,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 22,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 23,
+                    "type": 17,
+                    "name": "Lesser Obstacle",
+                    "position": {
+                        "x": 2,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 2
+                    }
+                },
+                {
+                    "id": 24,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 25,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 26,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 27,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 28,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 29,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 30,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 31,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 32,
+                    "type": 17,
+                    "name": "Lesser Obstacle",
+                    "position": {
+                        "x": 3,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 2
+                    }
+                },
+                {
+                    "id": 33,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 34,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 3,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 35,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 36,
+                    "type": 2,
+                    "name": "Exit Gate",
+                    "position": {
+                        "x": 4,
+                        "y": 0
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 37,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 38,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 39,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 40,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 41,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 42,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 43,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 4,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 44,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 45,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 46,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 47,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 48,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 49,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 50,
+                    "type": 17,
+                    "name": "Lesser Obstacle",
+                    "position": {
+                        "x": 5,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 2
+                    }
+                },
+                {
+                    "id": 51,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 52,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 5,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 53,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 54,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 55,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 6,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 56,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 57,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 6,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 58,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 59,
+                    "type": 17,
+                    "name": "Lesser Obstacle",
+                    "position": {
+                        "x": 6,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 2
+                    }
+                },
+                {
+                    "id": 60,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 61,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 62,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 63,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 7,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 64,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 7,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 65,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 7,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 66,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 7,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 67,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 7,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 68,
+                    "type": 17,
+                    "name": "Lesser Obstacle",
+                    "position": {
+                        "x": 7,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 2
+                    }
+                },
+                {
+                    "id": 69,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 7,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 70,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 7,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 71,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 7,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 72,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 73,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 74,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 75,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 8,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 76,
+                    "type": 7,
+                    "name": "Upwards Directional Slider",
+                    "position": {
+                        "x": 8,
+                        "y": 4
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 77,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 78,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 79,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 8,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 80,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 8
+                    },
+                    "config": []
+                }
+            ]
+        ],
+        "verdict": {
+            "context": "game-in-progress",
+            "statement": null,
+            "winner": null
+        }
+    }]
