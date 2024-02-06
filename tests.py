@@ -57,7 +57,8 @@ class UIDebug():
             userFromTurnsId = int(userFromTurnsId) + 1
         
         if len(userToTurnsId) == 0:
-            userToTurnsId = 1
+            # This works but idk
+            userToTurnsId = 100
         else:
             userToTurnsId = int(userToTurnsId) + 1
         
@@ -144,4 +145,4 @@ class UIDebug():
             GameDebug(jsonResponse)
         #time.sleep(2)
 
-UIDebug(debugGames=True, fastDisplay=False)
+UIDebug(debugGames=True, fastDisplay=True)
