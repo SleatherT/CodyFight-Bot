@@ -1,19 +1,33 @@
-from strategies.hunterStrategy import strategyPath, strategyAttack
+with open('core/openfiles.txt', 'w') as file:
+    file.write("openfiles=false")
+
+from strategies.hunterStrategy import strategyPath, strategyAttack, strategySkills, specialStrategyPath, specialStrategyAttack
 from core.nodemap import getMap, Graph
+from core.client import Client
 import json
 import time
 
 def GameDebug(jsonResponse):
+    print()
     graphObject = Graph(jsonResponse)
+    
     print("Player Node: ", graphObject.userNode)
+    
     nodeGoal = strategyPath(jsonResponse)
     attack = strategyAttack(jsonResponse)
+    skills = strategySkills(jsonResponse)
+    specialPath = specialStrategyPath(jsonResponse)
+    specialAttack = specialStrategyAttack(jsonResponse, specialPath)
+    
     print("ATTACK CONNECTIONS: ", attack)
+    print("SKILLS CONNECTIONS: ", skills)
+    print("SPECIAL PATH: ", specialPath)
+    print("SPECIAL ATTACK", specialAttack)
     print("Node Goal: ", nodeGoal)
     print("Path: ", nodeGoal.pathConnections)
     print("Player Node: ", graphObject.userNode)
     print("Player Life: ", graphObject.userNode.totalLife)
-    print("Reviewed Node: ", graphObject.dictNodes[45])
+    print("Reviewed Node: ", graphObject.enemyNode)
 
 
 class UIDebug():
@@ -52,9 +66,9 @@ class UIDebug():
         userToTurnsId = input("TO TURN : (ENTER IF YOU WANT TO SAVE UNTIL THE LAST)\n")
         
         if len(userFromTurnsId) == 0:
-            userFromTurnsId = 1
+            userFromTurnsId = 0
         else:
-            userFromTurnsId = int(userFromTurnsId) + 1
+            userFromTurnsId = int(userFromTurnsId)
         
         if len(userToTurnsId) == 0:
             # This works but idk
@@ -139,10 +153,15 @@ class UIDebug():
     def printJsonInfo(self, jsonResponse):
         jsonMapIdData = f"\nID: {jsonResponse['state']['id']}  ROUND: {jsonResponse['state']['round']}  STATUS: {jsonResponse['state']['status']}, PLAYER TURN: {jsonResponse['players']['bearer']['turn']} IS HIS TURN?: {jsonResponse['players']['bearer']['is_player_turn']} ENEMY TURN: {jsonResponse['players']['opponent']['turn']} IS HIS TURN?: {jsonResponse['players']['opponent']['is_player_turn']}"
         print(jsonMapIdData)
-        print(getMap(jsonResponse))
         
         if self.debugGames is True and jsonResponse["state"]["status"] == 1:
+            player = Client(ckey=None)
+            player.jsonResponse = jsonResponse
+            player.status = 1
+            player.displayInfo()
             GameDebug(jsonResponse)
+        else:
+            print(getMap(jsonResponse))
         #time.sleep(2)
 
 UIDebug(debugGames=True, fastDisplay=True)
