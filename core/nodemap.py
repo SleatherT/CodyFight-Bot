@@ -1235,6 +1235,9 @@ def dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     # Ripper is instakill, getting too close is game over, i dont know when it targets the player or any agent so i cant create a perfect strategy to avoid him, what i 
     # can do is at least avoid fall in one of his adyacent nodes, to do this i will check if the first connection of the pathConnections points to one of his 4 adyacent
     # nodes if it does we deleted the connections that points to this node, unless its the exit of a ryoIdGoal
+    
+    # Suspending this instead of reverseDeleteAgentConnections()
+    """
     ripperNode = None
     for (id, node) in dictNodesCopy.items():
         if node.typeAgentIn == 4:
@@ -1259,6 +1262,7 @@ def dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
                 break
             else:
                 deleteConnectionsThatPointsToThisNode(idDeathNode, dictNodesCopy)
+    """
     
     # Casting skill precaution (Uses previous nodeGoal value generated)
     # If the objective is 1 cell away and a skill will be used to reach it, it will ban this connection skill so it doesnt use it and it uses the normal move
