@@ -2854,5 +2854,3702 @@
             "statement": null,
             "winner": null
         }
+    },{
+        "state": {
+            "id": 7275982,
+            "status": 1,
+            "mode": 0,
+            "round": 2,
+            "total_turns": 30,
+            "total_rounds": 5,
+            "max_turn_time": 60,
+            "turn_time_left": 60
+        },
+        "players": {
+            "bearer": {
+                "name": "SwapMaster",
+                "owner": "Sleather",
+                "stats": {
+                    "is_alive": true,
+                    "is_demolished": false,
+                    "armor": 90,
+                    "armor_cap": 125,
+                    "hitpoints": 275,
+                    "hitpoints_cap": 275,
+                    "energy": 350,
+                    "energy_cap": 350,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "durability": 3225,
+                    "durability_cap": 3500,
+                    "is_stunned": true,
+                    "status_effects": [
+                        {
+                            "effect": 0,
+                            "value": 0,
+                            "duration": 2,
+                            "acquired_at": 16
+                        }
+                    ]
+                },
+                "codyfighter": {
+                    "type": 14,
+                    "name": "Preseason Rare Sapper",
+                    "class": "SAPPER",
+                    "rarity": "RARE"
+                },
+                "turn": 9,
+                "position": {
+                    "x": 6,
+                    "y": 7
+                },
+                "possible_moves": [
+                    {
+                        "x": 6,
+                        "y": 7,
+                        "direction": "stay"
+                    }
+                ],
+                "is_player_turn": true,
+                "skills": [
+                    {
+                        "id": 45,
+                        "name": "H1t",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Deal minimal damage to any game agent within the given range.",
+                        "level": 0,
+                        "status": -3,
+                        "cost": 75,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 50,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": []
+                    },
+                    {
+                        "id": 9,
+                        "name": "Fisticuffs",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Deals damage to the target. Can target opponent, SA and Trap tiles.",
+                        "level": 0,
+                        "status": -3,
+                        "cost": 60,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 80,
+                        "duration": 0,
+                        "targeting_type": 1,
+                        "possible_targets": []
+                    },
+                    {
+                        "id": 40,
+                        "name": "Workn't",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Throw an explosive with an EMP charge that disables Special Tiles.",
+                        "level": 0,
+                        "status": -3,
+                        "cost": 85,
+                        "cooldown": 0,
+                        "range": 2,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 3,
+                        "possible_targets": []
+                    },
+                    {
+                        "id": 10,
+                        "name": "Bombs Away",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Throws a bomb onto the selected tile. If the targeted tile is an empty - creates Death Pit. If there is an Agent on the selected tile - deal damage instead. Cannot destroy/disable walls, obstacles or spec. tiles.",
+                        "level": 0,
+                        "status": -3,
+                        "cost": 110,
+                        "cooldown": 0,
+                        "range": 2,
+                        "damage": 175,
+                        "duration": 0,
+                        "targeting_type": 2,
+                        "possible_targets": []
+                    }
+                ],
+                "score": {
+                    "points": 0,
+                    "ryo_count": 0,
+                    "exit_count": 0,
+                    "kill_count": 0,
+                    "death_count": 0
+                }
+            },
+            "opponent": {
+                "name": "codyfighter-c54",
+                "owner": "Codyfight",
+                "stats": {
+                    "is_alive": true,
+                    "is_demolished": false,
+                    "armor": 208,
+                    "armor_cap": 208,
+                    "hitpoints": 458,
+                    "hitpoints_cap": 458,
+                    "energy": 56,
+                    "energy_cap": 584,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "durability": 2924,
+                    "durability_cap": 8000,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "codyfighter": {
+                    "type": 0,
+                    "name": "Foo",
+                    "class": "SAPPER",
+                    "rarity": "LEGENDARY"
+                },
+                "turn": 9,
+                "position": {
+                    "x": 10,
+                    "y": 9
+                },
+                "possible_moves": [
+                    {
+                        "x": 10,
+                        "y": 9,
+                        "direction": "stay"
+                    },
+                    {
+                        "x": 10,
+                        "y": 8,
+                        "direction": "up"
+                    },
+                    {
+                        "x": 10,
+                        "y": 10,
+                        "direction": "down"
+                    },
+                    {
+                        "x": 9,
+                        "y": 9,
+                        "direction": "left"
+                    },
+                    {
+                        "x": 11,
+                        "y": 9,
+                        "direction": "right"
+                    }
+                ],
+                "is_player_turn": false,
+                "skills": [
+                    {
+                        "id": 0,
+                        "name": "Demolish",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Demolish any breakable tile within the given range or disable chargeable special tile.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 200,
+                        "cooldown": 1,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 1,
+                        "possible_targets": [
+                            {
+                                "x": 9,
+                                "y": 10
+                            },
+                            {
+                                "x": 10,
+                                "y": 10
+                            },
+                            {
+                                "x": 11,
+                                "y": 10
+                            },
+                            {
+                                "x": 11,
+                                "y": 8
+                            }
+                        ]
+                    },
+                    {
+                        "id": 54,
+                        "name": "Attack",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Attack the target dealing 30 damage.",
+                        "level": 0,
+                        "status": -1,
+                        "cost": 60,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 30,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": []
+                    },
+                    {
+                        "id": 53,
+                        "name": "Shove",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Shoves the target 1 tile away from the caster.",
+                        "level": 0,
+                        "status": -2,
+                        "cost": 55,
+                        "cooldown": 0,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": []
+                    },
+                    {
+                        "id": 55,
+                        "name": "Unmake",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Destroys obstacles or disables a special tile. Cannot destroy walls.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 200,
+                        "cooldown": 6,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": [
+                            {
+                                "x": 10,
+                                "y": 10
+                            }
+                        ]
+                    }
+                ],
+                "score": {
+                    "points": 0,
+                    "ryo_count": 0,
+                    "exit_count": 0,
+                    "kill_count": 0,
+                    "death_count": 1
+                }
+            }
+        },
+        "special_agents": [
+            {
+                "id": 0,
+                "type": 1,
+                "name": "Mr. Ryo",
+                "stats": {
+                    "is_alive": true,
+                    "armor": 280,
+                    "armor_cap": 280,
+                    "hitpoints": 420,
+                    "hitpoints_cap": 420,
+                    "energy": 350,
+                    "energy_cap": 350,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "position": {
+                    "x": 10,
+                    "y": 12
+                }
+            },
+            {
+                "id": 2,
+                "type": 4,
+                "name": "Ripper",
+                "stats": {
+                    "is_alive": true,
+                    "armor": 100,
+                    "armor_cap": 300,
+                    "hitpoints": 500,
+                    "hitpoints_cap": 500,
+                    "energy": 400,
+                    "energy_cap": 400,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "position": {
+                    "x": 5,
+                    "y": 7
+                }
+            },
+            {
+                "id": 1,
+                "type": 5,
+                "name": "Buzz",
+                "stats": {
+                    "is_alive": true,
+                    "armor": 50,
+                    "armor_cap": 50,
+                    "hitpoints": 150,
+                    "hitpoints_cap": 150,
+                    "energy": 250,
+                    "energy_cap": 250,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "position": {
+                    "x": 9,
+                    "y": 12
+                }
+            }
+        ],
+        "map": [
+            [
+                {
+                    "id": 0,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 0,
+                        "y": 0
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 1,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 2,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 3,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 4,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 5,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 6,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 7,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 0,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 8,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 9,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 10,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 10
+                    },
+                    "config": []
+                },
+                {
+                    "id": 11,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 12,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 13,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 0,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 14,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 0,
+                        "y": 14
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                }
+            ],
+            [
+                {
+                    "id": 15,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 1,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 16,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 1,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 17,
+                    "type": 16,
+                    "name": "Craze",
+                    "position": {
+                        "x": 1,
+                        "y": 2
+                    },
+                    "config": {
+                        "despawns_after": 12,
+                        "is_armed": true
+                    }
+                },
+                {
+                    "id": 18,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 1,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 19,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 1,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 20,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 21,
+                    "type": 6,
+                    "name": "HP Regenerator",
+                    "position": {
+                        "x": 1,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 22,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 1,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 23,
+                    "type": 15,
+                    "name": "Booby Trap",
+                    "position": {
+                        "x": 1,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 24,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 25,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 1,
+                        "y": 10
+                    },
+                    "config": []
+                },
+                {
+                    "id": 26,
+                    "type": 14,
+                    "name": "Proximity Mine",
+                    "position": {
+                        "x": 1,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 27,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 28,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 1,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 29,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 1,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 30,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 2,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 31,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 2,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 32,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 2,
+                        "y": 2
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 33,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 34,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 35,
+                    "type": 6,
+                    "name": "HP Regenerator",
+                    "position": {
+                        "x": 2,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 36,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 2,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 37,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 2,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 38,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 2,
+                        "y": 8
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 39,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 40,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 2,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 41,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 42,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 2,
+                        "y": 12
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 43,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 2,
+                        "y": 13
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 44,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 2,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 45,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 3,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 46,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 3,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 47,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 3,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 48,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 49,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 50,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 51,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 3,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 52,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 3,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 53,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 3,
+                        "y": 8
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 54,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 55,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 3,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 56,
+                    "type": 14,
+                    "name": "Proximity Mine",
+                    "position": {
+                        "x": 3,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 57,
+                    "type": 13,
+                    "name": "Zap Trap",
+                    "position": {
+                        "x": 3,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 58,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 3,
+                        "y": 13
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 59,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 3,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 60,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 4,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 61,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 4,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 62,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 4,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 63,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 4,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 64,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 65,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 4,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 66,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 67,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 68,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 69,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 70,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 4,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 71,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 72,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 4,
+                        "y": 12
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 73,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 4,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 74,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 4,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 75,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 5,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 76,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 77,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 5,
+                        "y": 2
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 78,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 79,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 5,
+                        "y": 4
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 80,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 5,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 81,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 5,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 82,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 83,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 5,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 84,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 85,
+                    "type": 8,
+                    "name": "Downwards Directional Slider",
+                    "position": {
+                        "x": 5,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 86,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 87,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 5,
+                        "y": 12
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 88,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 5,
+                        "y": 13
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 89,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 5,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 90,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 6,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 91,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 6,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 92,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 6,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 93,
+                    "type": 8,
+                    "name": "Downwards Directional Slider",
+                    "position": {
+                        "x": 6,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 94,
+                    "type": 7,
+                    "name": "Upwards Directional Slider",
+                    "position": {
+                        "x": 6,
+                        "y": 4
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 95,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 6,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 96,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 6,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 97,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 98,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 6,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 99,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 6,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 100,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 6,
+                        "y": 10
+                    },
+                    "config": []
+                },
+                {
+                    "id": 101,
+                    "type": 7,
+                    "name": "Upwards Directional Slider",
+                    "position": {
+                        "x": 6,
+                        "y": 11
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 102,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 103,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 6,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 104,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 6,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 105,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 7,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 106,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 7,
+                        "y": 1
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 107,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 7,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 108,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 7,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 109,
+                    "type": 6,
+                    "name": "HP Regenerator",
+                    "position": {
+                        "x": 7,
+                        "y": 4
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 110,
+                    "type": 16,
+                    "name": "Craze",
+                    "position": {
+                        "x": 7,
+                        "y": 5
+                    },
+                    "config": {
+                        "despawns_after": 12,
+                        "is_armed": true
+                    }
+                },
+                {
+                    "id": 111,
+                    "type": 13,
+                    "name": "Zap Trap",
+                    "position": {
+                        "x": 7,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 112,
+                    "type": 11,
+                    "name": "Bidirectional teleport",
+                    "position": {
+                        "x": 7,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 113,
+                    "type": 13,
+                    "name": "Zap Trap",
+                    "position": {
+                        "x": 7,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 114,
+                    "type": 16,
+                    "name": "Craze",
+                    "position": {
+                        "x": 7,
+                        "y": 9
+                    },
+                    "config": {
+                        "despawns_after": 12,
+                        "is_armed": true
+                    }
+                },
+                {
+                    "id": 115,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 7,
+                        "y": 10
+                    },
+                    "config": []
+                },
+                {
+                    "id": 116,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 7,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 117,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 7,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 118,
+                    "type": 11,
+                    "name": "Bidirectional teleport",
+                    "position": {
+                        "x": 7,
+                        "y": 13
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 119,
+                    "type": 2,
+                    "name": "Exit Gate",
+                    "position": {
+                        "x": 7,
+                        "y": 14
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                }
+            ],
+            [
+                {
+                    "id": 120,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 8,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 121,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 8,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 122,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 8,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 123,
+                    "type": 8,
+                    "name": "Downwards Directional Slider",
+                    "position": {
+                        "x": 8,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 124,
+                    "type": 7,
+                    "name": "Upwards Directional Slider",
+                    "position": {
+                        "x": 8,
+                        "y": 4
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 125,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 8,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 126,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 8,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 127,
+                    "type": 13,
+                    "name": "Zap Trap",
+                    "position": {
+                        "x": 8,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 128,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 8,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 129,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 8,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 130,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 10
+                    },
+                    "config": []
+                },
+                {
+                    "id": 131,
+                    "type": 7,
+                    "name": "Upwards Directional Slider",
+                    "position": {
+                        "x": 8,
+                        "y": 11
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 132,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 8,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 133,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 8,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 134,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 8,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 135,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 9,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 136,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 9,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 137,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 9,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 138,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 9,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 139,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 9,
+                        "y": 4
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 140,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 9,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 141,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 9,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 142,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 9,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 143,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 9,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 144,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 9,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 145,
+                    "type": 8,
+                    "name": "Downwards Directional Slider",
+                    "position": {
+                        "x": 9,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 146,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 9,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 147,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 9,
+                        "y": 12
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 148,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 9,
+                        "y": 13
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 149,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 9,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 150,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 10,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 151,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 10,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 152,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 10,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 153,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 10,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 154,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 10,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 155,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 10,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 156,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 10,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 157,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 10,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 158,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 10,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 159,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 10,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 160,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 10,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 161,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 10,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 162,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 10,
+                        "y": 12
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 163,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 10,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 164,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 10,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 165,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 11,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 166,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 11,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 167,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 11,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 168,
+                    "type": 14,
+                    "name": "Proximity Mine",
+                    "position": {
+                        "x": 11,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 169,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 11,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 170,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 11,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 171,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 11,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 172,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 11,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 173,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 11,
+                        "y": 8
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 174,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 11,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 175,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 11,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 176,
+                    "type": 14,
+                    "name": "Proximity Mine",
+                    "position": {
+                        "x": 11,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 177,
+                    "type": 13,
+                    "name": "Zap Trap",
+                    "position": {
+                        "x": 11,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 178,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 11,
+                        "y": 13
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 179,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 11,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 180,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 12,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 181,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 12,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 182,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 12,
+                        "y": 2
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 183,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 12,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 184,
+                    "type": 18,
+                    "name": "Ice Trap",
+                    "position": {
+                        "x": 12,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 185,
+                    "type": 6,
+                    "name": "HP Regenerator",
+                    "position": {
+                        "x": 12,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 186,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 12,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 187,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 12,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 188,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 12,
+                        "y": 8
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 189,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 12,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 190,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 12,
+                        "y": 10
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 191,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 12,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 192,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 12,
+                        "y": 12
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 193,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 12,
+                        "y": 13
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 194,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 12,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 195,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 13,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 196,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 13,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 197,
+                    "type": 16,
+                    "name": "Craze",
+                    "position": {
+                        "x": 13,
+                        "y": 2
+                    },
+                    "config": {
+                        "despawns_after": 12,
+                        "is_armed": true
+                    }
+                },
+                {
+                    "id": 198,
+                    "type": 5,
+                    "name": "Armor Regenerator",
+                    "position": {
+                        "x": 13,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 199,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 13,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 200,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 13,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 201,
+                    "type": 6,
+                    "name": "HP Regenerator",
+                    "position": {
+                        "x": 13,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 202,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 13,
+                        "y": 7
+                    },
+                    "config": []
+                },
+                {
+                    "id": 203,
+                    "type": 15,
+                    "name": "Booby Trap",
+                    "position": {
+                        "x": 13,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 204,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 13,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 205,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 13,
+                        "y": 10
+                    },
+                    "config": []
+                },
+                {
+                    "id": 206,
+                    "type": 14,
+                    "name": "Proximity Mine",
+                    "position": {
+                        "x": 13,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 207,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 13,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 208,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 13,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 209,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 13,
+                        "y": 14
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 210,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 14,
+                        "y": 0
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 211,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 212,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 213,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 214,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 215,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 216,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 6
+                    },
+                    "config": []
+                },
+                {
+                    "id": 217,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 14,
+                        "y": 7
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 218,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 8
+                    },
+                    "config": []
+                },
+                {
+                    "id": 219,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 9
+                    },
+                    "config": []
+                },
+                {
+                    "id": 220,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 10
+                    },
+                    "config": []
+                },
+                {
+                    "id": 221,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 11
+                    },
+                    "config": []
+                },
+                {
+                    "id": 222,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 12
+                    },
+                    "config": []
+                },
+                {
+                    "id": 223,
+                    "type": 3,
+                    "name": "Wall mark 0",
+                    "position": {
+                        "x": 14,
+                        "y": 13
+                    },
+                    "config": []
+                },
+                {
+                    "id": 224,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 14,
+                        "y": 14
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                }
+            ]
+        ],
+        "verdict": {
+            "context": "game-in-progress",
+            "statement": null,
+            "winner": null
+        }
+    },
+	{
+        "state": {
+            "id": 7278693,
+            "status": 1,
+            "mode": 0,
+            "round": 4,
+            "total_turns": 20,
+            "total_rounds": 5,
+            "max_turn_time": 60,
+            "turn_time_left": 60
+        },
+        "players": {
+            "bearer": {
+                "name": "SwapMaster",
+                "owner": "Sleather",
+                "stats": {
+                    "is_alive": true,
+                    "is_demolished": false,
+                    "armor": 125,
+                    "armor_cap": 125,
+                    "hitpoints": 275,
+                    "hitpoints_cap": 275,
+                    "energy": 350,
+                    "energy_cap": 350,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "durability": 1716,
+                    "durability_cap": 3500,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "codyfighter": {
+                    "type": 14,
+                    "name": "Preseason Rare Sapper",
+                    "class": "SAPPER",
+                    "rarity": "RARE"
+                },
+                "turn": 4,
+                "position": {
+                    "x": 3,
+                    "y": 4
+                },
+                "possible_moves": [
+                    {
+                        "x": 3,
+                        "y": 4,
+                        "direction": "stay"
+                    },
+                    {
+                        "x": 3,
+                        "y": 3,
+                        "direction": "up"
+                    },
+                    {
+                        "x": 3,
+                        "y": 5,
+                        "direction": "down"
+                    },
+                    {
+                        "x": 2,
+                        "y": 4,
+                        "direction": "left"
+                    },
+                    {
+                        "x": 4,
+                        "y": 4,
+                        "direction": "right"
+                    }
+                ],
+                "is_player_turn": true,
+                "skills": [
+                    {
+                        "id": 8,
+                        "name": "Run Run Run",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Allows the player to move 1 extra tile. Regular movement restrictions apply.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 90,
+                        "cooldown": 1,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": [
+                            {
+                                "x": 2,
+                                "y": 4
+                            },
+                            {
+                                "x": 3,
+                                "y": 3
+                            },
+                            {
+                                "x": 3,
+                                "y": 5
+                            },
+                            {
+                                "x": 4,
+                                "y": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": 40,
+                        "name": "Workn't",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Throw an explosive with an EMP charge that disables Special Tiles.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 85,
+                        "cooldown": 0,
+                        "range": 2,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 3,
+                        "possible_targets": [
+                            {
+                                "x": 3,
+                                "y": 3
+                            }
+                        ]
+                    }
+                ],
+                "score": {
+                    "points": 0,
+                    "ryo_count": 0,
+                    "exit_count": 0,
+                    "kill_count": 0,
+                    "death_count": 2
+                }
+            },
+            "opponent": {
+                "name": "codyfighter-c5",
+                "owner": "Codyfight",
+                "stats": {
+                    "is_alive": true,
+                    "is_demolished": false,
+                    "armor": 208,
+                    "armor_cap": 208,
+                    "hitpoints": 458,
+                    "hitpoints_cap": 458,
+                    "energy": 584,
+                    "energy_cap": 584,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "durability": 2908,
+                    "durability_cap": 8000,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "codyfighter": {
+                    "type": 1,
+                    "name": "Bar",
+                    "class": "ENGINEER",
+                    "rarity": "LEGENDARY"
+                },
+                "turn": 5,
+                "position": {
+                    "x": 3,
+                    "y": 2
+                },
+                "possible_moves": [
+                    {
+                        "x": 3,
+                        "y": 2,
+                        "direction": "stay"
+                    },
+                    {
+                        "x": 3,
+                        "y": 1,
+                        "direction": "up"
+                    },
+                    {
+                        "x": 3,
+                        "y": 3,
+                        "direction": "down"
+                    },
+                    {
+                        "x": 2,
+                        "y": 2,
+                        "direction": "left"
+                    },
+                    {
+                        "x": 4,
+                        "y": 2,
+                        "direction": "right"
+                    }
+                ],
+                "is_player_turn": false,
+                "skills": [
+                    {
+                        "id": 1,
+                        "name": "Build",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Build a breakable block within the given range.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 200,
+                        "cooldown": 2,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 1,
+                        "possible_targets": [
+                            {
+                                "x": 2,
+                                "y": 2
+                            },
+                            {
+                                "x": 3,
+                                "y": 1
+                            },
+                            {
+                                "x": 2,
+                                "y": 1
+                            },
+                            {
+                                "x": 2,
+                                "y": 3
+                            },
+                            {
+                                "x": 4,
+                                "y": 2
+                            },
+                            {
+                                "x": 4,
+                                "y": 3
+                            },
+                            {
+                                "x": 4,
+                                "y": 1
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "name": "Magnetic Pull",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Pulls any game agent towards the caster and deal damage to the target.",
+                        "level": 0,
+                        "status": 1,
+                        "cost": 125,
+                        "cooldown": 0,
+                        "range": 3,
+                        "damage": 50,
+                        "duration": 0,
+                        "targeting_type": 0,
+                        "possible_targets": [
+                            {
+                                "x": 3,
+                                "y": 4
+                            }
+                        ]
+                    },
+                    {
+                        "id": 7,
+                        "name": "Blink",
+                        "type": 1,
+                        "is_native": true,
+                        "description": "Blink to a location within the given range.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 35,
+                        "cooldown": 1,
+                        "range": 2,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 3,
+                        "possible_targets": [
+                            {
+                                "x": 1,
+                                "y": 2
+                            },
+                            {
+                                "x": 2,
+                                "y": 1
+                            },
+                            {
+                                "x": 2,
+                                "y": 2
+                            },
+                            {
+                                "x": 2,
+                                "y": 3
+                            },
+                            {
+                                "x": 3,
+                                "y": 0
+                            },
+                            {
+                                "x": 3,
+                                "y": 1
+                            },
+                            {
+                                "x": 3,
+                                "y": 3
+                            },
+                            {
+                                "x": 4,
+                                "y": 1
+                            },
+                            {
+                                "x": 4,
+                                "y": 2
+                            },
+                            {
+                                "x": 4,
+                                "y": 3
+                            },
+                            {
+                                "x": 5,
+                                "y": 2
+                            }
+                        ]
+                    },
+                    {
+                        "id": 25,
+                        "name": "Lights Out",
+                        "type": 1,
+                        "is_native": false,
+                        "description": "Drain the opponent's energy bar to 0.",
+                        "level": 0,
+                        "status": 0,
+                        "cost": 200,
+                        "cooldown": 4,
+                        "range": 1,
+                        "damage": 0,
+                        "duration": 0,
+                        "targeting_type": 1,
+                        "possible_targets": []
+                    }
+                ],
+                "score": {
+                    "points": 30,
+                    "ryo_count": 1,
+                    "exit_count": 0,
+                    "kill_count": 0,
+                    "death_count": 1
+                }
+            }
+        },
+        "special_agents": [
+            {
+                "id": 0,
+                "type": 1,
+                "name": "Mr. Ryo",
+                "stats": {
+                    "is_alive": true,
+                    "armor": 280,
+                    "armor_cap": 280,
+                    "hitpoints": 420,
+                    "hitpoints_cap": 420,
+                    "energy": 270,
+                    "energy_cap": 350,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "position": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "id": 1,
+                "type": 2,
+                "name": "Kix",
+                "stats": {
+                    "is_alive": true,
+                    "armor": 0,
+                    "armor_cap": 0,
+                    "hitpoints": 350,
+                    "hitpoints_cap": 350,
+                    "energy": 250,
+                    "energy_cap": 250,
+                    "movement_range": 1,
+                    "movement_range_cap": 1,
+                    "is_stunned": false,
+                    "status_effects": []
+                },
+                "position": {
+                    "x": 3,
+                    "y": 6
+                }
+            }
+        ],
+        "map": [
+            [
+                {
+                    "id": 0,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 1,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 2,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 3,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 4,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 5,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 0,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 6,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 0,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                }
+            ],
+            [
+                {
+                    "id": 7,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 8,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 1,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 9,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 10,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 11,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 1,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 12,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 1,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 13,
+                    "type": 10,
+                    "name": "Right Side Directional Slider",
+                    "position": {
+                        "x": 1,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                }
+            ],
+            [
+                {
+                    "id": 14,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 15,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 16,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 17,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 18,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 19,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 20,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 2,
+                        "y": 6
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 21,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 22,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 23,
+                    "type": 4,
+                    "name": "Energy Regenerator",
+                    "position": {
+                        "x": 3,
+                        "y": 2
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 24,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 3,
+                        "y": 3
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                },
+                {
+                    "id": 25,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 3,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 26,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 3,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 27,
+                    "type": 2,
+                    "name": "Exit Gate",
+                    "position": {
+                        "x": 3,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                }
+            ],
+            [
+                {
+                    "id": 28,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 29,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 30,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 31,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 32,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 33,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 34,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 4,
+                        "y": 6
+                    },
+                    "config": []
+                }
+            ],
+            [
+                {
+                    "id": 35,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 36,
+                    "type": 1,
+                    "name": "Obstacle",
+                    "position": {
+                        "x": 5,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 37,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 38,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 39,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 5,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 40,
+                    "type": 12,
+                    "name": "Death Pit",
+                    "position": {
+                        "x": 5,
+                        "y": 5
+                    },
+                    "config": {
+                        "is_charged": false
+                    }
+                },
+                {
+                    "id": 41,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 5,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                }
+            ],
+            [
+                {
+                    "id": 42,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 0
+                    },
+                    "config": []
+                },
+                {
+                    "id": 43,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 1
+                    },
+                    "config": []
+                },
+                {
+                    "id": 44,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 2
+                    },
+                    "config": []
+                },
+                {
+                    "id": 45,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 3
+                    },
+                    "config": []
+                },
+                {
+                    "id": 46,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 4
+                    },
+                    "config": []
+                },
+                {
+                    "id": 47,
+                    "type": 0,
+                    "name": "Blank",
+                    "position": {
+                        "x": 6,
+                        "y": 5
+                    },
+                    "config": []
+                },
+                {
+                    "id": 48,
+                    "type": 9,
+                    "name": "Left Side Directional Slider",
+                    "position": {
+                        "x": 6,
+                        "y": 6
+                    },
+                    "config": {
+                        "is_charged": true
+                    }
+                }
+            ]
+        ],
+        "verdict": {
+            "context": "game-in-progress",
+            "statement": null,
+            "winner": null
+        }
     }
 ]

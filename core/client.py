@@ -8,10 +8,18 @@ import http.client
 from core.nodemap import AttackSKill, MovementSkill, getMap
 #from core.simulator import 
 
-fhandler = open("misc/history.txt", "w")
-fhandler = open("misc/history.txt", "r+")
-fhandler.write("[")
-fhandlerLogs = open("misc/connection_errors.txt", "w")
+fhandler = None
+fhandler = None
+fhandlerLogs = None
+
+with open('core/openfiles.txt', 'r') as file:
+    content = file.read()
+    confirmation = content[10:]
+    if confirmation == 'true':
+        fhandler = open("misc/history.txt", "w")
+        fhandler = open("misc/history.txt", "r+")
+        fhandler.write("[")
+        fhandlerLogs = open("misc/connection_errors.txt", "w")
 
 class BadRequest(Exception):
     def __init__(self, urllibError):
