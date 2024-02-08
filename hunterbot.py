@@ -124,7 +124,7 @@ def bot(player):
     stopFlag = False
 
     # Linux Stop with Kill Command, signal SIGTERM
-    sigtermHandlerArgs = partial(sigtermHandler, player)
+    sigtermHandlerArgs = partial(sigtermHandler, player=player)
     signal.signal(signal.SIGTERM, sigtermHandlerArgs)
     
     # Windows/Linux Stop sending signal SIGINT (CRTL + C)
