@@ -6,6 +6,8 @@ import random
 import copy
 import time
 
+from config import KEEPMOVESKILL
+
 class Connection():
     def __init__(self, cellFrom: dict, cellTo: dict, cost=1, usedSkill=False, idSkill=None, ban=False, direction=None):
     # INFO: After separating the types of connections (attack, movement...), usedSkill and idSkill variables are not longer need it, but can maybe be still
@@ -1127,7 +1129,13 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
         goalNodesList = [map[idGoal] for mapId, map in graphObject.dictMaps.items() if map[idGoal].costToReach is not None]
         for node in goalNodesList:
             listFinal.append(node)
-    print("DEBUG INIT", listFinal)
+    
+    tmpList = [node for node in listFinal if node not in listClosed]
+    for node in tmpList:
+        listFinal.remove(node)
+    
+    #print("DEBUG INIT", idsGoal)
+    #print("DEBUG INIT", listFinal)
     """
     for id, map in graphObject.dictMaps.items():
         print(11111111, map[78], map[78].pathConnections, "ID MAP", map.idMap_, id)
@@ -1256,7 +1264,11 @@ def dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     # If the objective is 1 cell away and a skill will be used to reach it, it will ban this connection skill so it doesnt use it and it uses the normal move
     # IMPROVE: To ban, the id of the skill is connection is used, and is added here, would be better to use the list passed from the strategy code, but how?,
     # problems or more likely the not execution of this code are in the future if the id's are changed
-    listIdMovementSkillsBan = [28, 8]
+    
+    if KEEPMOVESKILL:
+        listIdMovementSkillsBan = [28, 8]
+    else:
+        listIdMovementSkillsBan = []
     
     if len(nodeGoal.pathConnections) == 1 and nodeGoal.pathConnections[0].idSkill in listIdMovementSkillsBan:
         nodeGoal.pathConnections[0].setBan(True)
