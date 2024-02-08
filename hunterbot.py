@@ -1,10 +1,15 @@
-from config import CKEY, GAMEMODE
+# Signal/Writes in a file to open() the history file
+with open('core/openfiles.txt', 'w') as file:
+    file.write("openfiles=true")
+
+from config import CKEY, GAMEMODE, SPECIALSTRAT
 from core.client import Client
 from core.nodemap import Graph, getMap
-from strategies.hunterStrategy import strategyPath, strategyAttack
+from strategies.hunterStrategy import strategyPath, strategyAttack, strategySkills, specialStrategyAttack, specialStrategyPath
 import time
 import multiprocessing
 import signal
+import sys
 from functools import partial
 
 # ckeys format = {"your ckey", "your another ckey", etc...}
@@ -43,12 +48,20 @@ def loopGames(player, stopFlag, firstExecution=True):
                 print("\nINFO: The bot will stop after this game!\n")
             
             jsonResponse = player.getJsonResponse()
-            goalNode = strategyPath(jsonResponse)
+            if SPECIALSTRAT:
+                specialStrategyInfo = specialStrategyPath(jsonResponse)
+                goalNode = specialStrategyInfo["goalNode"]
+            else:
+                goalNode = strategyPath(jsonResponse)
             player.displayInfo()
             print(goalNode.pathConnections)
             
             # First the execution of the attack
-            listTargetsConnections = strategyAttack(jsonResponse)
+            if SPECIALSTRAT:
+                listTargetsConnections = specialStrategyAttack(jsonResponse, specialStrategyInfo)
+            else:
+                listTargetsConnections = strategyAttack(jsonResponse)
+            
             reLoop_flag = False
             for targetConnection in listTargetsConnections:
                 player.cast_skill(connection=targetConnection)
@@ -58,6 +71,18 @@ def loopGames(player, stopFlag, firstExecution=True):
                 reLoop_flag = True
                 break
 
+            if reLoop_flag:
+                continue
+            
+            listSkillConnections = strategySkills(jsonResponse)
+            for targetConnection in listSkillConnections:
+                player.cast_skill(connection=targetConnection)
+                player.displayInfo()
+                # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
+                # this works well but i dont like how it looks
+                reLoop_flag = True
+                break
+            
             if reLoop_flag:
                 continue
             
@@ -74,10 +99,8 @@ def loopGames(player, stopFlag, firstExecution=True):
         elif idStatus == 1:
             print("waiting for oponent")
             time.sleep(5)
-        elif idStatus == -1:
-            player.create_room(0)
-        elif idStatus == 2:
-            player.create_room(0)
+        elif idStatus == -1 or idStatus == 2:
+            player.create_room(GAMEMODE)
         elif idStatus == 0:
             print("Registering players.. waiting 15 seconds")
             time.sleep(15)
@@ -86,15 +109,22 @@ def loopGames(player, stopFlag, firstExecution=True):
             
 
 
-def sigtermHandler(signum, frame, flag):
-    flag = True
+def sigtermHandler(signum, frame, player):
     print("Received SIGTERM. Finishing bots, wait until the current matchs have ended...")
+    
+    stopFlag = True
+    print(f"Bot = {player.ckey[:7]}... Finishing execution! Wait until the current matchs have ended, Don't Press Ctrl + C again please!")
+    time.sleep(4)
+    loopGames(player, stopFlag, firstExecution=False)
+    print(f"Bot = {player.ckey[:7]}... Finished his last match!")
+    
+    sys.exit(0)
 
 def bot(player):
     stopFlag = False
 
     # Linux Stop with Kill Command, signal SIGTERM
-    sigtermHandlerArgs = partial(sigtermHandler, stopFlag)
+    sigtermHandlerArgs = partial(sigtermHandler, player)
     signal.signal(signal.SIGTERM, sigtermHandlerArgs)
     
     # Windows/Linux Stop sending signal SIGINT (CRTL + C)
