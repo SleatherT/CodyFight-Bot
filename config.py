@@ -22,10 +22,10 @@ GAMEMODE = 0
 
 # Change to False if you want the bot to not use the movement skills (like double time), if its close to his objective, 1 cell
 # Usefull if we want to move to a node to cast skills before ending our turn
-KEEPMOVESKILL = False
+KEEPMOVESKILL = True
 
 # Change to True to use the special strategy to complete the 4 rarirty mission of the hunter codyfighter
-SPECIALSTRAT = True
+SPECIALSTRAT = False
 
 # This variable defines if the json responses are stored
 # Change this variable to False so that it does not save the history, recommended if the bot is deployed in the cloud
