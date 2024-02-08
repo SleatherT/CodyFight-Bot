@@ -7,7 +7,7 @@ import copy
 import time
 
 class Connection():
-    def __init__(self, cellFrom: dict, cellTo: dict, cost=1, usedSkill=False, idSkill=None, ban=False):
+    def __init__(self, cellFrom: dict, cellTo: dict, cost=1, usedSkill=False, idSkill=None, ban=False, direction=None):
     # INFO: After separating the types of connections (attack, movement...), usedSkill and idSkill variables are not longer need it, but can maybe be still
     # usefull in some cases to check if a connection is a skill connection instead of making reference to his class?
         self.nodeFrom = None
@@ -23,6 +23,7 @@ class Connection():
         self.idSkill = idSkill
         self.damage = None
         self.ban = ban
+        self.direction = direction
         # If a string is added to this variable, it will be printed
         self.notes = None
     
@@ -78,6 +79,8 @@ class Node():
         self.typeAgentIn = None
         self.totalLife = None
         
+        self.notes = None
+        
         # Each Node has access to the graph, making easy the access to info about all the nodes
         self.dictGraphNodes = None
         
@@ -97,32 +100,32 @@ class Node():
         listCells = list()
         try:
             cell_right = map[x_value + 1][y_value]
-            listCells.append(cell_right)
+            listCells.append((cell_right, "right"))
             dictIdNearNodes["right"] = cell_right["id"]
         except IndexError:
             dictIdNearNodes["right"] = None
         try:
             cell_down = map[x_value][y_value + 1]
-            listCells.append(cell_down)
+            listCells.append((cell_down, "down"))
             dictIdNearNodes["down"] = cell_down["id"]
         except IndexError:
             dictIdNearNodes["down"] = None
         if x_value > 0:
             cell_left = map[x_value - 1][y_value]
-            listCells.append(cell_left)
+            listCells.append((cell_left, "left"))
             dictIdNearNodes["left"] = cell_left["id"]
         else:
             dictIdNearNodes["left"] = None
         if y_value > 0:
             cell_up = map[x_value][y_value - 1]
-            listCells.append(cell_up)
+            listCells.append((cell_up, "up"))
             dictIdNearNodes["up"] = cell_up["id"]
         else:
             dictIdNearNodes["up"] = None
         
         self.dictIdNearNodes = dictIdNearNodes
-        for cell in listCells:
-            connection = Connection(self.cell, cell)
+        for cell, direction in listCells:
+            connection = Connection(self.cell, cell, direction=direction)
             self.listConnections.append(connection)
     
     def deleteInvalidConnections(self, listIds: list) -> None:
@@ -215,6 +218,7 @@ class SkillCellConnection(Connection):
 
 class BidirectionalConnection(SkillCellConnection):
     def __init__(self, nodeFrom, nodeTo, cost=1, usedSkill=False, idSkill=None, ban=False):
+        # This format must be changed, instead of relying in putting the variables in the right order, its must be passed in keywords to prevent bugs
         super().__init__(nodeFrom, nodeTo, cost, usedSkill, idSkill, ban)
 
 
@@ -275,15 +279,19 @@ class ChildNode(Node):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
+class SpecialTileNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
 
 class ObstacleNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
 
-class ExitNode(ChildNode):
+class ExitNode(SpecialTileNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
+        self.isCharged = self.config["is_charged"]
 
 
 class WallNode(ChildNode):
@@ -291,12 +299,12 @@ class WallNode(ChildNode):
         super().__init__(cell)
 
 
-class RegeneratorNode(ChildNode):
+class RegeneratorNode(SpecialTileNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
 
-class SliderNode(ChildNode):
+class SliderNode(SpecialTileNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
         self.isCharged = self.config["is_charged"]
@@ -352,7 +360,7 @@ class SliderNode(ChildNode):
         """
         
     
-class BidirectionalNode(ChildNode):
+class BidirectionalNode(SpecialTileNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
         self.isCharged = self.config["is_charged"]
@@ -659,7 +667,7 @@ class Graph():
                 nodeObject.deleteInvalidConnections(listIdInvalidNodes)
             
             # Saving id of the Goal cells and bidirectional cells
-            if typeNode == 2:
+            if type(nodeObject) is ExitNode and nodeObject.isCharged is True:
                 self.listIdGoals.append(idNode)
             elif typeNode == 11:
                 is_charged = nodeObject.config["is_charged"]
@@ -1117,9 +1125,9 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     goalNodesList = list()
     for idGoal in idsGoal:
         goalNodesList = [map[idGoal] for mapId, map in graphObject.dictMaps.items() if map[idGoal].costToReach is not None]
-    for node in goalNodesList:
-        listFinal.append(node)
-    
+        for node in goalNodesList:
+            listFinal.append(node)
+    print("DEBUG INIT", listFinal)
     """
     for id, map in graphObject.dictMaps.items():
         print(11111111, map[78], map[78].pathConnections, "ID MAP", map.idMap_, id)
