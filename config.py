@@ -20,6 +20,13 @@ if ImportFailed:
 # 0 = Sandbox  /  1 = Friendly Duel  /  3 = Llama Maze
 GAMEMODE = 0
 
+# Change to False if you want the bot to not use the movement skills (like double time), if its close to his objective, 1 cell
+# Usefull if we want to move to a node to cast skills before ending our turn
+KEEPMOVESKILL = False
+
+# Change to True to use the special strategy to complete the 4 rarirty mission of the hunter codyfighter
+SPECIALSTRAT = True
+
 # This variable defines if the json responses are stored
 # Change this variable to False so that it does not save the history, recommended if the bot is deployed in the cloud
 # Recommended to keep this change to True if the bot is deployed in a local machina to report bugs if they appear
@@ -28,3 +35,7 @@ SAVEHISTORY = True
 # Change this variable to True if you want the bot to go only to the exit, basic movement, no strategy, usefull only for missions, not recommended in the long run
 # Keep it False and the bot will move towards Ryo if its sorrounded and can be trapped, and against Kix (ONLY APPLIES FOR HUNTERBOT)
 GOEXIT = False
+
+# Change this variable to True if you want the bot to prioritize go to Bidirectional tiles, same as GOEXIT, basic movement, no strategy, recommended only for missions
+# If this variable is True it will overlap the GOEXIT variable/rule, and the bot will not move towards the exit
+GOBIDIRECTIONAL = False
