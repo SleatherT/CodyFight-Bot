@@ -1,6 +1,7 @@
 # Main Classes/Functions
-from config import GOEXIT
-from core.nodemap import Graph, Connection, AttackSKill, MovementSkill, PlayerNode, SliderNode, BidirectionalNode, TrapNode, SentryNode, dijkstra, pre_dijkstra, getMap
+from config import GOEXIT, GOBIDIRECTIONAL
+from core.nodemap import Node, Graph, Connection, AttackSKill, MovementSkill, PlayerNode, EnemyNode, SliderNode, SpecialTileNode, BidirectionalNode, TrapNode, SentryNode, dijkstra, pre_dijkstra, getMap, pure_Dijkstra
+import copy
 
 def strategyPath(jsonResponse):
     graphObject = Graph(jsonResponse)
@@ -28,13 +29,22 @@ def strategyPath(jsonResponse):
     
     ryoTrapped_flag = graphObject.ryoTrapped_flag
     
+    # Custom tile to follow / Bidirectional tile
+    if len(graphObject.listConnectionsBidirectionals) > 0 and GOBIDIRECTIONAL is True:
+        listIdGoals = list()
+        listIdGoals.append(graphObject.listConnectionsBidirectionals[0].fromNode)
+        listIdGoals.append(graphObject.listConnectionsBidirectionals[0].toNode)
+    
     # If there are exits in the map it will go to them, otherwise it will move towards enemies
-    if GOEXIT is True and len(listIdGoals) > 0:
+    elif GOEXIT is True and len(listIdGoals) > 0 and GOBIDIRECTIONAL is False:
         pass
-    else:
+    elif GOBIDIRECTIONAL is False:
         if ryoTrapped_flag:
             listIdGoals.append(graphObject.ryoIdGoal)
-    
+        """
+        for connection in ryoNode.listConnections:
+            listIdGoals.append(connection.toNode)
+        """
         if kixNode is not None:
             for connection in kixNode.listConnections:
                 listIdGoals.append(connection.toNode)
@@ -246,3 +256,177 @@ def strategyAttack(jsonResponse):
 
     return listAgentAttacks
     
+def strategySkills(jsonResponse):
+    graphObject = Graph(jsonResponse)
+    dictNodes = graphObject.dictNodes
+    
+    playerNode = graphObject.userNode
+    enemyNode = graphObject.enemyNode
+    
+    listskills = graphObject.players["bearer"]["skills"]
+    
+    dictSkills = dict()
+    Count = 0
+    for skill in listskills:
+        if skill["id"] == 400 and skill["status"] == 1:
+            dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
+        Count = Count + 1
+    
+    listSkills = list() 
+    for (keyName, infoSkill) in dictSkills.items():
+        listNodesToConnect = jsonResponse["players"]["bearer"]["skills"][infoSkill["skillPosition"]]["possible_targets"]
+    
+        for target in listNodesToConnect:
+            objetiveCell = graphObject.getCell(target)
+            objetiveNode = dictNodes[objetiveCell["id"]]
+            
+            if isinstance(objetiveNode, SpecialTileNode) is True:
+                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
+                listSkills.append(connection)
+            else:
+                print(f"UNKNOWN AGENT OR TILE TO ATTACK!! more info node: {objetiveNode} id agent: {objetiveNode.typeAgentIn}, id node: {objetiveNode.typeNode}, skill: {keyName}")
+    
+    
+    return listSkills
+
+
+# Special Strategies
+
+def specialStrategyAttack(jsonResponse, strategyPathInfo):
+    print("DEBUG INIT", strategyPathInfo)
+    if strategyPathInfo["confirmation"] is False:
+        return []
+    
+    graphObject = Graph(jsonResponse)
+    dictNodes = graphObject.dictNodes
+    
+    playerNode = graphObject.userNode
+    enemyNode = graphObject.enemyNode
+    
+    listskills = graphObject.players["bearer"]["skills"]
+    
+    dictSkills = dict()
+    Count = 0
+    # 60: Reel  30: Fried pray
+    skillsId = [30, 60]
+    for skill in listskills:
+        if skill["id"] in skillsId and skill["status"] == 1:
+            dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
+        if skill["id"] == 30:
+            friedPrayDict = skill
+        Count = Count + 1
+    
+    listSkills = list() 
+    friedAttack = []
+    reelAttack = []
+    for (keyName, infoSkill) in dictSkills.items():
+        listNodesToConnect = jsonResponse["players"]["bearer"]["skills"][infoSkill["skillPosition"]]["possible_targets"]
+        #print("DEBUG INIT", keyName)
+        #print("DEBUG INIT", strategyPathInfo["goalNode"].notes[1].fromNode)
+        
+        for target in listNodesToConnect:
+            objetiveCell = graphObject.getCell(target)
+            objetiveNode = dictNodes[objetiveCell["id"]]
+            
+            if infoSkill["dictSkill"]["id"] == 30 and objetiveNode.id == strategyPathInfo["goalNode"].notes[1].fromNode:
+                friedAttack.append(AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"]))
+            elif infoSkill["dictSkill"]["id"] == 60 and type(objetiveNode) is EnemyNode:
+                reelAttack.append(AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"]))
+            else:
+                print(f"UNKNOWN AGENT OR TILE TO ATTACK!! more info node: {objetiveNode} id agent: {objetiveNode.typeAgentIn}, id node: {objetiveNode.typeNode}, skill: {keyName}")
+    #print("DEBUG INIT: friedAttack", friedAttack)
+    #print("DEBUG INIT: reelAttack", reelAttack)
+    if len(friedAttack) > 0 and len(reelAttack):
+        return friedAttack
+    
+    # In cooldown
+    if friedPrayDict["status"] == 0:
+        if len(reelAttack) > 0:
+            return reelAttack
+    
+    return listSkills
+    
+def specialStrategyPath(jsonResponse):
+    graphObject = Graph(jsonResponse)
+    dictNodes = graphObject.dictNodes
+    
+    playerNode = graphObject.userNode
+    enemyNode = graphObject.enemyNode
+    ryoNode = graphObject.ryoNode
+    kixNode = graphObject.kixNode
+    ripperNode = graphObject.ripperNode
+    listIdGoals = graphObject.listIdGoals
+    
+    listIdGoals = list()
+    
+    copyGraph = copy.deepcopy(graphObject)
+    
+    # Restoring user node listConnections for the copy
+    
+    # Creating connections from the enemy node
+    pure_Dijkstra(copyGraph.dictNodesPure, [], enemyNode.id)
+    #print("DEBUG INIT: PURE ENEMY NODE", copyGraph.dictNodesPure[enemyNode.id])
+    selectedNodesList = list()
+    for id, node in copyGraph.dictNodesPure.items():
+        if node.costToReach == 2:
+            selectedNodesList.append(node)
+    
+    tmpList = list()
+    for node in selectedNodesList:
+        previousDirection = None
+        for connection in node.pathConnections:
+            currentDirection = connection.direction
+            if previousDirection is None:
+                previousDirection = currentDirection
+            else:
+                if currentDirection == previousDirection and type(graphObject.dictNodesPure[connection.fromNode]) is Node:
+                #if currentDirection == previousDirection:
+                    pass
+                elif currentDirection == previousDirection and graphObject.dictNodesPure[connection.fromNode].typeNode == 13:
+                    pass
+                elif currentDirection == previousDirection and type(graphObject.dictNodesPure[connection.fromNode]) is PlayerNode:
+                    pass
+                else:
+                    tmpList.append(node)
+                    break
+    
+    for node in tmpList:
+        selectedNodesList.remove(node)
+    
+    for node in selectedNodesList:
+        listIdGoals.append(node.id)
+    
+    # Movement Skills 
+    # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
+    
+    # Add Here the id of the skills
+    listIdMovementSkills = [28, 8] # 28: Double Time  8: Run run run
+    
+    # If any movement skill is available to use, it will use it, no restrictions of energy for now
+    
+    listskills = graphObject.players["bearer"]["skills"]
+    for skill in listskills:
+        if skill["id"] in listIdMovementSkills and skill["status"] == 1:
+            skillObjectives = skill["possible_targets"]
+            
+            for nextCellCoord in skillObjectives:
+                nextCell = graphObject.getCell(nextCellCoord)
+                nextNode = graphObject.getNode(nextCell["id"])
+                connection = MovementSkill(nodeFrom=playerNode, nodeTo=nextNode, infoSkill=skill, cost=0)
+                playerNode.listConnections.append(connection)
+    
+    # Print this if you are debugging to know what function is executing dijkstra 
+    #print("SPECIAL STRATEGY PATH CALLS DIJKSTRA")
+    #print("DEBUG INIT", listIdGoals)
+    goalNode = dijkstra(graphObject, listIdGoals, playerNode.id)
+    
+    confirmation_flag = False
+    if goalNode.id in listIdGoals and goalNode.id == playerNode.id:
+        confirmation_flag = True
+        for node in selectedNodesList:
+            if goalNode.id == node.id:
+                goalNode.notes = node.pathConnections
+    
+    #print("DEBUG INIT", confirmation_flag)
+    
+    return {"goalNode": goalNode, "confirmation": confirmation_flag}
