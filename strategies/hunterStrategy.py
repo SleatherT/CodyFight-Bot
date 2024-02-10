@@ -1,7 +1,9 @@
 # Main Classes/Functions
-from config import GOEXIT, GOBIDIRECTIONAL
+from config import GO_EXIT, GO_TELEPORT, DEFAULT_TARGETS, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_BUZZ, GO_RYO_SURROUNDED, DEFAULT_ATTACK, ATTACK_ENEMY, ATTACK_RYO, ATTACK_KIX, ATTACK_LLAMA, ATTACK_RIPPER, ATTACK_BUZZ, BLOCK_NATIVE
 from core.nodemap import Node, Graph, Connection, AttackSKill, MovementSkill, PlayerNode, EnemyNode, SliderNode, SpecialTileNode, BidirectionalNode, TrapNode, SentryNode, dijkstra, pre_dijkstra, getMap, pure_Dijkstra
+import time
 import copy
+from itertools import combinations
 
 def strategyPath(jsonResponse):
     graphObject = Graph(jsonResponse)
@@ -12,7 +14,9 @@ def strategyPath(jsonResponse):
     ryoNode = graphObject.ryoNode
     kixNode = graphObject.kixNode
     ripperNode = graphObject.ripperNode
-    listIdGoals = graphObject.listIdGoals
+    buzzNode = graphObject.buzzNode
+    listIdGoalsGraph = graphObject.listIdGoals
+    llamaNode = graphObject.llamaNode
     
     # Hunter Codyfighters have more life and can tank attacks unlike Low life codyfighters (like Trickster) for this reason his movement must be different, my plan to this
     # bot is, prioritize the closest agent and attack him with everything, the exit is a option but should only chosse it if its really close
@@ -24,33 +28,53 @@ def strategyPath(jsonResponse):
     # If we get close to an agent his connection to our node gets deleted so using the listConnections of the agent doesnt work in this case, this is done by the Graph
     # with the purpose of creating a "logic" map of nodes but we can reverse it with the new function i added reverseDeleteAgentConnections()
     
-    #Suspending this until a error caused by this is fixed
+    # This causes a lot of things not working as excepted, should be fixed ASAP
     graphObject.reverseDeleteAgentConnections()
     
-    ryoTrapped_flag = graphObject.ryoTrapped_flag
+    customOptions = [GO_EXIT, GO_TELEPORT, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_RYO_SURROUNDED]
     
-    # Custom tile to follow / Bidirectional tile
-    if len(graphObject.listConnectionsBidirectionals) > 0 and GOBIDIRECTIONAL is True:
-        listIdGoals = list()
-        listIdGoals.append(graphObject.listConnectionsBidirectionals[0].fromNode)
-        listIdGoals.append(graphObject.listConnectionsBidirectionals[0].toNode)
-    
-    # If there are exits in the map it will go to them, otherwise it will move towards enemies
-    elif GOEXIT is True and len(listIdGoals) > 0 and GOBIDIRECTIONAL is False:
-        pass
-    elif GOBIDIRECTIONAL is False:
-        if ryoTrapped_flag:
+    listIdGoals = list()
+    if DEFAULT_TARGETS is True and True not in customOptions:
+        if graphObject.ryoTrapped_flag:
             listIdGoals.append(graphObject.ryoIdGoal)
-        """
-        for connection in ryoNode.listConnections:
-            listIdGoals.append(connection.toNode)
-        """
+            
         if kixNode is not None:
             for connection in kixNode.listConnections:
                 listIdGoals.append(connection.toNode)
-    
+        
         for connection in enemyNode.listConnections:
             listIdGoals.append(connection.toNode)
+        
+        for idGoal in listIdGoalsGraph:
+            listIdGoals.append(idGoal)
+    
+    elif GO_ENEMY is True:
+        for connection in enemyNode.listConnections:
+            listIdGoals.append(connection.toNode)
+    elif GO_RYO is True and ryoNode is not None:
+        for connection in ryoNode.listConnections:
+            listIdGoals.append(connection.toNode)
+    elif GO_KIX is True and kixNode is not None:
+        for connection in kixNode.listConnections:
+            listIdGoals.append(connection.toNode)
+    elif GO_LLAMA is True and llamaNode is not None:
+        for connection in llamaNode.listConnections:
+            listIdGoals.append(connection.toNode)
+    elif GO_RIPPER is True and ripperNode is not None:
+        for connection in ripperNode.listConnections:
+            listIdGoals.append(connection.toNode)
+    elif GO_BUZZ is True and buzzNode is not None:
+        for connection in buzzNode.listConnections:
+            listIdGoals.append(connection.toNode)
+    elif GO_RYO_SURROUNDED is True and ryoNode is not None:
+        if graphObject.ryoTrapped_flag:
+            listIdGoals.append(graphObject.ryoIdGoal)
+    elif GO_EXIT is True:
+        for idGoal in listIdGoalsGraph:
+            listIdGoals.append(idGoal)
+    elif GO_TELEPORT is True and len(graphObject.listConnectionsBidirectionals) > 0:
+        listIdGoals.append(graphObject.listConnectionsBidirectionals[0].fromNode)
+        listIdGoals.append(graphObject.listConnectionsBidirectionals[0].toNode)
     
     # Movement Skills 
     # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
@@ -84,12 +108,13 @@ def strategyAttack(jsonResponse):
     
     playerNode = graphObject.userNode
     enemyNode = graphObject.enemyNode
+    llamaNode = graphObject.llamaNode
     
     listskills = graphObject.players["bearer"]["skills"]
     
     listAgentAttacks = list()
     listTrapAttacks = list()
-    dictSkills = dict()
+    dictSkillsPure = dict()
     dictPrioritizedSkill = None
     
     # Experimental Code
@@ -99,13 +124,15 @@ def strategyAttack(jsonResponse):
     Count = 0
     for skill in listskills:
         if skill["damage"] > 0:
-            dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
+            dictSkillsPure[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
+        if BLOCK_NATIVE is True and skill["damage"] > 0 and skill["is_native"] is True:
+            del dictSkillsPure[skill["name"]]
         Count = Count + 1
     
     maxDamage = None
     # The prioritized skill will be the native skill, if its an attack skill of course, otherwise will be the one with more damage
     # The dictPrioritizedSkill is always present regardless of his status
-    for (key, skill["dictSkill"]) in dictSkills.items():
+    for (key, skill["dictSkill"]) in dictSkillsPure.items():
         isNative = skill["is_native"]
         skillDamage = skill["damage"]
         if isNative is True:
@@ -119,50 +146,51 @@ def strategyAttack(jsonResponse):
             dictPrioritizedSkill = skill
     
     # The order of the skills to execute is by default the one with more damage first
-    for n in range(len(dictSkills)):
-        customOrder = {v["dictSkill"]["id"]: n for k, v in sorted(dictSkills.items(), key=lambda skill: skill[1]["dictSkill"]["damage"])}
+    for n in range(len(dictSkillsPure)):
+        customOrder = {v["dictSkill"]["id"]: n for k, v in sorted(dictSkillsPure.items(), key=lambda skill: skill[1]["dictSkill"]["damage"])}
     
     # Taking only the active skills with targets
-    dictSkills = {k: v for k, v in dictSkills.items() if v["dictSkill"]["status"] == 1}
-    
-    # Suppressing the manual code until all the bugs of the automatic code are resolved 
+    dictSkills = {k: v for k, v in dictSkillsPure.items() if v["dictSkill"]["status"] == 1}
     """
-    # This dictionary is going to be used to organize the skill we want to use first, the key is the id of the skill and the value is the priority we want to give it
-    # less the number = major priority. 
-    # IMPORTANT: Make sure you add the skill and his priority, you will recieve a error if you dont
-    customOrder = {27: 0,
-                    29: 1,
-                    3: 2,
-                    38: 3,
-                    45: 4,
-                    50: 1
-                }
-    
-    # This variable is used to define which skill to prioritize, if you dont want to prioritized any skill put a random number 
-    idPrioritizedSkill = 27
-    
-    # The listIdDamageSkills is a list with the skills we want the bot to execute
-    listIdDamageSkills = [38, 45, 27, 3, 29, 50] # 2: Push  45: Hit  3: Magnetic Pull 27: Blade Strike  29: Laser Blast  38: Direct Attack  50: Detain
-    
-    Count = 0
-    # Here we add the information of the skill we want to execute to a dictionary
-    for skill in listskills:
-        if skill["id"] in listIdDamageSkills and skill["status"] == 1:
-            keyName = skill["name"]
-            skillPosition = Count
-            dictSkills[keyName] = {"skillPosition": skillPosition, "dictSkill": skill}
+    if llamaNode is not None:
+        llamaTotalLife = llamaNode.totalLife
+        selectedSkills = {keyName: skillInfo for keyName, skillInfo in dictSkillsPure.items() if llamaTotalLife - skillInfo["dictSkill"]["damage"] > 0}
+        skillsCombined = list(combinations(selectedSkills.items(), 2))
         
-        # Here we choose a skill to prioritize, this will make the bot hoard energy to use this skill unless any skill would eliminate any nearby agent
-        if skill["id"] == idPrioritizedSkill:
-            dictPrioritizedSkill = skill
+        validCombos = dict()
+        validCombos["Actives"] = list()
+        validCombos["Inactives"] = list()
+        for combo in skillsCombined:
+            if llamaTotalLife - (combo[0][1]["dictSkill"]["damage"] + combo[1][1]["dictSkill"]["damage"]) <= 0:
+                if combo[0][1]["dictSkill"]["status"] == 1 and combo[1][1]["dictSkill"]["status"] == 1:
+                    validCombos["Actives"].append({combo[0][0]: combo[0][1], combo[1][0]: combo[1][1]})
+                else:
+                    validCombos["Inactives"].append({combo[0][0]: combo[0][1], combo[1][0]: combo[1][1]})
         
-        Count = Count + 1"""
+        if len(validCombos["Actives"]) >= 1:
+            dictSkills = validCombos["Actives"][0]
+        # If we need only energy to cast the combo we wait = return a empy list
+        elif len(validCombos["Inactives"]) >= 1:
+            return []
+    """
+    # Here we check what nearby agents we want to attack
+    # 1: Ryo  2: Kix  3: Llama  4: Ripper 5: Buzz  100: Player  200: Enemy
+    customOptions = [ATTACK_ENEMY, ATTACK_RYO, ATTACK_KIX, ATTACK_LLAMA, ATTACK_RIPPER, ATTACK_BUZZ]
+    dictOptions = [{ATTACK_ENEMY: 200}, {ATTACK_RYO: 1}, {ATTACK_KIX: 2}, {ATTACK_LLAMA: 3}, {ATTACK_RIPPER: 4}, {ATTACK_BUZZ: 5}]
     
+    listIdAgentsAttack = list()
+    listAgentsAvoid = [1, 2, 3, 4, 5, 100, 200]
     
-    # The rest of the code does the verifications, you dont need to add anything
-    # Here we check what nearby agents we want to attack, attacking llama is a no no
-    listIdAgentsAttack = [2, 200] # 2: Kix  4: Ripper  200: Enemy
-    listAgentsAvoid = [1, 3, 4, 5] # 1: Ryo 3: Llama  5: Buzz
+    if DEFAULT_ATTACK is True and True not in customOptions:
+        listIdAgentsAttack.extend([2, 200])
+        listAgentsAvoid.remove(2)
+        listAgentsAvoid.remove(200)
+    else:
+        for dictOption in listDictOptions:
+            for flag, idAgent in dictOption.items():
+                if flag is True:
+                    listIdAgentsAttack.append(idAgent)
+                    listAgentsAvoid.remove(idAgent)
     
     listAgentsNearby = list()
     
@@ -267,8 +295,13 @@ def strategySkills(jsonResponse):
     
     dictSkills = dict()
     Count = 0
+    
+    # Add here the id of the skills
+    listIdSkills = []
+    listIdObjectives = []
+    
     for skill in listskills:
-        if skill["id"] == 400 and skill["status"] == 1:
+        if skill["id"] in listIdSkills and skill["status"] == 1:
             dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
         Count = Count + 1
     
@@ -279,8 +312,11 @@ def strategySkills(jsonResponse):
         for target in listNodesToConnect:
             objetiveCell = graphObject.getCell(target)
             objetiveNode = dictNodes[objetiveCell["id"]]
-            
+            """
             if isinstance(objetiveNode, SpecialTileNode) is True:
+                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
+                listSkills.append(connection)"""
+            if objetiveNode.typeNode in listIdObjectives:
                 connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
                 listSkills.append(connection)
             else:

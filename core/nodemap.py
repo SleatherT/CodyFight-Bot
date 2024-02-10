@@ -447,6 +447,7 @@ class IceNode(ChildNode):
         self.redirects = False
     
     # It creates a temporary copy of itself to check if it redirects depending of the path
+    # FIX: This consumes a lot of processing power if the map has a lot of ice tiles, not idea how to solve it
     def redirectsTo(self, pathNode: Node, connectionFrom: Connection):
         tmpSelfCopy = copy.deepcopy(self)
         tmpSelfCopy.deletePathConnections()
