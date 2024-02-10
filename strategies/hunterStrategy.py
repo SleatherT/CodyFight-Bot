@@ -297,11 +297,11 @@ def strategySkills(jsonResponse):
     Count = 0
     
     # Add here the id of the skills
-    listIdSkills = [46]
+    listIdSkills = []
     listIdObjectivesTiles = []
     
     # # 1: Ryo  2: Kix  3: Llama  4: Ripper 5: Buzz  100: Player  200: Enemy
-    listIdObjectivesAgents = [200]
+    listIdObjectivesAgents = []
     
     for skill in listskills:
         if skill["id"] in listIdSkills and skill["status"] == 1:
