@@ -34,6 +34,7 @@ def strategyPath(jsonResponse):
     customOptions = [GO_EXIT, GO_TELEPORT, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_RYO_SURROUNDED]
     
     listIdGoals = list()
+    default_flag = False
     if DEFAULT_TARGETS is True and True not in customOptions:
         if graphObject.ryoTrapped_flag:
             listIdGoals.append(graphObject.ryoIdGoal)
@@ -45,34 +46,34 @@ def strategyPath(jsonResponse):
         for connection in enemyNode.listConnections:
             listIdGoals.append(connection.toNode)
         
-        for idGoal in listIdGoalsGraph:
-            listIdGoals.append(idGoal)
+        listIdGoals.extend(listIdGoalsGraph)
+        
+        default_flag = True
     
-    elif GO_ENEMY is True:
+    if GO_ENEMY is True and default_flag is False:
         for connection in enemyNode.listConnections:
             listIdGoals.append(connection.toNode)
-    elif GO_RYO is True and ryoNode is not None:
+    if GO_RYO is True and ryoNode is not None and default_flag is False:
         for connection in ryoNode.listConnections:
             listIdGoals.append(connection.toNode)
-    elif GO_KIX is True and kixNode is not None:
+    if GO_KIX is True and kixNode is not None and default_flag is False:
         for connection in kixNode.listConnections:
             listIdGoals.append(connection.toNode)
-    elif GO_LLAMA is True and llamaNode is not None:
+    if GO_LLAMA is True and llamaNode is not None and default_flag is False:
         for connection in llamaNode.listConnections:
             listIdGoals.append(connection.toNode)
-    elif GO_RIPPER is True and ripperNode is not None:
+    if GO_RIPPER is True and ripperNode is not None and default_flag is False:
         for connection in ripperNode.listConnections:
             listIdGoals.append(connection.toNode)
-    elif GO_BUZZ is True and buzzNode is not None:
+    if GO_BUZZ is True and buzzNode is not None and default_flag is False:
         for connection in buzzNode.listConnections:
             listIdGoals.append(connection.toNode)
-    elif GO_RYO_SURROUNDED is True and ryoNode is not None:
+    if GO_RYO_SURROUNDED is True and ryoNode is not None and default_flag is False:
         if graphObject.ryoTrapped_flag:
             listIdGoals.append(graphObject.ryoIdGoal)
-    elif GO_EXIT is True:
-        for idGoal in listIdGoalsGraph:
-            listIdGoals.append(idGoal)
-    elif GO_TELEPORT is True and len(graphObject.listConnectionsBidirectionals) > 0:
+    if GO_EXIT is True and default_flag is False:
+        listIdGoals.extend(listIdGoalsGraph)
+    if GO_TELEPORT is True and len(graphObject.listConnectionsBidirectionals) > 0 and default_flag is False:
         listIdGoals.append(graphObject.listConnectionsBidirectionals[0].fromNode)
         listIdGoals.append(graphObject.listConnectionsBidirectionals[0].toNode)
     
@@ -84,9 +85,7 @@ def strategyPath(jsonResponse):
                 listIdGoals.append(connection.toNode)
         for connection in enemyNode.listConnections:
             listIdGoals.append(connection.toNode)
-        for idGoal in listIdGoalsGraph:
-            listIdGoals.append(idGoal)
-    
+        listIdGoals.extend(listIdGoalsGraph)
     # Movement Skills 
     # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
     
@@ -113,7 +112,7 @@ def strategyPath(jsonResponse):
     return goalNode
     
 # Function separated from strategyPath, strategyPath should be only used to reach certain objective while this function decides what agent attack
-def strategyAttack(jsonResponse):
+def strategyAttackDamage(jsonResponse):
     graphObject = Graph(jsonResponse)
     dictNodes = graphObject.dictNodes
     
@@ -294,7 +293,8 @@ def strategyAttack(jsonResponse):
     listAgentAttacks.sort(key=lambda connection: customOrder[connection.idSkill])
 
     return listAgentAttacks
-    
+
+RANDOM_CAST_SKILLS = False
 def strategySkills(jsonResponse):
     graphObject = Graph(jsonResponse)
     dictNodes = graphObject.dictNodes
@@ -317,6 +317,8 @@ def strategySkills(jsonResponse):
     for skill in listskills:
         if skill["id"] in listIdSkills and skill["status"] == 1:
             dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
+        elif RANDOM_CAST_SKILLS and skill["status"] == 1:
+            dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
         Count = Count + 1
     
     listSkills = list() 
@@ -336,17 +338,30 @@ def strategySkills(jsonResponse):
             elif objetiveNode.typeAgentIn in listIdObjectivesAgents:
                 connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
                 listSkills.append(connection)
+            elif RANDOM_CAST_SKILLS:
+                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
+                listSkills.append(connection)
             else:
                 print(f"UNKNOWN AGENT OR TILE TO ATTACK!! more info node: {objetiveNode} id agent: {objetiveNode.typeAgentIn}, id node: {objetiveNode.typeNode}, skill: {keyName}")
     
     
     return listSkills
 
+INVERSE_SKILLS = False
+def strategyAttack(jsonResponse):
+    if INVERSE_SKILLS:
+        listSkills = strategyAttackDamage(jsonResponse)
+        listSkills.extend(strategySkills(jsonResponse))
+    else:
+        listSkills = strategySkills(jsonResponse)
+        listSkills.extend(strategyAttackDamage(jsonResponse))
+    
+    return listSkills
 
 # Special Strategies
 
 def specialStrategyAttack(jsonResponse, strategyPathInfo):
-    print("DEBUG INIT", strategyPathInfo)
+    #print("DEBUG INIT", strategyPathInfo)
     if strategyPathInfo["confirmation"] is False:
         return []
     
@@ -362,6 +377,7 @@ def specialStrategyAttack(jsonResponse, strategyPathInfo):
     Count = 0
     # 60: Reel  30: Fried pray
     skillsId = [30, 60]
+    friedPrayDict = None
     for skill in listskills:
         if skill["id"] in skillsId and skill["status"] == 1:
             dictSkills[skill["name"]] = {"skillPosition": Count, "dictSkill": skill}
@@ -393,7 +409,7 @@ def specialStrategyAttack(jsonResponse, strategyPathInfo):
         return friedAttack
     
     # In cooldown
-    if friedPrayDict["status"] == 0:
+    if friedPrayDict is not None and friedPrayDict["status"] == 0:
         if len(reelAttack) > 0:
             return reelAttack
     
