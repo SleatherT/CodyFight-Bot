@@ -32,10 +32,13 @@ SPECIALSTRAT = False
 # Recommended to keep this change to True if the bot is deployed in a local machina to report bugs if they appear
 SAVEHISTORY = True
 
-
 # At XERGO's request. Native skill block
 # Set to True if you dont want the bot use the native skill
 BLOCK_NATIVE = False
+
+
+
+
 
 # 'FOLLOW' CONFIGURATION
 # By default a general 'follow' strategy is applied, that is, follow the closest: Exit, Enemy or Kix, follow also Ryo too but only if this is close to be caught (can move only to one tile)
@@ -54,7 +57,7 @@ GO_ENEMY = False
 GO_RYO = False
 
 # Similar to GO_RYO but it will only follow him if its close to be caught
-GO_RYO_SURROUNDED = True
+GO_RYO_SURROUNDED = False
 
 GO_KIX = False
 
