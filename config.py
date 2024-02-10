@@ -21,10 +21,10 @@ if ImportFailed:
 GAMEMODE = 0
 
 # Change to False if you want the bot to not use the movement skills (like double time), if its close to his objective, 1 cell
-# Usefull if we want to move to a node to cast skills before ending our turn
+# Usefull if we want to move to a node to cast skills before ending the turn
 KEEPMOVESKILL = True
 
-# Change to True to use the special strategy to complete the 4 rarirty mission of the hunter codyfighter
+# Change to True to use the special strategy to complete the 4 rarirty mission of the legendary hunter codyfighter
 SPECIALSTRAT = False
 
 # This variable defines if the json responses are stored
@@ -32,10 +32,65 @@ SPECIALSTRAT = False
 # Recommended to keep this change to True if the bot is deployed in a local machina to report bugs if they appear
 SAVEHISTORY = True
 
-# Change this variable to True if you want the bot to go only to the exit, basic movement, no strategy, usefull only for missions, not recommended in the long run
-# Keep it False and the bot will move towards Ryo if its sorrounded and can be trapped, and against Kix (ONLY APPLIES FOR HUNTERBOT)
-GOEXIT = False
 
-# Change this variable to True if you want the bot to prioritize go to Bidirectional tiles, same as GOEXIT, basic movement, no strategy, recommended only for missions
-# If this variable is True it will overlap the GOEXIT variable/rule, and the bot will not move towards the exit
-GOBIDIRECTIONAL = False
+# At XERGO's request. Native skill block
+# Set to True if you dont want the bot use the native skill
+BLOCK_NATIVE = False
+
+# 'FOLLOW' CONFIGURATION
+# By default a general 'follow' strategy is applied, that is, follow the closest: Exit, Enemy or Kix, follow also Ryo too but only if this is close to be caught (can move only to one tile)
+
+DEFAULT_TARGETS = True
+
+# RULES OF 'FOLLOW'
+# If one of the next options are set to True it will overlap the DEFAULT_TARGETS option
+# Change to True the targets you want to follow, you can combine depending of the type the bot you are deploying
+# If the target is not in the map or cannot be reached it will move randomly
+
+# Names of the options are self-explanatory
+
+GO_ENEMY = False
+
+GO_RYO = True
+
+# Similar to GO_RYO but it will only follow him if its close to be caught
+GO_RYO_SURROUNDED = True
+
+GO_KIX = False
+
+GO_LLAMA = False
+
+GO_BUZZ = False
+
+GO_EXIT = False
+
+GO_TELEPORT = False
+
+# XD
+GO_RIPPER = False
+
+# ATTACK CONFIGURATION
+# Set to True the targets you want to attack, combine with 'FOLLOW' CONFIGURATION to follow and attack specific targets
+# The DEFAULT_ATTACK option is: attack Enemy or Kix
+
+DEFAULT_ATTACK = True
+
+# RULES OF ATTACK
+# Similar to follow rules. If one of the below options are True it will overlap DEFAULT_ATTACK option
+# Set the targets you want to attack to True
+
+ATTACK_ENEMY = False
+
+ATTACK_RYO = False
+
+ATTACK_KIX = False
+
+ATTACK_LLAMA = False
+
+ATTACK_RIPPER = False
+
+ATTACK_BUZZ = False
+
+# NEXT CONFIG OPTION IN WORK:
+
+AVOID_RANGE = 1
