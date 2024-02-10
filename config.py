@@ -1,10 +1,12 @@
+import time
 # Configuration Variables
 ImportFailed = False
 try:
     from ckey import CKEY
 except ImportError:
     ImportFailed = True
-    print("ckey.py file not found, use the template to create it!\nUsing ckey of the config.py file\n")
+    print("ckey.py file not found, use the ckey.py.template to create it!\nUsing ckey of the config.py file\n")
+    time.sleep(3)
     
 # Its recommended to use the ckey.py.template file to store your ckey so you don't have to edit this file everytime you are updating the code from github
 # If it is complicated for you, you can add your ckey here
@@ -37,9 +39,6 @@ SAVEHISTORY = True
 BLOCK_NATIVE = False
 
 
-
-
-
 # 'FOLLOW' CONFIGURATION
 # By default a general 'follow' strategy is applied, that is, follow the closest: Exit, Enemy or Kix, follow also Ryo too but only if this is close to be caught (can move only to one tile)
 
@@ -48,7 +47,9 @@ DEFAULT_TARGETS = True
 # RULES OF 'FOLLOW'
 # If one of the next options are set to True it will overlap the DEFAULT_TARGETS option
 # Change to True the targets you want to follow, you can combine depending of the type the bot you are deploying
-# If the target is not in the map or cannot be reached it will move randomly
+
+# If the target is not in the map or it will fallback to the DEFAULT_TARGETS strategy. If you want to dissable this set FALLBACK_TO_DEFAULT to False
+FALLBACK_TO_DEFAULT = True
 
 # Names of the options are self-explanatory
 
@@ -71,6 +72,7 @@ GO_TELEPORT = False
 
 # XD
 GO_RIPPER = False
+
 
 # ATTACK CONFIGURATION
 # Set to True the targets you want to attack, combine with 'FOLLOW' CONFIGURATION to follow and attack specific targets

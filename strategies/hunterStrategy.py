@@ -1,5 +1,5 @@
 # Main Classes/Functions
-from config import GO_EXIT, GO_TELEPORT, DEFAULT_TARGETS, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_BUZZ, GO_RYO_SURROUNDED, DEFAULT_ATTACK, ATTACK_ENEMY, ATTACK_RYO, ATTACK_KIX, ATTACK_LLAMA, ATTACK_RIPPER, ATTACK_BUZZ, BLOCK_NATIVE
+from config import GO_EXIT, GO_TELEPORT, DEFAULT_TARGETS, FALLBACK_TO_DEFAULT, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_BUZZ, GO_RYO_SURROUNDED, DEFAULT_ATTACK, ATTACK_ENEMY, ATTACK_RYO, ATTACK_KIX, ATTACK_LLAMA, ATTACK_RIPPER, ATTACK_BUZZ, BLOCK_NATIVE
 from core.nodemap import Node, Graph, Connection, AttackSKill, MovementSkill, PlayerNode, EnemyNode, SliderNode, SpecialTileNode, BidirectionalNode, TrapNode, SentryNode, dijkstra, pre_dijkstra, getMap, pure_Dijkstra
 import time
 import copy
@@ -75,6 +75,17 @@ def strategyPath(jsonResponse):
     elif GO_TELEPORT is True and len(graphObject.listConnectionsBidirectionals) > 0:
         listIdGoals.append(graphObject.listConnectionsBidirectionals[0].fromNode)
         listIdGoals.append(graphObject.listConnectionsBidirectionals[0].toNode)
+    
+    if FALLBACK_TO_DEFAULT is True and len(listIdGoals) == 0:
+        if graphObject.ryoTrapped_flag:
+            listIdGoals.append(graphObject.ryoIdGoal)
+        if kixNode is not None:
+            for connection in kixNode.listConnections:
+                listIdGoals.append(connection.toNode)
+        for connection in enemyNode.listConnections:
+            listIdGoals.append(connection.toNode)
+        for idGoal in listIdGoalsGraph:
+            listIdGoals.append(idGoal)
     
     # Movement Skills 
     # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
