@@ -51,7 +51,7 @@ DEFAULT_TARGETS = True
 
 GO_ENEMY = False
 
-GO_RYO = True
+GO_RYO = False
 
 # Similar to GO_RYO but it will only follow him if its close to be caught
 GO_RYO_SURROUNDED = True
