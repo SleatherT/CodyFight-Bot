@@ -297,8 +297,11 @@ def strategySkills(jsonResponse):
     Count = 0
     
     # Add here the id of the skills
-    listIdSkills = []
-    listIdObjectives = []
+    listIdSkills = [46]
+    listIdObjectivesTiles = []
+    
+    # # 1: Ryo  2: Kix  3: Llama  4: Ripper 5: Buzz  100: Player  200: Enemy
+    listIdObjectivesAgents = [200]
     
     for skill in listskills:
         if skill["id"] in listIdSkills and skill["status"] == 1:
@@ -316,7 +319,10 @@ def strategySkills(jsonResponse):
             if isinstance(objetiveNode, SpecialTileNode) is True:
                 connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
                 listSkills.append(connection)"""
-            if objetiveNode.typeNode in listIdObjectives:
+            if objetiveNode.typeNode in listIdObjectivesTiles:
+                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
+                listSkills.append(connection)
+            elif objetiveNode.typeAgentIn in listIdObjectivesAgents:
                 connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
                 listSkills.append(connection)
             else:
