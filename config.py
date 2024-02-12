@@ -22,21 +22,21 @@ if ImportFailed:
 # 0 = Sandbox  /  1 = Friendly Duel  /  3 = Llama Maze
 GAMEMODE = 0
 
-# Change to False if you want the bot to not use the movement skills (like double time), if its close to his objective, 1 cell
-# Usefull if we want to move to a node to cast skills before ending the turn
-KEEPMOVESKILL = True
-
-# Change to True to use the special strategy to complete the 4 rarirty mission of the legendary hunter codyfighter
-SPECIALSTRAT = False
-
 # This variable defines if the json responses are stored
 # Change this variable to False so that it does not save the history, recommended if the bot is deployed in the cloud
 # Recommended to keep this change to True if the bot is deployed in a local machina to report bugs if they appear
 SAVEHISTORY = True
 
+# Change to False if you want the bot to not use the movement skills (like double time), if its close to his objective, 1 cell
+# Usefull if we want to move to a node to cast skills before ending the turn
+KEEPMOVESKILL = True
+
 # At XERGO's request. Native skill block
 # Set to True if you dont want the bot use the native skill
 BLOCK_NATIVE = False
+
+# Change to True to use the special strategy to complete the 4 rarirty mission of the legendary hunter codyfighter
+SPECIALSTRAT = False
 
 
 # 'FOLLOW' CONFIGURATION
@@ -76,8 +76,9 @@ GO_RIPPER = False
 
 # ATTACK CONFIGURATION
 # Set to True the targets you want to attack, combine with 'FOLLOW' CONFIGURATION to follow and attack specific targets
-# The DEFAULT_ATTACK option is: attack Enemy or Kix
+# Only the attacks that do damage will be executed following this options
 
+# The DEFAULT_ATTACK option is: attack Enemy or Kix
 DEFAULT_ATTACK = True
 
 # RULES OF ATTACK
@@ -95,6 +96,13 @@ ATTACK_LLAMA = False
 ATTACK_RIPPER = False
 
 ATTACK_BUZZ = False
+
+
+# SKILLS CONFIGURATION
+# Skills that dont do damage are more tricky to cast, because they need to be executed with an strategy, you cant spend energy in destrying a trap that its 7 km away
+# Until this problem solved you can set this variable to True if you want to cast these abilities rondomly, recommended only if you need to complete rarity missions
+
+RANDOM_CAST_SKILLS = False
 
 # NEXT CONFIG OPTION IN WORK:
 

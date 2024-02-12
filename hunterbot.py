@@ -73,19 +73,17 @@ def loopGames(player, stopFlag, firstExecution=True):
 
             if reLoop_flag:
                 continue
-            
+            """
             listSkillConnections = strategySkills(jsonResponse)
             for targetConnection in listSkillConnections:
                 player.cast_skill(connection=targetConnection)
                 player.displayInfo()
-                # IMPROVE: breaking after the execution of the skill and looping again in case the attack caused the match to end
-                # this works well but i dont like how it looks
                 reLoop_flag = True
                 break
             
             if reLoop_flag:
                 continue
-            
+            """
             connection = goalNode.pathConnections[0]
             
             skillConfirmation = connection.usedSkill

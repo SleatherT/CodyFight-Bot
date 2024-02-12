@@ -1,5 +1,5 @@
 # Main Classes/Functions
-from config import GO_EXIT, GO_TELEPORT, DEFAULT_TARGETS, FALLBACK_TO_DEFAULT, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_BUZZ, GO_RYO_SURROUNDED, DEFAULT_ATTACK, ATTACK_ENEMY, ATTACK_RYO, ATTACK_KIX, ATTACK_LLAMA, ATTACK_RIPPER, ATTACK_BUZZ, BLOCK_NATIVE
+from config import GO_EXIT, GO_TELEPORT, DEFAULT_TARGETS, FALLBACK_TO_DEFAULT, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_BUZZ, GO_RYO_SURROUNDED, DEFAULT_ATTACK, ATTACK_ENEMY, ATTACK_RYO, ATTACK_KIX, ATTACK_LLAMA, ATTACK_RIPPER, ATTACK_BUZZ, BLOCK_NATIVE, RANDOM_CAST_SKILLS
 from core.nodemap import Node, Graph, Connection, AttackSKill, MovementSkill, PlayerNode, EnemyNode, SliderNode, SpecialTileNode, BidirectionalNode, TrapNode, SentryNode, dijkstra, pre_dijkstra, getMap, pure_Dijkstra
 import time
 import copy
@@ -23,13 +23,7 @@ def strategyPath(jsonResponse):
     
     # Goals Id
     # Dijkstra does the verification of which goal node is closest so we just need to add the id of the nodes close to ryo, kix and the enemy, which are the agents we
-    # want to eliminate
-    
-    # If we get close to an agent his connection to our node gets deleted so using the listConnections of the agent doesnt work in this case, this is done by the Graph
-    # with the purpose of creating a "logic" map of nodes but we can reverse it with the new function i added reverseDeleteAgentConnections()
-    
-    # This causes a lot of things not working as excepted, should be fixed ASAP
-    graphObject.reverseDeleteAgentConnections()
+    # want to eliminate, we use the .idsRange1 property of the Nodes for this
     
     customOptions = [GO_EXIT, GO_TELEPORT, GO_ENEMY, GO_RYO, GO_KIX, GO_RIPPER, GO_LLAMA, GO_RYO_SURROUNDED]
     
@@ -40,34 +34,27 @@ def strategyPath(jsonResponse):
             listIdGoals.append(graphObject.ryoIdGoal)
             
         if kixNode is not None:
-            for connection in kixNode.listConnections:
-                listIdGoals.append(connection.toNode)
+            listIdGoals.extend(kixNode.idsRange1)
         
-        for connection in enemyNode.listConnections:
-            listIdGoals.append(connection.toNode)
+        listIdGoals.extend(enemyNode.idsRange1)
         
         listIdGoals.extend(listIdGoalsGraph)
         
         default_flag = True
     
     if GO_ENEMY is True and default_flag is False:
-        for connection in enemyNode.listConnections:
-            listIdGoals.append(connection.toNode)
+        listIdGoals.extend(enemyNode.idsRange1)
     if GO_RYO is True and ryoNode is not None and default_flag is False:
-        for connection in ryoNode.listConnections:
-            listIdGoals.append(connection.toNode)
+        listIdGoals.extend(ryoNode.idsRange1)
     if GO_KIX is True and kixNode is not None and default_flag is False:
-        for connection in kixNode.listConnections:
-            listIdGoals.append(connection.toNode)
+        listIdGoals.extend(kixNode.idsRange1)
     if GO_LLAMA is True and llamaNode is not None and default_flag is False:
-        for connection in llamaNode.listConnections:
-            listIdGoals.append(connection.toNode)
+        listIdGoals.extend(llamaNode.idsRange1)
     if GO_RIPPER is True and ripperNode is not None and default_flag is False:
-        for connection in ripperNode.listConnections:
-            listIdGoals.append(connection.toNode)
+        listIdGoals.extend(ripperNode.idsRange1)
     if GO_BUZZ is True and buzzNode is not None and default_flag is False:
-        for connection in buzzNode.listConnections:
-            listIdGoals.append(connection.toNode)
+        listIdGoals.extend(buzzNode.idsRange1)
+    
     if GO_RYO_SURROUNDED is True and ryoNode is not None and default_flag is False:
         if graphObject.ryoTrapped_flag:
             listIdGoals.append(graphObject.ryoIdGoal)
@@ -81,11 +68,10 @@ def strategyPath(jsonResponse):
         if graphObject.ryoTrapped_flag:
             listIdGoals.append(graphObject.ryoIdGoal)
         if kixNode is not None:
-            for connection in kixNode.listConnections:
-                listIdGoals.append(connection.toNode)
-        for connection in enemyNode.listConnections:
-            listIdGoals.append(connection.toNode)
+            listIdGoals.extend(kixNode.idsRange1)
+        listIdGoals.extend(enemyNode.idsRange1)
         listIdGoals.extend(listIdGoalsGraph)
+    
     # Movement Skills 
     # (Just adding the movements of the skill with cost 0 to the player node should prioritize the use of these by dijkstra)
     
@@ -294,7 +280,7 @@ def strategyAttackDamage(jsonResponse):
 
     return listAgentAttacks
 
-RANDOM_CAST_SKILLS = False
+
 def strategySkills(jsonResponse):
     graphObject = Graph(jsonResponse)
     dictNodes = graphObject.dictNodes
@@ -328,10 +314,6 @@ def strategySkills(jsonResponse):
         for target in listNodesToConnect:
             objetiveCell = graphObject.getCell(target)
             objetiveNode = dictNodes[objetiveCell["id"]]
-            """
-            if isinstance(objetiveNode, SpecialTileNode) is True:
-                connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
-                listSkills.append(connection)"""
             if objetiveNode.typeNode in listIdObjectivesTiles:
                 connection = AttackSKill(nodeFrom=playerNode, nodeTo=objetiveNode, infoSkill=infoSkill["dictSkill"])
                 listSkills.append(connection)
@@ -430,7 +412,7 @@ def specialStrategyPath(jsonResponse):
     
     copyGraph = copy.deepcopy(graphObject)
     
-    # Restoring user node listConnections for the copy
+    #print("DEBUG INIT", enemyNode.idsRange2directSemiClear)
     
     # Creating connections from the enemy node
     pure_Dijkstra(copyGraph.dictNodesPure, [], enemyNode.id)

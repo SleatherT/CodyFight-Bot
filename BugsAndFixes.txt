@@ -1,6 +1,10 @@
 BUGS FOUND
 
-- reverseDeleteAgentConnections() raises a bug if the player is sorrounded by Ripper, e.g. is sorrounded by 3 walls and the other cell is occupied by Ripper
+- Ripper Precaution suspended
+- Ice nodes causing performance problems
+
+SOLVED!:
+	- reverseDeleteAgentConnections() raises a bug if the player is sorrounded by Ripper, e.g. is sorrounded by 3 walls and the other cell is occupied by Ripper
 
 MUST BE FIXED
 

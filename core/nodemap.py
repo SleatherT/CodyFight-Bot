@@ -60,11 +60,64 @@ class Connection():
         
         return clsObj
 
-# A custom list class that saves only an id of his corresponding map 
+# A custom list class that saves an id of his corresponding map and info about the path
 class Path(list):
     def __init__(self, *args, **kwargs):
         self.idMap_ = 0
+        
+        # If the path is longer of 1 connection this variable will always be non None
+        self.typeEndsOn_ = None
+        
+        # Only if the path is longer that 2 connection, this info will be not None or not empty
+        self.typesInPath_ = list()
+        self.isClear_ = None
+        self.isSemiClear_ = None
+        self.isDirect_ = None
+        
+        self.dictGraphNodes_ = None
+        
         super().__init__(*args, **kwargs)
+    
+    def _createInfoPath(self):
+        if len(self) == 0:
+            return None
+        
+        for connection in self:
+            if connection is not self[-1]:
+                self.typesInPath_.append(type(self.dictGraphNodes_[connection.toNode]))
+            else:
+                self.typeEndsOn_ = type(self.dictGraphNodes_[connection.toNode])
+        
+        # We consider as a 'clear' path if there is only blank tiles or the player is on it
+        allowedTypes = [Node, PlayerNode]
+        for typeNode in self.typesInPath_:
+            if typeNode in allowedTypes:
+                self.isClear_ = True
+            else:
+                self.isClear_ = False
+                break
+        
+        # We consider as a 'semi-clear' path if there is no obstacles/walls in the path but accepts special tiles like traps as 'clear'
+        for typeNode in self.typesInPath_:
+            if isinstance(typeNode, BlockNode) is False:
+                self.isSemiClear_ = True
+            else:
+                self.isSemiClear_ = False
+                break
+        
+        previousDirection = None
+        for connection in self:
+            currentDirection = connection.direction
+            if previousDirection is None:
+                previousDirection = currentDirection
+                continue
+            
+            if currentDirection == previousDirection:
+                self.isDirect_ = True
+            else:
+                self.isDirect_ = False
+                break
+
 
 class Node():
     def __init__(self, cell: dict):
@@ -83,8 +136,17 @@ class Node():
         
         self.notes = None
         
-        # Each Node has access to the graph, making easy the access to info about all the nodes
+        self.idsRange1 = list()
+        self.idsRange2 = list()
+        self.idsRange2direct = list()
+        self.idsRange2indirect = list()
+        self.idsRange2directClear = list()
+        self.idsRange2directSemiClear = list()
+        
+        # Each Node has access to the graphs, making easy the access to info about all the nodes
         self.dictGraphNodes = None
+        self.dictGraphNodesPure = None
+        self.dictGraphNodesPureAll1 = None
         
         # Variables destined to use in the dijkstra algorithm
         self.costToReach = None
@@ -139,9 +201,39 @@ class Node():
         for connection in tmpList:
             self.listConnections.remove(connection)
     
+    def assingDictPointerToPath(self):
+        self.pathConnections.dictGraphNodes_ = self.dictGraphNodes
+        #print(type(self.dictGraphNodes))
+    
     def _createAndAppend(self, fCell, sCell, direction):
         connection = Connection(self.cell, cell)
         self.listConnections.append(connection)
+    
+    def createIdsRangeInfo(self):
+        pure_Dijkstra(self.dictGraphNodesPureAll1, [], self.id, limit=3)
+        #print(self.typeAgentIn, self.id)
+        for idNode, node in self.dictGraphNodesPureAll1.items():
+            if node.costToReach == 1:
+                self.idsRange1.append(idNode)
+            elif node.costToReach == 2:
+                self.idsRange2.append(idNode)
+                previousDirection = None
+        
+        range2Nodes = [self.dictGraphNodesPureAll1[idNode] for idNode in self.idsRange2]
+        for node in range2Nodes:
+            node.assingDictPointerToPath()
+            node.pathConnections._createInfoPath()
+            pathConnections = node.pathConnections
+            if pathConnections.isDirect_ is False:
+                self.idsRange2indirect.append(pathConnections[-1].toNode)
+            elif pathConnections.isDirect_ is True and pathConnections.isClear_ is True:
+                self.idsRange2directClear.append(pathConnections[-1].toNode)
+            elif pathConnections.isDirect_ is True and pathConnections.isClear_ is False:
+                self.idsRange2direct.append(pathConnections[-1].toNode)
+            
+            if pathConnections.isDirect_ is True and pathConnections.isSemiClear_ is True:
+                self.idsRange2directSemiClear.append(pathConnections[-1].toNode)
+        #print("DONE!")
     
     def deleteConnections(self) -> None:
         self.listConnections = list()
@@ -166,13 +258,12 @@ class Node():
         self.pathConnections.append(connFrom)
     
     def deleteInfoPath(self):
-        self.pathConnections = list()
+        self.pathConnections = Path()
         self.costToReach = None
     
     def deletePathConnections(self):
-        self.pathConnections = list()
+        self.pathConnections = Path()
         self.costToReach = None
-        
     
     def loadUniqueConfig(self):
         return None
@@ -184,7 +275,8 @@ class Node():
         return None
     
     @classmethod
-    def createPath(klass, pathNode: Path, connFrom: Connection):
+    # This path has no info about his .dictGraphNodes variables
+    def createTmpPath(klass, pathNode: Path, connFrom: Connection):
         path = Path()
         for connection in pathNode:
             path.append(connection)
@@ -281,11 +373,19 @@ class ChildNode(Node):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
+# General characteristic class
+
 class SpecialTileNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
-class ObstacleNode(ChildNode):
+class BlockNode(ChildNode):
+    def __init__(self, cell: dict):
+        super().__init__(cell)
+
+# ---
+
+class ObstacleNode(BlockNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
@@ -296,15 +396,13 @@ class ExitNode(SpecialTileNode):
         self.isCharged = self.config["is_charged"]
 
 
-class WallNode(ChildNode):
+class WallNode(BlockNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
-
 
 class RegeneratorNode(SpecialTileNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
-
 
 class SliderNode(SpecialTileNode):
     def __init__(self, cell: dict):
@@ -395,11 +493,11 @@ class TrapNode(ChildNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
-class SentryNode(ChildNode):
+class SentryNode(BlockNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
-class LesserObsNode(ChildNode):
+class LesserObsNode(BlockNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
@@ -487,7 +585,7 @@ class PlayerNode(ChildNode):
         
         self.totalLife = self.armor + self.hitpoints
 
-class EntityNode(ChildNode):
+class EntityNode(BlockNode):
     def __init__(self, cell: dict):
         super().__init__(cell)
 
@@ -581,6 +679,7 @@ class Graph():
         self.listIdGoals = list()
         self.dictNodes = Map()
         self.dictNodesPure = Map()
+        self.dictNodesPureAll1 = Map()
         
         listCells = list()
         for column in self.map:
@@ -647,13 +746,33 @@ class Graph():
             idNode = nodeObject.id
             
             self.dictNodes[idNode] = nodeObject
-            # Adding the pure node to the dictNodesPure, used to create connections of the skills like swap or toss
-            self.dictNodesPure[idNode] = copy.deepcopy(nodeObject)
         
-        # INFO: For some reason assigning the self.dictNodes to the nodeObject.dictGraphNodes in the previous loop cause the time to execute to skyrocket x40
+        # Creating a dictNodesPure and dictNodesPureAll1, used to create connections of the skills like swap or toss
+        # dictNodesPureAll1 is a dictNodes with all the connections cost set to 1
+        self.dictNodesPure = copy.deepcopy(self.dictNodes)
+        self.dictNodesPureAll1 = copy.deepcopy(self.dictNodes)
+        
+        # Setting all the connections cost to 1
+        for idNode, node in self.dictNodesPureAll1.items():
+            for connection in node.listConnections:
+                connection.setCost(1)
+        
+        # INFO: For some reason assigning the self.dictNodes to the nodeObject.dictGraphNodes in the previous nodeObject creation loop cause the time to execute to skyrocket x40
         # This problem seems to be called "mutable default argument" or "mutable default parameter", thats is why its outside and must be outside
         for idNode, nodeObject in self.dictNodes.items():
             nodeObject.dictGraphNodes = self.dictNodes
+            nodeObject.dictGraphNodesPure = self.dictNodesPure
+            nodeObject.dictGraphNodesPureAll1 = self.dictNodesPureAll1
+        
+        for idNode, nodeObject in self.dictNodesPure.items():
+            nodeObject.dictGraphNodes = self.dictNodes
+            nodeObject.dictGraphNodesPure = self.dictNodesPure
+            nodeObject.dictGraphNodesPureAll1 = self.dictNodesPureAll1
+        
+        for idNode, nodeObject in self.dictNodesPureAll1.items():
+            nodeObject.dictGraphNodes = self.dictNodes
+            nodeObject.dictGraphNodesPure = self.dictNodesPure
+            nodeObject.dictGraphNodesPureAll1 = self.dictNodesPureAll1
         
         # Saving the nodes and setting the typeAgentIn in the nodes where the player, enemies and agents are
         self.saveNodesAndType()
@@ -701,7 +820,7 @@ class Graph():
         self.userNode.savePossibleMoves(possibleMoves, self.map)
         self.userNode.deleteInvalidConnections(listIdInvalidNodes)
         
-        # Creating copy of the listConnections in the AgentNodes (must be done after saving the nodes and types)
+        # Creating copy of the listConnections in the AgentNodes (must be done after saving the nodes and types). Used for the next block
         self.enemyNode.copyListConnections()
         for id in self.listIdAgents:
             node = self.dictNodes[id]
@@ -746,6 +865,9 @@ class Graph():
         
         # Deleting the connections that points to agent nodes
         self.deleteConnectionsToAgentNodes(self.dictNodes)
+        
+        # Creating the idsRange info of the entity nodes (player is not included)
+        self.createRangeInfoEntities()
         
         # Saving the original dictNodes
         self.dictMaps[0] = self.dictNodes
@@ -836,11 +958,12 @@ class Graph():
             for connection in tmpList:
                 node.listConnections.remove(connection)
     
-    def reverseDeleteAgentConnections(self):
-        for (id, node) in self.dictNodes.items():
-            for connection in node.listAgentConnections:
-                node.listConnections.append(connection)
-    
+    def createRangeInfoEntities(self):
+        listEntityNodes = [self.enemyNode, self.ryoNode, self.kixNode, self.llamaNode, self.ripperNode, self.buzzNode]
+        for entityNode in listEntityNodes:
+            if entityNode is not None:
+                entityNode.createIdsRangeInfo()
+        
     # getCell() uses the x and y value (position), and returns the cell
     def getCell(self, position: dict) -> dict:
         try:
@@ -1068,7 +1191,7 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
                     # INFO: The connection returned is a copy, trying to find it (in a list, ditc..) after dijkstra execution will fail
                     redirectConnection = nextNode.redirectsTo(pathNode=nodeListPath, connectionFrom=connection)
                     if redirectConnection:
-                        tmpNodeListPath = Node.createPath(pathNode=nodeListPath, connFrom=connection)
+                        tmpNodeListPath = Node.createTmpPath(pathNode=nodeListPath, connFrom=connection)
                         
                         connection = redirectConnection
                         
@@ -1165,7 +1288,7 @@ def pre_dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     return winnerNode
 
 # This is the pure algorithm, uses only one dictNodes/Map and it will not create new ones. Used to create possible connections of the skills
-def pure_Dijkstra(dictNodes: dict, idsGoal: list, idStart: int):
+def pure_Dijkstra(dictNodes: dict, idsGoal: list, idStart: int, limit=None):
     listGoalNodes = list()
     
     for id in idsGoal:
@@ -1187,6 +1310,11 @@ def pure_Dijkstra(dictNodes: dict, idsGoal: list, idStart: int):
             Count = Count + 1
             listConnections = node.listConnections
             nodeCost = node.costToReach
+            
+            if limit is not None and nodeCost > limit:
+                listOpen.remove(node)
+                continue
+                
             nodeListPath = node.pathConnections
             for connection in listConnections:
                 if connection.ban is True:
@@ -1237,32 +1365,29 @@ def dijkstra(graphObject: Graph, idsGoal: list, idStart=None):
     # can do is at least avoid fall in one of his adyacent nodes, to do this i will check if the first connection of the pathConnections points to one of his 4 adyacent
     # nodes if it does we deleted the connections that points to this node, unless its the exit of a ryoIdGoal
     
-    # Suspending this instead of reverseDeleteAgentConnections()
-    """
     ripperNode = None
     for (id, node) in dictNodesCopy.items():
         if node.typeAgentIn == 4:
             ripperNode = node
         
+    """
     if ripperNode is not None:
         while True:
             InfinityDetector.CountIter(x)
             nodeGoal = pre_dijkstra(graphObjectCopy, idsGoal, idStart)
-            listRipperAdNodes = list()
+            listRipperAdNodes = copy.deepcopy(ripperNode.idsRange1)
+            listRipperAdNodes.extend(ripperNode.idsRange2indirect)
+            print(listRipperAdNodes)
             idDeathNode = None
-            for connection in ripperNode.listConnections:
-                listRipperAdNodes.append(connection.toNode)
             firstConn = nodeGoal.pathConnections[0]
             
             if firstConn.toNode in listRipperAdNodes:
                 idDeathNode = firstConn.toNode
-            
+            print("DEBUG INIT", idDeathNode)
             if idDeathNode is None:
                 break
-            elif dictNodesCopy[idDeathNode].id in idsGoal:
-                break
             else:
-                deleteConnectionsThatPointsToThisNode(idDeathNode, dictNodesCopy)
+                firstConn.setBan(True)
     """
     
     # Casting skill precaution (Uses previous nodeGoal value generated)
