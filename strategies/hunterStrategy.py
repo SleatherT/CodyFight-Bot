@@ -182,7 +182,7 @@ def strategyAttackDamage(jsonResponse):
         listAgentsAvoid.remove(2)
         listAgentsAvoid.remove(200)
     else:
-        for dictOption in listDictOptions:
+        for dictOption in dictOptions:
             for flag, idAgent in dictOption.items():
                 if flag is True:
                     listIdAgentsAttack.append(idAgent)
